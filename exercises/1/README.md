@@ -89,14 +89,14 @@ Make sure it has an TCP Listener on Port 11443 now:
    * Now it's time to test it:
 
 ```Bash
-~# curl https://localhost:10443/index.html
+~# curl https://localhost:11443/index.html
 curl: (60) Peer certificate cannot be authenticated with known CA certificates
 ```
 
 That's what we expected. We not yet did put our selfsigned certificate into the truststore of our client (curl). So it is not trusted. Let's tell curl explicitly which certificate we trust:
 
 ```Bash
-~# curl --cacert example.com.crt https://localhost:10443/index.html
+~# curl --cacert example.com.crt https://localhost:11443/index.html
 curl: (51) SSL: certificate subject name 'example.com' does not match target host name 'localhost'
 ```
 
