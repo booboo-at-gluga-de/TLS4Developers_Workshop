@@ -1,5 +1,4 @@
-# TLS4Developers_Workshop
-Exercises for the TLS4Developers Workshop
+# TLS4Developers Workshop
 
 In addition to the TLS4Developers Workshop you find some exercises here to get a little more hands-on.
 You might want to use them to practice at home.
@@ -10,16 +9,16 @@ You need a machine running Linux (or maybe MacOS) as your playground
 
    * This could be your local workstation or needs to be reachable by network from your workstation.
    * The playground machine needs internet access.
-   * OpenSSL and Apache Webserver with mod_ssl need to be installed in a recent version.
+   * OpenSSL and Apache Webserver with mod_ssl enabled need to be installed in a recent version.
    * You need to be able to configure and restart the Apache webserver there. If you have root access, this is easy. Other permissions to do so are absolutly fine too!
-   * The exercises might work on MacOS too, but maybe need to be adapted. The exercises have been created and tested on Linux - so if you are looking for the easy way: Go for Linux.
-   * Single exercises maybe depend on additional prerequisits. They are named there.
+   * The exercises might work on MacOS too, but maybe need to be adapted. They have been created and tested on Linux - so if you are looking for the easy way: Go for Linux.
+   * Single exercises maybe depend on additional prerequisites. They are named there.
 
-@ToDo: write something about vagrant here
+__@ToDo:__ write something about vagrant here
 
 ## Getting started
 
-   * Clone this Git repository on your playground machine
+   * Clone this Git repository on your playground machine and jump to the exercise you are interested in
 
 ## Exercises
 
