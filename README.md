@@ -22,5 +22,5 @@ __@ToDo:__ write something about vagrant here
 
 ## Exercises
 
-   * __Exercise 1__ (exercises/1/README.md):
+   * [__Exercise 1__](exercises/1/):
      Establish a connection between HTTPS server and client with a selfsigned certificate
