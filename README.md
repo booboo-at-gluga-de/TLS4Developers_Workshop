@@ -37,3 +37,5 @@ Now it's time to jump to the exercise you are interested in:
      Establish a connection between HTTPS server and client with a selfsigned certificate
    * [__Exercise 2__](exercises/2/):
      Establish a HTTPS connection with a selfsigned certificate - without any certificate warning
+   * [__Exercise 3__](exercises/3/):
+     The Client needs to authenticate by a Client Certificate: mTLS (with selfsigned certificates)
