@@ -86,7 +86,7 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
         ~# sudo systemctl reload apache2
         ```
 
-   * Make sure it has an TCP Listener on Port 12443 now:
+   * Make sure it has an TCP Listener on Port 11443 now:
      ```Bash
      ~# sudo netstat -pltn
              # or alternatively
@@ -107,6 +107,10 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
      ~# curl --cacert example.com.crt https://localhost:11443/index.html
      curl: (51) SSL: certificate subject name 'example.com' does not match target host name 'localhost'
      ```
-     Ah! Oh! Still doesn't work. Name (CN) in the certificate doesn't match the name in the URL (localhost). That's the point where users tend to click buttons like "Continue anyway!" or "I accept the insecure way!" (or add parameters to the curl command telling the same). We - of course - **NEVER DO SUCH THINGS**!! We want trust! We fix problems instead of working around them.
+     Or maybe the wording of the message might be:
+     ```Bash
+     curl: (51) Unable to communicate securely with peer: requested domain name does not match the server's certificate.
+     ```
+     Ah! Oh! Still doesn't work. Name (CN) in the certificate doesn't match the name in the URL (localhost). That's the point where users tend to click buttons like "Continue anyway!" or "I accept the insecure way!" (or add parameters to the curl command telling the same). We - of course - **NEVER DO SUCH THINGS!!** We want trust! We fix problems instead of working around them.
 
-   * Please continue with [Exercise 2](../2/).
+   * Please continue with [Exercise 2](../2/) to see how we manage to do this.
