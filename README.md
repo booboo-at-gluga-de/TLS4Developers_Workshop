@@ -15,7 +15,7 @@ You need a machine running Linux (or maybe MacOS) as your playground
 
 ### With Vagrant
 
-   * cd to the directory where you cloned this Git repository. (**Vagrantfile** provided here needs to be in your current working directory)
+   * cd to the directory where you cloned this Git repository. (*Vagrantfile* provided here needs to be in your current working directory)
    * `vagrant up`
    * `vagrant ssh`
 

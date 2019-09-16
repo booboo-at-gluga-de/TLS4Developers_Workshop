@@ -6,6 +6,7 @@ You will do pretty much the same as in Exercise 1, but will make sure the CN in 
 ## Steps
 
    * Generate a new private key file (in PEM format):
+     (within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`)
 
 ```Bash
 ~# openssl genrsa -out localhost.key 2048
@@ -62,21 +63,21 @@ total 12
 
 Copy `exercises/2/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
 
-      - in our Vagrant setup this is
+      * in our Vagrant setup this is
 
 ```Bash
 ~# sudo cp /vagrant/exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
 ~# sudo vim /etc/httpd/conf.d/exercise2.conf
 ```
 
-      - in other CentOS / RedHat Enterprise setups do something like
+      * in other CentOS / RedHat Enterprise setups do something like
 
 ```Bash
 ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
 ~# sudo vim /etc/httpd/conf.d/exercise2.conf
 ```
 
-      - and in Debian / Ubuntu / Mint you do something like
+      * and in Debian / Ubuntu / Mint you do something like
 
 ```Bash
 ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/apache2/sites-available
@@ -89,13 +90,13 @@ At `DocumentRoot` you give the full path of your `exercises/2/htdocs` directory
 
    * Enable the config now and reload your Apache.
 
-      - in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
+      * in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
 
 ```Bash
 ~# sudo systemctl restart httpd
 ```
 
-      - and in Debian / Ubuntu / Mint you do something like
+      * and in Debian / Ubuntu / Mint you do something like
 
 ```Bash
 ~# sudo a2ensite exercise2
