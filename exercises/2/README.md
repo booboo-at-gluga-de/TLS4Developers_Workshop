@@ -94,7 +94,7 @@ You will do pretty much the same as in Exercise 1, but will make sure the CN in 
      ~# sudo lsof | grep LISTEN
      ```
 
-   * Now it's time for the next test (trusting our selfsigned certificate):
+   * Now it's time for the next test (explicitly trusting our selfsigned certificate):
      ```Bash
      ~# curl --cacert localhost.crt https://localhost:12443/index.html
      Hello World
@@ -104,6 +104,6 @@ You will do pretty much the same as in Exercise 1, but will make sure the CN in 
 
 ## Conclusion
 
-   * It works now completly without any certificate warning. Exactly the same way it would work if we used a FQDN in the URL and in the CN of the certificate.
-   * __Learning:__ Selfsigned certificates are not less secure than certificates signed by an official CA.
-   * __Drawback:__ It's not practical anyway. If you wanted to deal with selfsigned certificates in the real world, you would need to make sure the certificate of your server is included in the truststore of every client connecting to it.
+   * It works now completly without any certificate warning. Exactly the same way it would work if we used a FQDN in the URL as well as in the CN of the certificate.
+   * __Learning:__ Selfsigned certificates are not less secure than certificates signed by an official CA. Encryption is fully in place.
+   * __Drawback:__ It's not practical anyway! If you wanted to deal with selfsigned certificates in the real world, you would need to make sure the certificate of your server is included in the truststore of every client connecting to it.
