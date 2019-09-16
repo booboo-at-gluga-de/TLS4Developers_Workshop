@@ -9,9 +9,11 @@ You need a machine running Linux (or maybe MacOS) as your playground
 
    * This could be your local workstation or needs to be reachable by network from your workstation.
    * The playground machine needs internet access.
-   * OpenSSL and Apache Webserver with mod_ssl enabled need to be installed in a recent version.
+   * The exercises probably will work on MacOS too, but maybe need to be adapted. They have been created and tested on Linux - so if you are looking for the easy way: Go for Linux.
+   * You need an Apache Webserver (in a recent version) up and running and mod_ssl needs to be enabled need.
    * You need to be able to configure and restart the Apache webserver there. If you have root access, this is easy. Other permissions to do so are absolutly fine too!
-   * The exercises might work on MacOS too, but maybe need to be adapted. They have been created and tested on Linux - so if you are looking for the easy way: Go for Linux.
+   * OpenSSL needs to be installed in a recent version.
+   * A commandline HTTP client needs to be installed on your playground machine, curl is preferred.
    * Single exercises maybe depend on additional prerequisites. They are named there.
 
 __@ToDo:__ write something about vagrant here
@@ -24,3 +26,5 @@ __@ToDo:__ write something about vagrant here
 
    * [__Exercise 1__](exercises/1/):
      Establish a connection between HTTPS server and client with a selfsigned certificate
+   * [__Exercise 2__](exercises/2/):
+     Establish a HTTPS connection with a selfsigned certificate - without any certificate warning

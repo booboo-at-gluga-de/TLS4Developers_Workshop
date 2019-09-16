@@ -93,6 +93,12 @@ Make sure it has an TCP Listener on Port 11443 now:
 curl: (60) Peer certificate cannot be authenticated with known CA certificates
 ```
 
+Or - depending on the versions in use - the message might also be:
+
+```Bash
+curl: (60) SSL certificate problem: self signed certificate
+```
+
 That's what we expected. We not yet did put our selfsigned certificate into the truststore of our client (curl). So it is not trusted. Let's tell curl explicitly which certificate we trust:
 
 ```Bash
