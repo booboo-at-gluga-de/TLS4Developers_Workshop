@@ -108,4 +108,4 @@ curl: (51) SSL: certificate subject name 'example.com' does not match target hos
 
 Ah! Oh! Still doesn't work. Name (CN) in the certificate doesn't match the name in the URL (localhost). That's the point where users tend to click buttons like "Continue anyway!" or "I accept the insecure way!" (or add parameters to the curl command telling the same). We - of course - **NEVER DO SUCH THINGS**!! We want trust! We fix problems instead of working around them.
 
-   * Please continue with exercise 2.
+   * Please continue with [Exercise 2](../2/).

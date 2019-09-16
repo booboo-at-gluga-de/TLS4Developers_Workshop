@@ -60,7 +60,7 @@ total 12
 
    * Now let's setup a secure (HTTPS) virtual server within Apache:
 
-Copy `exercises/1/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+Copy `exercises/2/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
 
 e. g. in Debian / Ubuntu / Mint you do something like
 
