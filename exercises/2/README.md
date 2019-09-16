@@ -95,3 +95,9 @@ Hello World
 
 __Yeah! It works now without certificate warnings!__
 
+
+## Conclusion
+
+   * It works now completly without any certificate warning. Exactly the same way it would work if we used a FQDN in the URL and in the CN of the certificate.
+   * __Learning:__ Selfsigned certificates are not less secure than certificates signed by an official CA.
+   * __Drawback:__ It's not practical anyway. If you wanted to deal with selfsigned certificates in the real world, you would need to make sure the certificate of your server is included in the truststore of every client connecting to it.
