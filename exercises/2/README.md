@@ -62,7 +62,21 @@ total 12
 
 Copy `exercises/2/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
 
-e. g. in Debian / Ubuntu / Mint you do something like
+      - in our Vagrant setup this is
+
+```Bash
+~# sudo cp /vagrant/exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
+~# sudo vim /etc/httpd/conf.d/exercise2.conf
+```
+
+      - in other CentOS / RedHat Enterprise setups do something like
+
+```Bash
+~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
+~# sudo vim /etc/httpd/conf.d/exercise2.conf
+```
+
+      - and in Debian / Ubuntu / Mint you do something like
 
 ```Bash
 ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/apache2/sites-available
@@ -73,7 +87,15 @@ At `DocumentRoot` you give the full path of your `exercises/2/htdocs` directory
 (make sure the runtime user of your Apache is allowed to read this directory)
 `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the files you created above.
 
-   * Enable the config now and reload your Apache. E. g. in Debian / Ubuntu / Mint this is:
+   * Enable the config now and reload your Apache.
+
+      - in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
+
+```Bash
+~# sudo systemctl restart httpd
+```
+
+      - and in Debian / Ubuntu / Mint you do something like
 
 ```Bash
 ~# sudo a2ensite exercise2
@@ -83,6 +105,8 @@ At `DocumentRoot` you give the full path of your `exercises/2/htdocs` directory
 Make sure it has an TCP Listener on Port 12443 now:
 
 ```Bash
+~# sudo netstat -pltn
+         # or alternatively
 ~# sudo lsof | grep LISTEN
 ```
 
