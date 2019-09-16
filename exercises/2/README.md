@@ -59,30 +59,23 @@ total 12
 -rw------- 1 booboo booboo 1675 Sep 13 17:22 localhost.key
 ```
 
-   * Now let's setup a secure (HTTPS) virtual server within Apache:
-
-Copy `exercises/2/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
-
+   * Now let's setup a secure (HTTPS) virtual server within Apache:  
+     Copy `exercises/2/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
       * in our Vagrant setup this is
-
-```Bash
-~# sudo cp /vagrant/exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
-~# sudo vim /etc/httpd/conf.d/exercise2.conf
-```
-
+        ```Bash
+        ~# sudo cp /vagrant/exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise2.conf
+        ```
       * in other CentOS / RedHat Enterprise setups do something like
-
-```Bash
-~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
-~# sudo vim /etc/httpd/conf.d/exercise2.conf
-```
-
+        ```Bash
+        ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise2.conf
+        ```
       * and in Debian / Ubuntu / Mint you do something like
-
-```Bash
-~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/apache2/sites-available
-~# sudo vim /etc/apache2/sites-available/exercise2.conf
-```
+        ```Bash
+        ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache2/sites-available/exercise2.conf
+        ```
 
 At `DocumentRoot` you give the full path of your `exercises/2/htdocs` directory
 (make sure the runtime user of your Apache is allowed to read this directory)
