@@ -1,4 +1,4 @@
-# Exercise 3: mTLS Connection (with a Selfsigned Certificate)
+# Exercise 4: mTLS Connection (with a Selfsigned Certificate)
 
 ## Objective
 
@@ -73,23 +73,23 @@ Technically both are absolutely the same (except you will fill the CN field in a
      ```
 
    * Now let's setup a secure (HTTPS) virtual server having mTLS enabled:  
-     Copy `exercises/3/apache_conf.d/exercise3.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+     Copy `exercises/4/apache_conf.d/exercise4.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
       * in our Vagrant setup this is
         ```Bash
-        ~# sudo cp /vagrant/exercises/3/apache_conf.d/exercise3.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise3.conf
+        ~# sudo cp /vagrant/exercises/4/apache_conf.d/exercise4.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise4.conf
         ```
       * in other CentOS / RedHat Enterprise setups do something like
         ```Bash
-        ~# sudo cp exercises/3/apache_conf.d/exercise3.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise3.conf
+        ~# sudo cp exercises/4/apache_conf.d/exercise4.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise4.conf
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo cp exercises/3/apache_conf.d/exercise3.conf /etc/apache2/sites-available
-        ~# sudo vim /etc/apache2/sites-available/exercise3.conf
+        ~# sudo cp exercises/4/apache_conf.d/exercise4.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache2/sites-available/exercise4.conf
         ```
-     At `DocumentRoot` you give the full path of your `exercises/3/htdocs` directory  
+     At `DocumentRoot` you give the full path of your `exercises/4/htdocs` directory  
      (make sure the runtime user of your Apache is allowed to read this directory)  
      `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the `localhost.crt` and `localhost.key` file you created in exercise 2.
 
@@ -100,11 +100,11 @@ Technically both are absolutely the same (except you will fill the CN field in a
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo a2ensite exercise3
+        ~# sudo a2ensite exercise4
         ~# sudo systemctl reload apache2
         ```
 
-   * Make sure it has an TCP Listener on Port 12443 now:
+   * Make sure it has an TCP Listener on Port 14443 now:
      ```Bash
      ~# sudo netstat -pltn
              # or alternatively
@@ -114,14 +114,14 @@ Technically both are absolutely the same (except you will fill the CN field in a
    * Let's test!  
      Acting as a client now you trust (`--cacert`) the other party (the server). And you need to authenticate with your own client certificate (and for authentication you need the private key of this keypair as a "proof of possession").
      ```Bash
-     ~# curl --cacert localhost.crt --cert client.crt --key client.key https://localhost:13443/index.html
+     ~# curl --cacert localhost.crt --cert client.crt --key client.key https://localhost:14443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
      ```
 
    * Negative test:  
      Let's check what happens, if we connect to the server without providing a client certificat.
      ```Bash
-     ~# curl --cacert localhost.crt https://localhost:13443/index.html
+     ~# curl --cacert localhost.crt https://localhost:14443/index.html
      curl: (35) NSS: client certificate not found (nickname not specified)
      ```
 
