@@ -46,9 +46,9 @@ In this exercise some commands reference files by complete path. If you use our 
      ```
 
    * Create your CA Certificate now.  
-     Please note:
-         * Generation of the CSR and generation of the certificate is done in one command here. (CSR is not written to a file.)
-         * We added some default values into the config file for your convenience. Just press Enter to accept the defaults.
+     Please note:  
+      - Generation of the CSR and generation of the certificate is done in one command here. (CSR is not written to a file.)
+      - We added some default values into the config file for your convenience. Just press Enter to accept the defaults.
      ```Bash
      ~# openssl req -config ca/ca.cnf -new -x509 -days 3650 -key ca/private/cacert.key -out ca/cacert.pem
      Enter pass phrase for ca/private/cacert.key:
