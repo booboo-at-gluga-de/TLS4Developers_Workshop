@@ -24,6 +24,8 @@ fi
 
 mkdir $WORKING_DIR/ca || exit 1
 mkdir $WORKING_DIR/ca/newcerts || exit 1
+mkdir $WORKING_DIR/ca/private || exit 1
+chmod 700 $WORKING_DIR/ca/private || exit 1
 echo -ne "01" >$WORKING_DIR/ca/serial || exit 1
 echo -ne "01" >$WORKING_DIR/ca/crlnumber || exit 1
 touch $WORKING_DIR/ca/index.txt || exit 1
