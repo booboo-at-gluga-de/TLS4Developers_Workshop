@@ -29,13 +29,23 @@ You need to care for these additional prerequisites yourself:
    * A commandline HTTP client needs to be installed on your playground machine, curl is preferred.
    * Clone this Git repository on your playground machine.
 
-## Exercises
+## Chapter A: Selfsigned Certificates and a CA Created by Yourself
+
+### Exercises
 
 Now it's time to jump to the exercise you are interested in:
 
-   * [__Exercise 1__](exercises/1/):
+   * [__Exercise A.1__](exercises/A1/):
      Establish a connection between HTTPS server and client with a selfsigned certificate
-   * [__Exercise 2__](exercises/2/):
+   * [__Exercise A.2__](exercises/A2/):
      Establish a HTTPS connection with a selfsigned certificate - without any certificate warning
-   * [__Exercise 4__](exercises/4/):
-     The Client needs to authenticate by a Client Certificate: mTLS (with selfsigned certificates)
+   * [__Exercise A.3__](exercises/A3/):
+     A Certificate Authority (CA) - created by yourself
+   * [__Exercise A.4__](exercises/A4/):
+     The Client needs to authenticate by a Client Certificate: mTLS
+
+## Chapter B: Using Certificates of an Official CA
+
+### Exercises
+
+   * to be done

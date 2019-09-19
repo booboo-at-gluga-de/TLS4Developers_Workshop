@@ -1,4 +1,4 @@
-# Exercise 1: A Connection with a Selfsigned Certificate
+# Exercise A.1: A Connection with a Selfsigned Certificate
 
 ## Objective
 In this exercise you will setup a secure (HTTPS) virtual server within an Apache Webserver and connect to it. The connection will be secured by a selfsigned certificate you will create and sign yourself.
@@ -56,23 +56,23 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
      ```
 
    * Now let's setup a secure (HTTPS) virtual server within Apache:  
-     Copy `exercises/1/apache_conf.d/exercise1.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+     Copy `exercises/A1/apache_conf.d/exercise-A1.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
       * in our Vagrant setup this is
         ```Bash
-        ~# sudo cp /vagrant/exercises/1/apache_conf.d/exercise1.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise1.conf
+        ~# sudo cp /vagrant/exercises/A1/apache_conf.d/exercise-A1.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A1.conf
         ```
       * in other CentOS / RedHat Enterprise setups do something like
         ```Bash
-        ~# sudo cp exercises/1/apache_conf.d/exercise1.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise1.conf
+        ~# sudo cp exercises/A1/apache_conf.d/exercise-A1.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A1.conf
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo cp exercises/1/apache_conf.d/exercise1.conf /etc/apache2/sites-available
-        ~# sudo vim /etc/apache2/sites-available/exercise1.conf
+        ~# sudo cp exercises/A1/apache_conf.d/exercise-A1.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache2/sites-available/exercise-A1.conf
         ```
-     At `DocumentRoot` you give the full path of your `exercises/1/htdocs` directory  
+     At `DocumentRoot` you give the full path of your `exercises/A1/htdocs` directory  
      (make sure the runtime user of your Apache is allowed to read this directory)  
      `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the files you created above.
 
@@ -83,7 +83,7 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo a2ensite exercise1
+        ~# sudo a2ensite exercise-A1
         ~# sudo systemctl reload apache2
         ```
 
@@ -114,4 +114,4 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
      ```
      Ah! Oh! Still doesn't work. Name (CN) in the certificate doesn't match the name in the URL (localhost). That's the point where users tend to click buttons like "Continue anyway!" or "I accept the insecure way!" (or add parameters to the curl command telling the same). We - of course - **NEVER DO SUCH THINGS!!** We want trust! We fix problems instead of working around them.
 
-   * Please continue with [Exercise 2](../2/) to see how we manage to do this.
+   * Please continue with [Exercise A.2](../A2/) to see how we manage to do this.

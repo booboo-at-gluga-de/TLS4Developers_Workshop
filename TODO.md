@@ -6,3 +6,5 @@
       Rename existing exercises accordingly
 
     * Explain port schema
+
+    * index.html files: tell which VHost you reached

@@ -1,7 +1,7 @@
-# Exercise 2: A Connection with a Selfsigned Certificate - completely verified
+# Exercise A.2: A Connection with a Selfsigned Certificate - completely verified
 
 ## Objective
-You will do pretty much the same as in Exercise 1, but will make sure the CN in the certificate matches the domain name used in the URL ("localhost"). This way you make sure to get along without any certificate warning.
+You will do pretty much the same as in Exercise A.1, but will make sure the CN in the certificate matches the domain name used in the URL ("localhost"). This way you make sure to get along without any certificate warning.
 
 ## Steps
 
@@ -56,23 +56,23 @@ You will do pretty much the same as in Exercise 1, but will make sure the CN in 
      ```
 
    * Now let's setup a secure (HTTPS) virtual server within Apache:  
-     Copy `exercises/2/apache_conf.d/exercise2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+     Copy `exercises/A2/apache_conf.d/exercise-A2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
       * in our Vagrant setup this is
         ```Bash
-        ~# sudo cp /vagrant/exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise2.conf
+        ~# sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A2.conf
         ```
       * in other CentOS / RedHat Enterprise setups do something like
         ```Bash
-        ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise2.conf
+        ~# sudo cp exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A2.conf
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo cp exercises/2/apache_conf.d/exercise2.conf /etc/apache2/sites-available
-        ~# sudo vim /etc/apache2/sites-available/exercise2.conf
+        ~# sudo cp exercises/A2/apache_conf.d/exercise-A2.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache2/sites-available/exercise-A2.conf
         ```
-     At `DocumentRoot` you give the full path of your `exercises/2/htdocs` directory  
+     At `DocumentRoot` you give the full path of your `exercises/A2/htdocs` directory  
      (make sure the runtime user of your Apache is allowed to read this directory)  
      `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the files you created above.
 
@@ -83,7 +83,7 @@ You will do pretty much the same as in Exercise 1, but will make sure the CN in 
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo a2ensite exercise2
+        ~# sudo a2ensite exercise-A2
         ~# sudo systemctl reload apache2
         ```
 

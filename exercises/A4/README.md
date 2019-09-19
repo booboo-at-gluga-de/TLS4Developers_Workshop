@@ -1,4 +1,4 @@
-# Exercise 4: mTLS Connection (with a Selfsigned Certificate)
+# Exercise A.4: mTLS Connection
 
 ## Objective
 
@@ -9,12 +9,12 @@ Now you will add an additional level of trust: The client will need to provide (
 Conceptual there are two different sorts of Client Certificates:
    * Client Certificates authenticating a user personally (a human being)
    * Client Certificates authenticating a client machine (in a machine to machine communication)
-Technically both are absolutely the same (except you will fill the CN field in a diffent way). Which one is used depends on the usecase. In this example you will generate a Client Certificate for a person.
+Technically both are absolutely the same (except you will fill the CN field in a diffent way). Which one is used depends on the usecase. In this exercise you will generate a Client Certificate for a person.
 
 ## Prerequisites
 
-   * You need to complete [Exercise 2](../2/) before starting this one.  
-     Background is: You need two keypairs and two certificates for this exercise - one for the server, one for the client. The server certificate you will reuse from exercise 2.
+   * You need to complete [Exercise A.3](../A3/) before starting this one.  
+     Background is: You need two keypairs and two certificates for this exercise - one for the server, one for the client. The server certificate you will reuse from exercise A.3.
    * Usually the client and the server run on different machines. For this example it's absolutely ok to have both of them on one machine (your playground machine)
 
 ## Steps
@@ -73,25 +73,25 @@ Technically both are absolutely the same (except you will fill the CN field in a
      ```
 
    * Now let's setup a secure (HTTPS) virtual server having mTLS enabled:  
-     Copy `exercises/4/apache_conf.d/exercise4.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+     Copy `exercises/A4/apache_conf.d/exercise-A4.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
       * in our Vagrant setup this is
         ```Bash
-        ~# sudo cp /vagrant/exercises/4/apache_conf.d/exercise4.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise4.conf
+        ~# sudo cp /vagrant/exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A4.conf
         ```
       * in other CentOS / RedHat Enterprise setups do something like
         ```Bash
-        ~# sudo cp exercises/4/apache_conf.d/exercise4.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise4.conf
+        ~# sudo cp exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A4.conf
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo cp exercises/4/apache_conf.d/exercise4.conf /etc/apache2/sites-available
-        ~# sudo vim /etc/apache2/sites-available/exercise4.conf
+        ~# sudo cp exercises/A4/apache_conf.d/exercise-A4.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache2/sites-available/exercise-A4.conf
         ```
-     At `DocumentRoot` you give the full path of your `exercises/4/htdocs` directory  
+     At `DocumentRoot` you give the full path of your `exercises/A4/htdocs` directory  
      (make sure the runtime user of your Apache is allowed to read this directory)  
-     `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the `localhost.crt` and `localhost.key` file you created in exercise 2.
+     `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the `localhost.crt` and `localhost.key` file you created in exercise A.3.
 
    * Enable the config now and reload your Apache.
       * in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
@@ -100,7 +100,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo a2ensite exercise4
+        ~# sudo a2ensite exercise-A4
         ~# sudo systemctl reload apache2
         ```
 

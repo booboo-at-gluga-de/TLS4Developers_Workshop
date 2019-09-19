@@ -1,4 +1,4 @@
-# Exercise 3: A Certificate Authority (CA)
+# Exercise A.3: A Certificate Authority (CA)
 
 ## Objective
 
@@ -6,7 +6,7 @@ In the previous exercises you found out that selfsigned certificates are hard to
 
 So in the real world there are Certificate Authorities (CAs) approving and signing certificates of others. You only need to trust these CA certificates.
 
-In this exercise you will create your own CA certificate and sign your server's certificate with this. Besides this, the setup here is very similar to exercise 2. Well, to be honest, a CA certificate created by yourself does not help too much, because you still have to put this one into all truststores yourself. For demo purposes you will do it anyway.
+In this exercise you will create your own CA certificate and sign your server's certificate with this. Besides this, the setup here is very similar to exercise A.2. Well, to be honest, a CA certificate created by yourself does not help too much, because you still have to put this one into all truststores yourself. For demo purposes you will do it anyway.
 
 One advantage compared to selfsigned certificates stays: You need to distribute only N entries in truststores (which is already way better than M * N).
 
