@@ -15,7 +15,8 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
      e is 65537 (0x010001)
      ```
 
-   * Create a new certificate signing request (CSR) from the private key you just generated:
+   * Create a new certificate signing request (CSR) from the private key you just generated:  
+     __ATTENTION:__ Make sure in the field "Common Name" you enter `localhost`
      ```Bash
      ~# openssl req -new -key localhost.key -out localhost.csr
      You are about to be asked to enter information that will be incorporated
@@ -41,7 +42,7 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
 
    * Create a selfsigned certificate from the CSR above.
      ```Bash
-     ~# openssl x509 -req -days 1000 -in localhost.csr -signkey localhost.key -out localhost.crt
+     ~# openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
      Signature ok
      subject=C = DE, ST = Franconia, L = Nuernberg, O = Raffzahn GmbH, CN = localhost, emailAddress = certifcates@example.com
      Getting Private key

@@ -1,10 +1,4 @@
 # ToDo's within this Project
 
-    * Create two sections of exercises:  
-      A -> Exercises with selfsigned certificates  
-      B -> Exercises with certificates from real world  
-      Rename existing exercises accordingly
-
-    * Explain port schema
-
-    * index.html files: tell which VHost you reached
+   * Explain port schema
+   * index.html files: tell which VHost you reached

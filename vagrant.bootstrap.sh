@@ -13,6 +13,8 @@ echo
 # needed packages
 yum -y install httpd mod_ssl vim-enhanced net-tools
 # switch SELinux to permissive mode (as this is a playground system)
+sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/sysconfig/selinux
+sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/selinux/config
 setenforce 0
 # enable and start Apache Webserver
 systemctl enable httpd

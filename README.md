@@ -7,7 +7,7 @@ You might want to use them to practice at home.
 
 You need a machine running Linux (or maybe MacOS) as your playground
 
-   * This could be your local workstation or needs to be reachable by network from your workstation.
+   * This could be your local workstation or some machine reachable (by network) from your workstation.
    * The playground machine needs internet access.
    * Single exercises maybe depend on additional prerequisites. They are named there.
    * The exercises probably will work on MacOS too, but maybe need to be adapted. They have been created and tested on Linux - so if you are looking for the easy way: Go for Linux.
@@ -36,7 +36,7 @@ You need to care for these additional prerequisites yourself:
 Now it's time to jump to the exercise you are interested in:
 
    * [__Exercise A.1__](exercises/A1/):
-     Establish a connection between HTTPS server and client with a selfsigned certificate
+     Establish a connection between a client and the HTTPS server, secured by a selfsigned certificate
    * [__Exercise A.2__](exercises/A2/):
      Establish a HTTPS connection with a selfsigned certificate - without any certificate warning
    * [__Exercise A.3__](exercises/A3/):

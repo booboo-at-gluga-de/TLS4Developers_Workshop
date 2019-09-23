@@ -41,7 +41,7 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
 
    * Create a selfsigned certificate from the CSR above.
      ```Bash
-     ~# openssl x509 -req -days 1000 -in example.com.csr -signkey example.com.key -out example.com.crt
+     ~# openssl x509 -req -days 365 -in example.com.csr -signkey example.com.key -out example.com.crt
      Signature ok
      subject=C = DE, ST = Franconia, L = Nuernberg, O = Raffzahn GmbH, CN = example.com, emailAddress = certifcates@example.com
      Getting Private key
@@ -50,9 +50,9 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
      ```Bash
      ~# ls -l
      total 12
-     -rw-r--r-- 1 booboo booboo 1302 Sep 13 15:16 example.com.crt
-     -rw-r--r-- 1 booboo booboo 1054 Sep 13 15:15 example.com.csr
-     -rw------- 1 booboo booboo 1675 Sep 13 15:12 example.com.key
+     -rw-r--r-- 1 vagrant vagrant 1302 Sep 13 15:16 example.com.crt
+     -rw-r--r-- 1 vagrant vagrant 1054 Sep 13 15:15 example.com.csr
+     -rw------- 1 vagrant vagrant 1675 Sep 13 15:12 example.com.key
      ```
 
    * Now let's setup a secure (HTTPS) virtual server within Apache:  
@@ -99,19 +99,13 @@ In this exercise you will setup a secure (HTTPS) virtual server within an Apache
      ~# curl https://localhost:11443/index.html
      curl: (60) Peer certificate cannot be authenticated with known CA certificates
      ```
-     Or - depending on the versions in use - the message might also be:
-     ```Bash
-     curl: (60) SSL certificate problem: self signed certificate
-     ```
+     Or - depending on the versions in use - the message for curl error code 60 might be phrased differently.  
      That's what we expected. We not yet did put our selfsigned certificate into the truststore of our client (curl). So it is not trusted. Let's tell curl explicitly which certificate we trust:
      ```Bash
      ~# curl --cacert example.com.crt https://localhost:11443/index.html
      curl: (51) SSL: certificate subject name 'example.com' does not match target host name 'localhost'
      ```
-     Or maybe the wording of the message might be:
-     ```Bash
-     curl: (51) Unable to communicate securely with peer: requested domain name does not match the server's certificate.
-     ```
-     Ah! Oh! Still doesn't work. Name (CN) in the certificate doesn't match the name in the URL (localhost). That's the point where users tend to click buttons like "Continue anyway!" or "I accept the insecure way!" (or add parameters to the curl command telling the same). We - of course - **NEVER DO SUCH THINGS!!** We want trust! We fix problems instead of working around them.
+     Or maybe again the wording of the message 51 might be slightly different.  
+     Ah! Oh! Still doesn't work. The name (CN) in the certificate doesn't match the name in the URL (localhost). That's the point where users tend to click buttons like "Continue anyway!" or "I accept the insecure way!" (or add parameters to the curl command telling the same). We - of course - **NEVER DO SUCH THINGS!!** We want trust! We fix problems instead of working around them.
 
    * Please continue with [Exercise A.2](../A2/) to see how we manage to do this.

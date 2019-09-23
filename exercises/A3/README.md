@@ -2,7 +2,7 @@
 
 ## Objective
 
-In the previous exercises you found out that selfsigned certificates are hard to use. The certificate of every server needs to be in the truststore of every client. If you have M servers and N clients you would have to distribute M * N entries in truststores. And be aware of certificates have a limited lifetime - you will have to renew all of them from time to time.
+In the previous exercises you found out that selfsigned certificates are nasty to use when it comes to day-to-day business. The certificate of every server needs to be in the truststore of every client. If you have M servers and N clients you would have to distribute M * N entries in truststores. And be aware of certificates have a limited lifetime - you will have to renew all of them from time to time.
 
 So in the real world there are Certificate Authorities (CAs) approving and signing certificates of others. You only need to trust these CA certificates.
 
@@ -18,7 +18,7 @@ In this exercise some commands reference files by complete path. If you use our 
    * Prepare some configs for your own Certificate Authority (CA):  
      (within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`)
      ```Bash
-     ~# /vagrant/exercises/3/prepare_CA.sh
+     ~# /vagrant/exercises/A3/prepare_CA.sh
 
      Will create a new directory "ca" here (in /home/vagrant).
      Do you want to continue? y
@@ -49,6 +49,7 @@ In this exercise some commands reference files by complete path. If you use our 
      Please note:
       - Generation of the CSR and generation of the certificate is done in one command here. (CSR is not written to a file.)
       - We added some default values into the config file for your convenience. Just press Enter to accept the defaults.
+      - Please make sure you fill the __Common Name__ field yourself!
      ```Bash
      ~# openssl req -config ca/ca.cnf -new -x509 -days 3650 -key ca/private/cacert.key -out ca/cacert.pem
      Enter pass phrase for ca/private/cacert.key:
@@ -63,9 +64,10 @@ In this exercise some commands reference files by complete path. If you use our 
      State or Province Name (full name) [Franconia]:
      Locality Name (eg, city) [Nuernberg]:
      Organization Name (eg, company) [Raffzahn GmbH]:
-     Organizational Unit Name (eg, section) [IT]:
-     Common Name (e.g. server FQDN or YOUR name) [Raffzahn CA]:
-     Email Address [raffzahn.ca@example.com]:
+     Organizational Unit Name (eg, section) []:
+     Common Name (e.g. server FQDN or YOUR name) []:Raffzahn CA
+     Email Address [certificates@example.com]:
+
      ```
 
    * You can view the certifcate you just created.  
@@ -74,4 +76,143 @@ In this exercise some commands reference files by complete path. If you use our 
      ~# openssl x509 -in ca/cacert.pem -noout -text
      ```
 
-   * to be continued
+   * Next step is to create a certificate for the server. Start with a private key file:
+     ```Bash
+     ~# openssl genrsa -out server.key 2048
+     Generating RSA private key, 2048 bit long modulus
+     ....................+++
+     ................+++
+     e is 65537 (0x10001)
+     ```
+
+   * Create a CSR now.  
+     Please note:
+      - using `-config openssl.cnf` is for your convenience only (safe some typing)
+      - make sure for `Common Name` you give `localhost`
+     ```Bash
+     ~# openssl req -config openssl.cnf -new -key server.key -out server.csr
+     You are about to be asked to enter information that will be incorporated
+     into your certificate request.
+     What you are about to enter is what is called a Distinguished Name or a DN.
+     There are quite a few fields but you can leave some blank
+     For some fields there will be a default value,
+     If you enter '.', the field will be left blank.
+     -----
+     Country Name (2 letter code) [DE]:
+     State or Province Name (full name) [Franconia]:
+     Locality Name (eg, city) [Nuernberg]:
+     Organization Name (eg, company) [Raffzahn GmbH]:
+     Organizational Unit Name (eg, section) []:
+     Common Name (e.g. server FQDN or YOUR name) []:localhost
+     Email Address [certificates@example.com]:
+
+     Please enter the following 'extra' attributes
+     to be sent with your certificate request
+     A challenge password []:
+     An optional company name []:
+     ```
+
+   * Now you will use your own CA (created above) to sign this CSR:
+     ```Bash
+     ~# openssl ca -config ca/ca.cnf -extensions server_cert -days 365 -in server.csr -out server.crt
+     Using configuration from ca/ca.cnf
+     Enter pass phrase for /home/vagrant/ca/private/cacert.key:
+     Check that the request matches the signature
+     Signature ok
+     Certificate Details:
+             Serial Number: 1 (0x1)
+             Validity
+                 Not Before: Sep 23 11:12:32 2019 GMT
+                 Not After : Sep 22 11:12:32 2020 GMT
+             Subject:
+                 countryName               = DE
+                 stateOrProvinceName       = Franconia
+                 organizationName          = Raffzahn GmbH
+                 commonName                = localhost
+                 emailAddress              = certificates@example.com
+             X509v3 extensions:
+                 X509v3 Basic Constraints: 
+                     CA:FALSE
+                 Netscape Cert Type: 
+                     SSL Server
+                 Netscape Comment: 
+                     OpenSSL Generated Server Certificate
+                 X509v3 Subject Key Identifier: 
+                     83:B6:62:38:7F:43:11:79:19:D1:AC:DA:9C:57:48:7C:4E:F1:6A:D2
+                 X509v3 Authority Key Identifier: 
+                     keyid:D6:3B:17:96:65:CB:B2:36:43:5D:EE:29:6E:26:7A:D7:6C:C8:B7:74
+                     DirName:/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn CA/emailAddress=certificates@example.com
+                     serial:F8:D7:78:1D:20:89:FF:61
+
+                 X509v3 Key Usage: critical
+                     Digital Signature, Key Encipherment
+                 X509v3 Extended Key Usage: 
+                     TLS Web Server Authentication
+     Certificate is to be certified until Sep 22 11:12:32 2020 GMT (365 days)
+     Sign the certificate? [y/n]:y
+
+
+     1 out of 1 certificate requests certified, commit? [y/n]y
+     Write out database with 1 new entries
+     Data Base Updated
+     ```
+
+   * You have 3 new files now:
+     ```Bash
+     ~# ls -l server*
+     -rw-rw-r--. 1 vagrant vagrant 6606 Sep 23 11:12 server.crt
+     -rw-rw-r--. 1 vagrant vagrant 1054 Sep 23 11:05 server.csr
+     -rw-rw-r--. 1 vagrant vagrant 1679 Sep 23 11:03 server.key
+     ```
+
+   * Of course you can view the certificate now if you like by using the openssl command.  
+     (If you do not remember the syntax: Scroll up again!)
+
+   * Now let's again setup a secure (HTTPS) virtual server within Apache:  
+     Copy `exercises/A3/apache_conf.d/exercise-A3.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+      * in our Vagrant setup this is
+        ```Bash
+        ~# sudo cp /vagrant/exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A3.conf
+        ```
+      * in other CentOS / RedHat Enterprise setups do something like
+        ```Bash
+        ~# sudo cp exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-A3.conf
+        ```
+      * and in Debian / Ubuntu / Mint you do something like
+        ```Bash
+        ~# sudo cp exercises/A3/apache_conf.d/exercise-A3.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache3/sites-available/exercise-A3.conf
+        ```
+     At `DocumentRoot` you give the full path of your `exercises/A3/htdocs` directory  
+     (make sure the runtime user of your Apache is allowed to read this directory)  
+     `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of `server.crt` and `server.key` you created above.
+
+   * Enable the config now and reload your Apache.
+      * in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
+        ```Bash
+        ~# sudo systemctl restart httpd
+        ```
+      * and in Debian / Ubuntu / Mint you do something like
+        ```Bash
+        ~# sudo a2ensite exercise-A3
+        ~# sudo systemctl reload apache2
+        ```
+
+   * Make sure it has an TCP Listener on Port 13443 now:
+     ```Bash
+     ~# sudo netstat -pltn
+             # or alternatively
+     ~# sudo lsof | grep LISTEN
+     ```
+
+   * Now it's time for the next test (explicitly trusting our CA):
+     ```Bash
+     ~# curl --cacert ca/ca.crt https://localhost:13443/index.html
+     Hello World
+     ```
+
+## Conclusion
+
+   * tbd

@@ -31,6 +31,8 @@ echo -ne "01" >$WORKING_DIR/ca/crlnumber || exit 1
 touch $WORKING_DIR/ca/index.txt || exit 1
 cp $SCRIPT_DIR/openssl/ca.cnf $WORKING_DIR/ca/ || exit 1
 sed -i -e "s#/home/vagrant#${WORKING_DIR}#" $WORKING_DIR/ca/ca.cnf || exit 1
+cp $SCRIPT_DIR/openssl/openssl.cnf $WORKING_DIR/ || exit 1
+sed -i -e "s#/home/vagrant#${WORKING_DIR}#" $WORKING_DIR/openssl.cnf || exit 1
 
 echo
 echo OK, created directory \"ca\" for you with following content:
