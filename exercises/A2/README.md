@@ -103,6 +103,15 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
      ```
      __Yeah! It works now without certificate warnings!__
 
+   * Optional steps:  
+      - In some usecases you need your certificate in a keystore (in PKCS12 format). To place the localhost certificate plus it's private key in a (newly created) PKCS12 keystore:  
+        `openssl pkcs12 -export -in localhost.crt -inkey localhost.key -out localhost.keystore.pkcs12`  
+        (make sure you remember the keystore password you are setting here)
+      - To display the content of the keystore:  
+        `openssl pkcs12 -in localhost.keystore.pkcs12 -nodes`
+      - If the HTTPS client is e. g. written in Java, you will need to provide it a truststore. A truststore contains every certificate you trust, usually CA certificates only (and no private keys). In our example with the selfsigned certificate you need the localhost certificate itself in the truststore in PKCS12 format. Create it by:  
+        `openssl pkcs12 -export -in localhost.crt -nokeys -out localhost.truststore.pkcs12`
+
 
 ## Conclusion
 
