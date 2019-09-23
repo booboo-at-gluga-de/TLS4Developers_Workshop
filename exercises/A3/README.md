@@ -34,7 +34,7 @@ In this exercise some commands reference files by complete path. If you use our 
      ```
 
    * Create a private key for your CA certificate.  
-     Up to now you generated keys without password protection (as it is an demo only). The private key of the CA certificate will be password protected - that's what the parameter `-aes256` does. Make sure you remember the password you are setting here. You will need it within this exercise and the following:  
+     Up to now you generated keys without password protection (as it is a demo only). The private key of the CA certificate will be password protected - that's what the parameter `-aes256` does. Make sure you remember the password you are setting here. You will need it within this exercise and the following:  
      ```Bash
      ~# openssl genrsa -aes256 -out ca/private/cacert.key 4096
      Generating RSA private key, 4096 bit long modulus
@@ -48,7 +48,7 @@ In this exercise some commands reference files by complete path. If you use our 
    * Create your CA Certificate now.  
      Please note:
       - Generation of the CSR and generation of the certificate is done in one command here. (CSR is not written to a file.)
-      - We added some default values into the config file for your convenience. Just press Enter to accept the defaults.
+      - There are some default values in the config file (`ca/ca.cnf`) for your convenience. Just press Enter to accept the defaults.
       - Please make sure you fill the __Common Name__ field yourself!
      ```Bash
      ~# openssl req -config ca/ca.cnf -new -x509 -days 3650 -key ca/private/cacert.key -out ca/cacert.pem
@@ -165,7 +165,7 @@ In this exercise some commands reference files by complete path. If you use our 
      -rw-rw-r--. 1 vagrant vagrant 1679 Sep 23 11:03 server.key
      ```
 
-   * Of course you can view the certificate now if you like by using the openssl command.  
+   * Of course you can view the certificate now - if you like - by using the openssl command.  
      (If you do not remember the syntax: Scroll up again!)
 
    * Now let's again setup a secure (HTTPS) virtual server within Apache:  
@@ -209,10 +209,13 @@ In this exercise some commands reference files by complete path. If you use our 
 
    * Now it's time for the next test (explicitly trusting our CA):
      ```Bash
-     ~# curl --cacert ca/ca.crt https://localhost:13443/index.html
+     ~# curl --cacert ca/cacert.pem https://localhost:13443/index.html
      Hello World
      ```
 
 ## Conclusion
 
-   * tbd
+   * You are working with two different Certificates now: The server certificate and the CA certificate.
+   * The server certificate is needed on the server only - no need to put it onto the truststore of the client.
+   * The client has the CA certificate in it's truststore.
+   * If you need to change the server certificate (at the end of it's lifetime) it's a task on the server only: The client does not need to change anything.
