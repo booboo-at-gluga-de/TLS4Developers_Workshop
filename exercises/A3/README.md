@@ -211,6 +211,7 @@ In this exercise some commands reference files by complete path. If you use our 
      ```Bash
      ~# curl --cacert ca/cacert.pem https://localhost:13443/index.html
      Hello World
+     (you connected to webspace of exercise A.3)
      ```
 
 ## Conclusion

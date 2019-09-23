@@ -99,6 +99,7 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
      ```Bash
      ~# curl --cacert localhost.crt https://localhost:12443/index.html
      Hello World
+     (you connected to webspace of exercise A.2)
      ```
      __Yeah! It works now without certificate warnings!__
 

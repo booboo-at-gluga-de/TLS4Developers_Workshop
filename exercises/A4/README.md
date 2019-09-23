@@ -116,6 +116,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
      ```Bash
      ~# curl --cacert localhost.crt --cert client.crt --key client.key https://localhost:14443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
+     (you connected to webspace of exercise A.4)
      ```
 
    * Negative test:  
