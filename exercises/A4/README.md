@@ -141,7 +141,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
    * Let's test!  
      Acting as a client now you trust (`--cacert`) the CA. And you need to authenticate with your own client certificate (and for authentication you need the private key of this keypair as a "proof of possession").
      ```Bash
-     ~# curl --cacert ca/cacert.pem --cert client.crt --key client.key https://localhost:14443/index.html
+     ~# curl --cacert ca/cacert.pem --cert ./client.crt --key client.key https://localhost:14443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
      (you connected to webspace of exercise A.4)
      ```
@@ -153,6 +153,11 @@ Technically both are absolutely the same (except you will fill the CN field in a
      curl: (35) NSS: client certificate not found (nickname not specified)
      ```
 
+   * Optional steps:  
+      - If you need your client certificate and private key in a PKCS12 keystore (in PKCS12 format):  
+        `openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12`
+
 ## Conclusion
 
-   * ...
+   * In this Exercise the client certificate and the server certificate are signed by the same CA. In real world scenarios it can be done this way, but it does not need to.
+   * Client certificate can be signed by a different CA than the server certificate. In this case the client needs to trust the CA which signed the server certificate. And the server needs to trust the CA which signed the client certificate.

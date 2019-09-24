@@ -216,12 +216,12 @@ In this exercise some commands reference files by complete path. If you use our 
 
    * Optional steps:  
       - In some usecases you need your certificate in a keystore (in PKCS12 format). To place the server certificate plus it's private key in a (newly created) PKCS12 keystore:  
-        `openssl pkcs12 -export -in server.crt -inkey server.key -out server.keystore.pkcs12`  
+        `openssl pkcs12 -export -in server.crt -inkey server.key -out server.keystore.p12`  
         (make sure you remember the keystore password you are setting here)
       - To display the content of the keystore:  
-        `openssl pkcs12 -in server.keystore.pkcs12 -nodes`
+        `openssl pkcs12 -in server.keystore.p12 -nodes`
       - A truststore in PKCS12 format (containing the CA certificate only, no private key) can be created pretty much the same way:  
-        `openssl pkcs12 -export -in ca/cacert.pem -nokeys -out ca/truststore.ca.pkcs12`
+        `openssl pkcs12 -export -in ca/cacert.pem -nokeys -out ca/truststore.ca.p12`
 
 
 ## Conclusion
