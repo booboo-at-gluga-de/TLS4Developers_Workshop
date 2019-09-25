@@ -69,12 +69,12 @@ And you will learn about intermediate certificates, also called chain certificat
 In chapter B you will not have such a standardized environment than in chapter A. Because this is a more real-world-scenario you will use your individual domain name, certificate, ...  
 That's why you will need to adapt the examples given.
 
-| Where ever you see...                                      | Replace it by...                                               |
-|------------------------------------------------------------|----------------------------------------------------------------|
-| `exercise.jumpingcrab.com`                                 | The DNS name of your playgroud machine.                        |
-| /etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem    | The full path of your certificate in PEM format.               |
-| /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem   | The full path of your chain certificate in PEM format.         |
-| /etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem | The full path of your certificate's private key in PEM format. |
+| Where ever you see...                                        | Replace it by...                                               |
+|--------------------------------------------------------------|----------------------------------------------------------------|
+| `exercise.jumpingcrab.com`                                   | The DNS name of your playgroud machine.                        |
+| `/etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem`    | The full path of your certificate in PEM format.               |
+| `/etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem`   | The full path of your chain certificate in PEM format.         |
+| `/etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem` | The full path of your certificate's private key in PEM format. |
 
 ### Exercises
 

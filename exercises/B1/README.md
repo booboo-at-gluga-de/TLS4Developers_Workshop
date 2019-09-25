@@ -23,52 +23,47 @@ So please: __NEVER NEVER NEVER__ put some intermediate certificate into some tru
 
    * Make sure you have all the additional prerequisites for chapter B in place. You find them in section "Additional Prerequisites" of the [global README](../../).
 
-   * Now let's setup a secure (HTTPS) virtual server within Apache:  
-     Copy `exercises/A2/apache_conf.d/exercise-A2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
-      * in our Vagrant setup this is
+   * Setup a secure (HTTPS) virtual server within Apache using your certificate from an official CA (and the intermediate certificate):  
+     Copy `exercises/B1/apache_conf.d/exercise-B1.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths on your system - see comments in the file)
+      * in CentOS / RedHat Enterprise setups do something like
         ```Bash
-        ~# sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise-A2.conf
-        ```
-      * in other CentOS / RedHat Enterprise setups do something like
-        ```Bash
-        ~# sudo cp exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/
-        ~# sudo vim /etc/httpd/conf.d/exercise-A2.conf
+        ~# sudo cp exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/
+        ~# sudo vim /etc/httpd/conf.d/exercise-B1.conf
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo cp exercises/A2/apache_conf.d/exercise-A2.conf /etc/apache2/sites-available
-        ~# sudo vim /etc/apache2/sites-available/exercise-A2.conf
+        ~# sudo cp exercises/B1/apache_conf.d/exercise-B1.conf /etc/apache2/sites-available
+        ~# sudo vim /etc/apache2/sites-available/exercise-B1.conf
         ```
-     At `DocumentRoot` you give the full path of your `exercises/A2/htdocs` directory  
-     (make sure the runtime user of your Apache is allowed to read this directory)  
-     `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the files you created above.
 
    * Enable the config now and reload your Apache.
-      * in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
+      * in CentOS / RedHat Enterprise setups this is
         ```Bash
         ~# sudo systemctl restart httpd
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo a2ensite exercise-A2
+        ~# sudo a2ensite exercise-B1
         ~# sudo systemctl reload apache2
         ```
 
-   * Make sure it has an TCP Listener on Port 12443 now:
+   * Make sure it has an TCP Listener on Port 21443 now:
      ```Bash
      ~# sudo netstat -pltn
              # or alternatively
      ~# sudo lsof | grep LISTEN
      ```
 
-   * Now it's time for the next test (explicitly trusting our selfsigned certificate):
+   * First test on the playground machine itself:
      ```Bash
-     ~# curl --cacert localhost.crt https://localhost:12443/index.html
-     Hello World
-     (you connected to webspace of exercise A.2)
+     ~# curl https://exercise.jumpingcrab.com:21443/index.html
+     Hello Real World
+     (you connected to webspace of exercise B.1)
      ```
-     __Yeah! It works now without certificate warnings!__
+
+   * Next test: Use the browser on your workstation to call the URL https://exercise.jumpingcrab.com:21443/index.html
+
+tbd: Screenshots here
 
    * Optional steps:  
       - In some usecases you need your certificate in a keystore (in PKCS12 format). To place the localhost certificate plus it's private key in a (newly created) PKCS12 keystore:  
@@ -82,6 +77,4 @@ So please: __NEVER NEVER NEVER__ put some intermediate certificate into some tru
 
 ## Conclusion
 
-   * It works now completly without any certificate warning. Exactly the same way it would work if we used a FQDN in the URL as well as in the CN of the certificate.
-   * __Learning:__ Selfsigned certificates are not less secure than certificates signed by an official CA. Encryption is fully in place.
-   * __Drawback:__ It's not practical anyway! If you wanted to deal with selfsigned certificates in the real world, you would need to make sure the certificate of your server is included in the truststore of every client connecting to it.
+   * tbd
