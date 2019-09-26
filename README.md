@@ -47,7 +47,7 @@ Now it's time to jump to the exercise you are interested in:
 ## Chapter B: Using Certificates of an Official CA
 
 You will do similar exercises here as in chapter A, but with certifcates from an official CA. Differnce is: Browsers and other HTTPS clients have these CA certificates in their truststore by default: No need to trust them explicitly.  
-And you will learn about intermediate certificates, also called chain certificates.
+Additionally you will learn about intermediate certificates, also called chain certificates.
 
 ### Additional Prerequisites
 
@@ -60,8 +60,8 @@ And you will learn about intermediate certificates, also called chain certificat
       - If you have an own domain you can add an AAAA, A or CNAME record pointing to your playground machine.
       - Alternatively some providers offer DNS records for free, e. g. https://freedns.afraid.org/
    * A certificate valid for this domain name is needed and needs to be issued by an official CA.
-     (`exercise.jumpingcrab.com` needs to be the CN of the certificate or in one of the SAN fields.)
-      - If you are using a test machine in a corporate network it maybe will already have a valid certificate issued by your corporate CA. (Make sure the CA certificate is distributed in the truststore of all used clients.)
+     (The DNS name above needs to be the CN of the certificate or in one of the SAN fields.)
+      - If you are using a test machine in a corporate network it maybe will already have a valid certificate issued by your corporate CA. (In this case: Make sure the CA certificate is distributed in the truststore of all used clients.)
       - Alternatively get a cerfificate form your preferred CA. At https://letsencrypt.org/ you can get one for free.
 
 ### Hints
