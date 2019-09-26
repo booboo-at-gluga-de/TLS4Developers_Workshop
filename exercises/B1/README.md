@@ -72,7 +72,9 @@ So please: __NEVER NEVER NEVER__ put some intermediate certificate into some tru
 
    * Optional steps:  
       - If you need a keystore (in PKCS12 format) please make sure you also add the intermediate cerificate. To place the certificate, it's private key and the intermediate certificate in a (newly created) PKCS12 keystore:  
-        `openssl pkcs12 -export -in /etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem -inkey /etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem -certfile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem -out exercise.jumpingcrab.com.keystore.p12`  
+        ```Bash
+        openssl pkcs12 -export -in /etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem -inkey /etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem -certfile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem -out exercise.jumpingcrab.com.keystore.p12
+        ```
         (make sure you remember the keystore password you are setting here)
 
 ## Conclusion
