@@ -8,7 +8,7 @@ The root certificates of the official Certificate Authorities (CAs) are (by defa
 
 On the other hand CAs need to sign lots of certificates every day - which would be really hard to do with an offline machine (containing the CA certificate). So one level of indirection needs to be added to make it work in day-to-day business:
 
-The (offline) Root CA signs the certificate of (online) signing CA. And the signing CA signs certificates of the customers (e. g. server certificates, client certificates, ...). If the certificate of the signing CA was compromised, it can easily be revoked by the Root CA and a new signing CA certificate can be issued: No need to touch anything on the billions of clients.
+The (offline) Root CA signs the certificate of an (online) signing CA. And the signing CA signs certificates of the customers (e. g. server certificates, client certificates, ...). If the certificate of the signing CA was compromised, it can easily be revoked by the Root CA and a new signing CA certificate can be issued: No need to touch anything on the billions of clients.
 
 __Next problem:__ Nobody would trust the server or client certificates. They are issued by the signing CA and their certificate is not in the truststore.
 
@@ -16,8 +16,8 @@ __Solution:__ Whenever I send over my certificate to my communication partner (d
 
 When including the certificate of the signing CA in the TLS handshake, we call it an intermediate certificate or chain certificate because it completes the chain of trust.
 
-__ATTENTION:__ Make sure you __NEVER NEVER NEVER__ put some intermediate certificate into some truststore! This would only help if you messed up your TLS handshake. Of course it would work in the first place. But you will be in trouble later if the intermediate will be revoked or needs to be renewed (because it expires). All these well proven concepts will not work any longer.  
-So please: __NEVER NEVER NEVER__ put some intermediate certificate into some truststore! Go ahead: Fix your config instead!!
+__ATTENTION:__ Make sure you __NEVER NEVER NEVER__ put some intermediate certificate into some truststore! This would only help if you messed up your TLS configuration. Of course it would work in the first place. But you will be in trouble later if the intermediate will be revoked or needs to be renewed (because it expires). All these well proven concepts will not work any longer.  
+So please: __NEVER NEVER NEVER__ put some intermediate certificate into some truststore! Go ahead: Fix your messed up config instead!!
 
 ## Steps
 
@@ -60,21 +60,21 @@ So please: __NEVER NEVER NEVER__ put some intermediate certificate into some tru
      Hello Real World
      (you connected to webspace of exercise B.1)
      ```
+     Please note: No need to trust someone explicitly! Trust is implicitly now (because the certificate of the Root CA you did choose is in the default truststore).
 
-   * Next test: Use the browser on your workstation to call the URL https://exercise.jumpingcrab.com:21443/index.html
+   * Next test: Use the browser on your workstation to call the URL https://exercise.jumpingcrab.com:21443/index.html  
+     Should look like this:  
+     ![Browser Screenshot](images/website.png "You get a green lock symbol")  
+     You can also click on the lock and examine the certificate details:  
+     ![Certificate details](images/certificate_details.png "Certificate details")
 
-tbd: Screenshots here
+   * If port 443 on your playground machine is not in use by some other service you could also change the port in `/etc/httpd/conf.d/exercise-B1.conf` or `/etc/apache2/sites-available/exercise-B1.conf` to `443`. In this case you do not need to give a port in the URL.
 
    * Optional steps:  
-      - In some usecases you need your certificate in a keystore (in PKCS12 format). To place the localhost certificate plus it's private key in a (newly created) PKCS12 keystore:  
-        `openssl pkcs12 -export -in localhost.crt -inkey localhost.key -out localhost.keystore.p12`  
+      - If you need a keystore (in PKCS12 format) please make sure you also add the intermediate cerificate. To place the certificate, it's private key and the intermediate certificate in a (newly created) PKCS12 keystore:  
+        `openssl pkcs12 -export -in /etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem -inkey /etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem -certfile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem -out exercise.jumpingcrab.com.keystore.p12`  
         (make sure you remember the keystore password you are setting here)
-      - To display the content of the keystore:  
-        `openssl pkcs12 -in localhost.keystore.p12 -nodes`
-      - If the HTTPS client is e. g. written in Java, you will need to provide it a truststore. A truststore contains every certificate you trust, usually CA certificates only (and no private keys). In our example with the selfsigned certificate you need the localhost certificate itself in the truststore in PKCS12 format. Create it by:  
-        `openssl pkcs12 -export -in localhost.crt -nokeys -out localhost.truststore.p12`
-
 
 ## Conclusion
 
-   * tbd
+   * You created a setup that can be used in the real world (at least in a similar way). Congratulations!
