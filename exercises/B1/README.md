@@ -21,7 +21,7 @@ So please: __NEVER NEVER NEVER__ put some intermediate certificate into some tru
 
 ## Steps
 
-   * Make sure you have all the additional prerequisites for chapter B in place. You find them in section "Additional Prerequisites" of the [global README](../../).
+   * Make sure you have all the additional prerequisites for chapter B in place. You find them in section "Additional Prerequisites" of the [global README](../../../../).
 
    * Setup a secure (HTTPS) virtual server within Apache using your certificate from an official CA (and the intermediate certificate):  
      Copy `exercises/B1/apache_conf.d/exercise-B1.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths on your system - see comments in the file)
