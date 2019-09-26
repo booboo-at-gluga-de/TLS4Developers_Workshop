@@ -13,13 +13,13 @@ You need a machine running Linux (or maybe MacOS) as your playground
    * The exercises probably will work on MacOS too, but maybe need to be adapted. They have been created and tested on Linux - so if you are looking for the easy way: Go for Linux.
    * You might want to use __Vagrant__ to set up a playground machine. For your convenience it cares for most of the prerequisites.
 
-### With Vagrant
+### Prerequisites using Vagrant
 
    * cd to the directory where you cloned this Git repository. (*Vagrantfile* provided here needs to be in your current working directory)
    * `vagrant up`
    * `vagrant ssh`
 
-### Without Vagrant
+### Prerequisites without using Vagrant
 
 You need to care for these additional prerequisites yourself:
 
@@ -28,6 +28,20 @@ You need to care for these additional prerequisites yourself:
    * OpenSSL needs to be installed in a recent version.
    * A commandline HTTP client needs to be installed on your playground machine, curl is preferred.
    * Clone this Git repository on your playground machine.
+
+## Hints: Working with the exercises
+
+   * Every exercise uses a different port (to avoid port conflicts: You might want to have more than one exercise online at once.)  
+     So be careful when using commands from your history if they are form an other exercise. Think of changing the port.
+   * Port numbers of chapter A start with 1, chapter B with 2.  
+     Second digit is the number of the exercise. So:  
+      - Exercise A.1 uses port 11443
+      - Exercise A.2 uses port 12443
+      - ...
+      - Exercise B.1 uses port 21443
+      - ...
+   * We added port forwardings for all of these ports in the Vagrantfile.  
+     So if you want to do some tests with client software on your workstation: Use the same ports there. (By default they will be bound to the localhost interface.)
 
 ## Chapter A: Selfsigned Certificates and a CA Created by Yourself
 
