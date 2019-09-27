@@ -150,6 +150,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
      ```
 
      * Display the content of a keystore in PKCS12 format:  
+       (You will need the password you did set when creating the keystore.)  
      ```Bash
      ~# openssl pkcs12 -in server.keystore.p12 -nodes
      Enter Import Password:
@@ -236,7 +237,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
    * Connect to some TLS enabled service (HTTPS, SMTPS, IMAPS, ...) and see what happens during the TLS handshake.  
       - This is very useful for debugging TLS connection issues.
       - It can also be used to retrieve the certificate of a server you do not have Shell or filesystem access to.
-      - If you are interested in the TLS handshake only (and do not want to interact with the server application itself on layer 7) you can press `Ctrl-C` as soon as the handshake is complete and you see the final line with the 3 dashes `---`
+      - If you are interested in the TLS handshake only (and do not want to interact with the server application itself on layer 7) you can press `Ctrl-C` as soon as the handshake is complete and you see the final line with the 3 dashes
      ```Bash
      ~# openssl s_client -connect localhost:13443
      CONNECTED(00000003)
@@ -333,7 +334,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
      ```
      You see it complains about being unable to verify the first certificate. This is because the CA certificate of your own CA is not in the default truststore. (The commandline gives no dedicated truststore.)
 
-   * If you do the same afterwards - as soon as you completed exercise B.1 - against this server, you see the last line turning into `Verify return code: 0 (ok)`..
+   * If you do the same afterwards - as soon as you completed exercise B.1 - against this server, you see the last line turning into `Verify return code: 0 (ok)`  
      Further please note you can see an intermediate cerfificate is used (you can follow the complete trust chain).
      ```Bash
      ~# openssl s_client -connect exercise.jumpingcrab.com:21443
