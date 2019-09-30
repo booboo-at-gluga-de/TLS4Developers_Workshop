@@ -225,6 +225,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
      Vs5Kc1bpBrNG3yR3OV5TjJg=
      -----END PRIVATE KEY-----
      ```
+     If you need more information on the certificate: Put the block from `-----BEGIN CERTIFICATE-----` to `-----END CERTIFICATE-----' (including these lines) into a separate file and use the command for PEM files (see above).
 
    * You might also find the script [show_ssl_file.sh](https://github.com/booboo-at-gluga-de/booboo-quick-ca/blob/master/bin/show_ssl_file.sh) useful. For several types of TLS related files (certificates in different formats, CSRs, CRLs, keystores, ...) it tries to find out what type it is and to display it's content.
 
@@ -236,7 +237,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
 
    * Connect to some TLS enabled service (HTTPS, SMTPS, IMAPS, ...) and see what happens during the TLS handshake.  
       - This is very useful for debugging TLS connection issues.
-      - It can also be used to retrieve the certificate of a server you do not have Shell or filesystem access to.
+      - It can also be used to retrieve the current certificate of a server you do not have Shell or filesystem access to.
       - If you are interested in the TLS handshake only (and do not want to interact with the server application itself on layer 7) you can press `Ctrl-C` as soon as the handshake is complete and you see the final line with the 3 dashes
      ```Bash
      ~# openssl s_client -connect localhost:13443
