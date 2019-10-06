@@ -1,6 +1,6 @@
 # TLS4Developers Workshop: Hands-on-Labs
 
-We noticed: Many software developers and some admins do not really have a solid knowledge on TLS (SSL) connections and x.509 certificates and how to handle them. On the other hand there is a growing need for them to know about due to increasing security needs nowadays. TLS is used in HTTPS / SMTPS / IMAPS / ... connections, for encrypting or digitally signing files, etc. And these again help to reduce attack surface.
+We noticed: Many software developers and some admins do not really have a solid knowledge on TLS (SSL) connections and x.509 certificates and how to handle them. On the other hand there is a growing need for them to know about due to increasing security needs nowadays. TLS is used in HTTPS / SMTPS / IMAPS / ... connections, for encrypting or digitally signing files, etc. And these technologies help to reduce attack surface.
 
 So there is a real need to gain in-depth knowledge: That's why we started these Hands-on training lab. You will learn step by step from very basic topics to more advanced ones. You might want to use these Hands-on-Labs as your only source of new knowledge or in addition to the TLS4Developers Workshop. They are designed in a way you can also do them at home if you feel you would like to have more time for real Hands-on experience or need more practicing.
 
