@@ -2,7 +2,7 @@
 
 ## Objective
 
-In this Exercise you will create a very similar setup as in [Exercise A.4](../A4/) with a few new things:
+In this exercise you will create a very similar setup as in [Exercise A.4](../A4/) with a few new things:
    * You will use official certificates now.
    * An intermediate certificate will be used when the client authenticates the server.
    * An intermediate certificate will be used when the server authenticates the client.
@@ -20,7 +20,7 @@ In this Exercise you will create a very similar setup as in [Exercise A.4](../A4
                     X509v3 Extended Key Usage: 
                         TLS Web Server Authentication, TLS Web Client Authentication
         ```
-   * Usually the client and the server run on different machines. For this example it's absolutely ok to have both of them on one machine (your playground machine). Additionally you can use the browser on your workstation as client.
+   * Usually the client and the server run on different machines. For this example it's absolutely ok to have both of them on one machine (your playground machine). Or you can use the browser on your workstation as client.
 
 ## Steps
 
@@ -37,7 +37,7 @@ In this Exercise you will create a very similar setup as in [Exercise A.4](../A4
      ```
      This way you at least have different files for the client certificate (in `~/clientcrt/`) and for the server certificate (in `/etc/letsencrypt/live/`). From this point on: Do not care about the fact these are just copies. Imagine they are differnt!
    * Setup a secure (HTTPS) virtual server, having mTLS enabled:  
-     Copy `exercises/B2/apache_conf.d/exercise-B2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system).
+     Copy `exercises/B2/apache_conf.d/exercise-B2.conf` to a directory where Apache looks for configurations and edit all paths in there (to match the paths you choose on your system) - see comments in the file.
       * in CentOS / RedHat Enterprise setups do something like
         ```Bash
         ~# sudo cp exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/
@@ -48,10 +48,6 @@ In this Exercise you will create a very similar setup as in [Exercise A.4](../A4
         ~# sudo cp exercises/B2/apache_conf.d/exercise-B2.conf /etc/apache2/sites-available
         ~# sudo vim /etc/apache2/sites-available/exercise-B2.conf
         ```
-     At `DocumentRoot` you give the full path of your `exercises/A4/htdocs` directory  
-     (make sure the runtime user of your Apache is allowed to read this directory)  
-     `SSLCertificateFile` and `SSLCertificateKeyFile` refrence the full path of the `server.crt` and `server.key` file you created in exercise A.3.  
-     `SSLCACertificateFile` gets the full path of your CA certificate `ca/cacert.pem` also created in exercise A.3.
 
    * Enable the config now and reload your Apache.
       * in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
@@ -60,29 +56,37 @@ In this Exercise you will create a very similar setup as in [Exercise A.4](../A4
         ```
       * and in Debian / Ubuntu / Mint you do something like
         ```Bash
-        ~# sudo a2ensite exercise-A4
+        ~# sudo a2ensite exercise-B2
         ~# sudo systemctl reload apache2
         ```
 
-   * Make sure it has an TCP Listener on Port 14443 now:
+   * Make sure it has an TCP Listener on Port 22443 now:
      ```Bash
      ~# sudo netstat -pltn
              # or alternatively
      ~# sudo lsof | grep LISTEN
      ```
 
+   * Acting as a client you need to authenticate with your client certificate. And as your client certificate is not directly issued by a Root CA in this exercise it is not sufficient to hand over just your client certificate. You additionally will need to provide the appropriate intermediate certificate within the TLS handshake to make sure the server can verify your certificate against a Root CA certificate.
+       - For the use with `curl` as a client you need both certificates - the client certificate and it's intermediate - in one file in PEM format. (Just concatenated one after the other.)
+       - In case you are using Let's Encrypts CertBot, it already provides such a concatenated file as `fullchain*.pem`
+       - In all other cases it can easily be created by something like:
+         ```Bash
+         ~# cat ~/clientcrt/cert1.pem ~/clientcrt/chain1.pem > ~/clientcrt/fullchain1.pem
+         ```
+
    * Let's test!  
-     Acting as a client now you trust (`--cacert`) the CA. And you need to authenticate with your own client certificate (and for authentication you need the private key of this keypair as a "proof of possession").
+     You need your client certificate and it's private key (as a "proof of possession").
      ```Bash
-     ~# curl --cacert ca/cacert.pem --cert ./client.crt --key client.key https://localhost:14443/index.html
+     ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
-     (you connected to webspace of exercise A.4)
+     (you connected to webspace of exercise B.2)
      ```
 
    * Negative test:  
      Let's check what happens, if we connect to the server without providing a client certificat.
      ```Bash
-     ~# curl --cacert ca/cacert.pem https://localhost:14443/index.html
+     ~# curl https://localhost:22443/index.html
      curl: (35) NSS: client certificate not found (nickname not specified)
      ```
 
@@ -98,7 +102,4 @@ In this Exercise you will create a very similar setup as in [Exercise A.4](../A4
 
 
 
-[vagrant@localhost ~]$ curl --cert ./fullchain1.pem --key privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
-This content is only displayed if you authenticate successfully by a client certificate!
-(you connected to webspace of exercise B.2)
 
