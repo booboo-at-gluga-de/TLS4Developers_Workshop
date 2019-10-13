@@ -98,3 +98,5 @@ That's why you will need to adapt the examples given.
 
    * [__Exercise B.1__](exercises/B1/):
      An Intermediate Certificate (and a HTTPS Connection with an Official Server Certificate)
+   * [__Exercise B.2__](exercises/B2/):
+     mTLS Connection with Intermediate Certificate (from an Official CA)
