@@ -86,20 +86,31 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
    * Negative test:  
      Let's check what happens, if we connect to the server without providing a client certificat.
      ```Bash
-     ~# curl https://localhost:22443/index.html
+     ~# curl https://exercise.jumpingcrab.com:22443/index.html
      curl: (35) NSS: client certificate not found (nickname not specified)
      ```
 
-   * Optional steps:  
-      - If you need your client certificate and private key in a PKCS12 keystore (in PKCS12 format):  
-        `openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12`
+   * Next thing is to test with the Browser on your workstation. Do the negativ test first - assume some arbitrary client (not having a valid client certificate) is trying to access your shiny new but secured website and just enters the URL https://exercise.jumpingcrab.com:22443/index.html. This should look something like this  
+     ![SSL_ERROR_HANDSHAKE_FAILURE_ALERT](images/client_not_accepted_in_tls_handshake.png "The client receives a SSL_ERROR_HANDSHAKE_FAILURE_ALERT")  
+     This is the expected behavior: The server doesn't let the client in as it is not authenticated!
+
+   * A client which should be able to access the website needs the client certificate and its private key plus the chain certificate to do a successful TLS handshake. Let's put all these into one keystore (in PKCS12 format):  
+     ```Bash
+     openssl pkcs12 -export -in ~/clientcrt/cert1.pem -inkey ~/clientcrt/privkey1.pem -certfile ~/clientcrt/chain1.pem -out ~/clientcrt/client.keystore.p12
+     ```
+     (Make sure you remember the password you are setting here for the keystore.)
+
+   * At your workstation: Import `client.keystore.p12` in your browsers certificate store.  
+     e. g. in Firefox this is Preferences -> View Certificates... -> Your Certificates -> Import...  
+     (Here you need the password again you did set in the previous step.)
+
+   * Now you should be able to access your secured website at https://exercise.jumpingcrab.com:22443/index.html  
+      - Your browser first asks which client certificate should be used to authenticate at the server.
+        ![Client Certificate selection](images/client_certificate_selection.png "Client Certificate selection dialog")  
+        Choose the one you just imported.
+      - And finally you see it: The content of your secure website!  
+        ![Content of the secure website](images/website.png "The content of the secure website is displayed.")
 
 ## Conclusion
 
-   * In this Exercise the client certificate and the server certificate are signed by the same CA. In real world scenarios it can be done this way, but it does not need to.
-   * Client certificate can be signed by a different CA than the server certificate. In this case the client needs to trust the CA which signed the server certificate. And the server needs to trust the CA which signed the client certificate.
-
-
-
-
-
+   * You made it up to here! Congratulations! We hope your new gained knowledge will be helpful for you!
