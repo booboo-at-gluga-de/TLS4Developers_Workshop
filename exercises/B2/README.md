@@ -50,7 +50,7 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
         ```
 
    * Enable the config now and reload your Apache.
-      * in our Vagrant setup as well as in other CentOS / RedHat Enterprise setups this is
+      * in CentOS / RedHat Enterprise setups this is
         ```Bash
         ~# sudo systemctl restart httpd
         ```
@@ -76,7 +76,6 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
          ```
 
    * Let's test!  
-     You need your client certificate and it's private key (as a "proof of possession").
      ```Bash
      ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
