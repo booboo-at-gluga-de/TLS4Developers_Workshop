@@ -13,7 +13,9 @@ In this exercise you will use some commands which are very useful when dealing w
 
 Within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`.
 
-   * Display (in human readable form) a certificate stored in PEM format:  
+### Display
+
+   * Display (in human readable form) a certificate stored in **PEM** format:  
      ```Bash
      ~# openssl x509 -in server.crt -noout -text
      Certificate:
@@ -99,7 +101,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
               07:51:df:af:e0:9f:3e:a1
      ```
 
-   * Display the content of a certificate signing request (CSR):  
+   * Display the content of a **certificate signing request (CSR):**  
      ```Bash
      ~# openssl req -in server.csr -noout -text
      Certificate Request:
@@ -149,8 +151,8 @@ Within the Vagrant setup you might want to do the following steps directly in `/
               5e:be:dc:5a
      ```
 
-     * Display the content of a keystore in PKCS12 format:  
-       (You will need the password you did set when creating the keystore.)  
+   * Display the content of a **keystore** in **PKCS12** format:  
+     (You will need the password you did set when creating the keystore.)  
      ```Bash
      ~# openssl pkcs12 -in server.keystore.p12 -nodes
      Enter Import Password:
@@ -229,11 +231,15 @@ Within the Vagrant setup you might want to do the following steps directly in `/
 
    * You might also find the script [show_ssl_file.sh](https://github.com/booboo-at-gluga-de/booboo-quick-ca/blob/master/bin/show_ssl_file.sh) useful. For several types of TLS related files (certificates in different formats, CSRs, CRLs, keystores, ...) it tries to find out what type it is and to display it's content.
 
-   * Verify a certificate (in PEM format) against a given CA certificate:  
+### Verify
+
+   * Verify a certificate (in **PEM** format) against a given CA certificate:  
      ```Bash
      ~# openssl verify -CAfile ca/cacert.pem server.crt 
      server.crt: OK
      ```
+
+### Connect to TLS enabled services
 
    * Connect to some TLS enabled service (HTTPS, SMTPS, IMAPS, ...) and see what happens during the TLS handshake.  
       - This is very useful for debugging TLS connection issues.
@@ -429,4 +435,25 @@ Within the Vagrant setup you might want to do the following steps directly in `/
          Timeout   : 300 (sec)
          Verify return code: 0 (ok)
      ---
+     ```
+
+### Java Keystores (JKS)
+
+If you are still using Java Keystores in (proprietary) JKS format please note: [Oracle recommends PKCS12](https://blogs.oracle.com/jtc/jdk9-keytool-transitions-default-keystore-to-pkcs12) instead of JKS since quite some years meanwhile. New keystrores should be created in PKCS12 format (with openssl) where ever possible.
+
+You will need the `keytool` commandline utility to display / create / manage JKS keystores. It is delivered with the Java JDK.
+
+   * Display the content of a **keystore** in **JKS** format:  
+     ```Bash
+     ~# keytool -list -keystore /path/to/your.keystore.jks
+     ```
+
+   * Convert JKS keystore to PKCS12 keystore:  
+     ```Bash
+     ~# keytool -importkeystore -srckeystore /path/to/your.keystore.jks -destkeystore /path/to/your.keystore.p12 -deststoretype pkcs12
+     ```
+
+   * For every other interaction with a JKS keystore (if you are really sure you still want to manage JKS) please refer to:  
+     ```Bash
+     ~# keytool -help
      ```
