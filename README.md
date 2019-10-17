@@ -59,7 +59,7 @@ Now it's time to jump to the exercise you are interested in:
    * [__Exercise A.4__](exercises/A4/):
      The Client needs to authenticate by a Client Certificate: mTLS
    * [__Exercise A.5__](exercises/A5/):
-     Useful Commands for Dealing with Certificates
+     Useful Commands for Dealing with Certificates and Keystores
 
 
 ## Chapter B: Using Certificates of an Official CA

@@ -1,4 +1,4 @@
-# Exercise A.5: Useful Commands for Dealing with Certificates
+# Exercise A.5: Useful Commands for Dealing with Certificates and Keystores
 
 ## Objective
 
@@ -227,7 +227,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
      Vs5Kc1bpBrNG3yR3OV5TjJg=
      -----END PRIVATE KEY-----
      ```
-     If you need more information on the certificate: Put the block from `-----BEGIN CERTIFICATE-----` to `-----END CERTIFICATE-----' (including these lines) into a separate file and use the command for PEM files (see above).
+     If you need more information on the certificate: Put the block from `-----BEGIN CERTIFICATE-----` to `-----END CERTIFICATE-----` (including these lines) into a separate file and use the command for PEM files (see above).
 
    * You might also find the script [show_ssl_file.sh](https://github.com/booboo-at-gluga-de/booboo-quick-ca/blob/master/bin/show_ssl_file.sh) useful. For several types of TLS related files (certificates in different formats, CSRs, CRLs, keystores, ...) it tries to find out what type it is and to display it's content.
 
@@ -440,6 +440,8 @@ Within the Vagrant setup you might want to do the following steps directly in `/
 ### Java Keystores (JKS)
 
 If you are still using Java Keystores in (proprietary) JKS format please note: [Oracle recommends PKCS12](https://blogs.oracle.com/jtc/jdk9-keytool-transitions-default-keystore-to-pkcs12) instead of JKS since quite some years meanwhile. New keystrores should be created in PKCS12 format (with openssl) where ever possible.
+
+This is why you will not create some JKS file during this exercise. The commands below are meant as a hint for you if you have to deal with legacy formats in your day to day live.
 
 You will need the `keytool` commandline utility to display / create / manage JKS keystores. It is delivered with the Java JDK.
 
