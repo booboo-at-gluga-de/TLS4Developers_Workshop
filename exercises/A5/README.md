@@ -441,7 +441,7 @@ Within the Vagrant setup you might want to do the following steps directly in `/
 
 If you are still using Java Keystores in (proprietary) JKS format please note: [Oracle recommends PKCS12](https://blogs.oracle.com/jtc/jdk9-keytool-transitions-default-keystore-to-pkcs12) instead of JKS since quite some years meanwhile. New keystrores should be created in PKCS12 format (with openssl) where ever possible.
 
-This is why you will not create some JKS file during this exercise. The commands below are meant as a hint for you if you have to deal with legacy formats in your day to day live.
+This is why you will not create some JKS file during this exercise. The commands below are meant as a hint for you if you have to deal with this legacy format in your day to day live.
 
 You will need the `keytool` commandline utility to display / create / manage JKS keystores. It is delivered with the Java JDK.
 
@@ -450,7 +450,7 @@ You will need the `keytool` commandline utility to display / create / manage JKS
      ~# keytool -list -keystore /path/to/your.keystore.jks
      ```
 
-   * Convert JKS keystore to PKCS12 keystore:  
+   * **Convert** JKS keystore to PKCS12 keystore:  
      ```Bash
      ~# keytool -importkeystore -srckeystore /path/to/your.keystore.jks -destkeystore /path/to/your.keystore.p12 -deststoretype pkcs12
      ```
