@@ -52,11 +52,11 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
 
 Point your browser to https://github.com/ and examine the certificate. Probably it will contain both (at least for now - October 2019 - it does). A CRL URL:
 
-     ![CRL URL(s) within the certificate](images/crl_info.png "CRL URL(s) within the certificate")
+![CRL URL(s) within the certificate](images/crl_info.png "CRL URL(s) within the certificate")
 
 And a OCSP URL:
 
-     ![OCSP URL within the certificate](images/ocsp_info.png "OCSP URL within the certificate")
+![OCSP URL within the certificate](images/ocsp_info.png "OCSP URL within the certificate")
 
 
 ## Steps
