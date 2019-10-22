@@ -51,11 +51,11 @@ Most Browsers nowadays do check revocation of server certificates by default. Ot
 Each certificate contains the URL where the according CRL can be retrieved, or the URL of the according OCSP responder. Or if you are really lucky: Both (in this case you have the free choice on which to use).
 
    * Point your browser to https://github.com/ and examine the certificate. Probably it will contain both (at least for now - October 2019 - it does). One or more CRL URL(s):  
-     ![CRL URL(s) within the certificate](images/crl_info.png "CRL URL(s) within the certificate")
+     ![CRL URL(s) within the certificate](images/crl_info.png "CRL URL(s) within the certificate")  
      And a OCSP URL:  
      ![OCSP URL within the certificate](images/ocsp_info.png "OCSP URL within the certificate")
 
-   * You can use the CRL URL you found to download it and have a look at it:  
+   * You can use the CRL URL (just found out) to download it and have a look at it:  
      ```Bash
      ~# wget -O /tmp/sha2-ev-server-g2.crl http://crl3.digicert.com/sha2-ev-server-g2.crl
      --2019-10-22 17:24:56--  http://crl3.digicert.com/sha2-ev-server-g2.crl
@@ -103,9 +103,9 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
      [...]
      ```
      You can see:
-        - When it was created
+        - When the CRL was created
         - When it will expire
-        - A list of serial number of revoked certificates together with it's revocation date
+        - A (long) list of serial numbers of revoked certificates together with it's revocation date
 
 ## Steps
 
