@@ -200,6 +200,22 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
 
 To continue with the next steps you need to have finished [__Exercise B.2__](../B2/).
 
+In exercise B.2 you did set up a webserver where clients need to authenticate with a client certificate. Apache expects explicit configuration on how to check revocation of the certificate presented by the client - otherwise it will do no revocation check at all.
+
+First of all: Decide which technology you want to use. If your client certificates offer one technology only the choice is easy. For all other cases let's have a look:
+
+#### PROs and CONs of OCSP
+
+   * You always get the current state of revocation. (Almost no delay between revocation of the certificate and the time the server no longer accepts it.)
+   * One additional network connection (between server and OCSP handler) during each TLS handshake. (This take a little extra time.)
+   * You rely on the availability of the OCSP handler: If the OCSP handler is unavailable, clients are unable to request anything from your webserver because every TLS handshake will be unsuccessful.
+
+#### PROs and CONs of CRLs
+
+   * tbd
+
+#### If You Decide to Use OCSP
+
    * tbd
 
     LogLevel debug
@@ -207,6 +223,9 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
     SSLOCSPUseRequestNonce off
     SSLOCSPResponderCertificateFile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem
 
+#### If You Decide to Use CRL
+
+   * tbd
 
 ## Conclusion
 
