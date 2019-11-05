@@ -202,6 +202,12 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
    * tbd
 
+    LogLevel debug
+    SSLOCSPEnable on
+    SSLOCSPUseRequestNonce off
+    SSLOCSPResponderCertificateFile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem
+
+
 ## Conclusion
 
 tbd
