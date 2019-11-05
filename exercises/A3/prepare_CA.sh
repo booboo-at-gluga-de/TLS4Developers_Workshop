@@ -22,6 +22,7 @@ if [[ "$ANSWER" != "Y" ]] && [[ "$ANSWER" != "YES" ]]; then
     exit 1
 fi
 
+touch ~/.rnd
 mkdir $WORKING_DIR/ca || exit 1
 mkdir $WORKING_DIR/ca/newcerts || exit 1
 mkdir $WORKING_DIR/ca/private || exit 1
@@ -29,6 +30,7 @@ chmod 700 $WORKING_DIR/ca/private || exit 1
 echo -ne "01" >$WORKING_DIR/ca/serial || exit 1
 echo -ne "01" >$WORKING_DIR/ca/crlnumber || exit 1
 touch $WORKING_DIR/ca/index.txt || exit 1
+touch $WORKING_DIR/ca/index.txt.attr || exit 1
 cp $SCRIPT_DIR/openssl/ca.cnf $WORKING_DIR/ca/ || exit 1
 sed -i -e "s#/home/vagrant#${WORKING_DIR}#" $WORKING_DIR/ca/ca.cnf || exit 1
 cp $SCRIPT_DIR/openssl/openssl.cnf $WORKING_DIR/ || exit 1

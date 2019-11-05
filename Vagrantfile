@@ -2,7 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "centos/7"
+    config.vm.box = "generic/centos8"
+    config.vm.synced_folder ".", "/vagrant"
     config.vm.provision :shell, path: "vagrant.bootstrap.sh"
     config.vm.network "forwarded_port", guest: 11443, host_ip: "127.0.0.1", host: 11443
     config.vm.network "forwarded_port", guest: 12443, host_ip: "127.0.0.1", host: 12443

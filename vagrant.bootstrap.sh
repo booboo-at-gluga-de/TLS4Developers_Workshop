@@ -16,9 +16,22 @@ yum -y install httpd mod_ssl vim-enhanced net-tools
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/sysconfig/selinux
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/selinux/config
 setenforce 0
-# enable and start Apache Webserver
+# disable nftables rules (as this is a playground system)
+systemctl stop firewalld
+systemctl is-enabled --quiet firewalld.service && echo There is nothing wrong if the next lines are displayed in red
+systemctl disable firewalld
+# configure, enable and start Apache Webserver
+if [[ ! -e "/etc/httpd/conf.d/default.servername.conf" ]]; then
+    echo ServerName localhost:80 >/etc/httpd/conf.d/default.servername.conf
+    chmod 644 /etc/httpd/conf.d/default.servername.conf
+fi
 systemctl enable httpd
 systemctl start httpd
+# create directory for trusted CA certs
+if [[ ! -e "/etc/httpd/ssl.trust/" ]]; then
+    mkdir -p /etc/httpd/ssl.trust/
+fi
+chmod 755 /etc/httpd/ssl.trust/
 
 echo
 echo "### vagrant.bootstrap.sh ended"

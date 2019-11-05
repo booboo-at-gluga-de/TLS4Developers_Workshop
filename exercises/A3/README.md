@@ -25,11 +25,13 @@ In this exercise some commands reference files by complete path. If you use our 
 
      OK, created directory "ca" for you with following content:
      ==========================================================
-     total 20
+     total 24
      -rw-rw-r--. 1 vagrant vagrant 11814 Sep 18 09:55 ca.cnf
      -rw-rw-r--. 1 vagrant vagrant     2 Sep 18 09:55 crlnumber
      -rw-rw-r--. 1 vagrant vagrant     0 Sep 18 09:55 index.txt
+     -rw-rw-r--. 1 vagrant vagrant     0 Sep 18 09:55 index.txt.attr
      drwxrwxr-x. 2 vagrant vagrant     6 Sep 18 09:55 newcerts
+     drwx------. 2 vagrant vagrant     6 Sep 18 09:55 private
      -rw-rw-r--. 1 vagrant vagrant     2 Sep 18 09:55 serial
      ```
 
