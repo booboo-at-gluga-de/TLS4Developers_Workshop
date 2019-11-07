@@ -112,4 +112,6 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
 
 ## Conclusion
 
-You came very far already. However your setup is not yet completly perfect. What would happen if of one of your clients the certificate would be stolen? Even if it were revoked you would still accept this certificate. This way the attacker would get access to your well protected website. That's not what you want. Stay curious and continue to [Exercise B.3](../B3/) to learn about how to check for certificate revocation.
+You came very far already. However your setup is not yet completly perfect. What would happen if of one of your clients the certificate would be stolen? Even if it were revoked you would still accept this certificate. This way the attacker would get access to your well protected website. That's not what you want!
+
+Stay curious and continue to [Exercise B.3](../B3/) to learn about how to check for certificate revocation.
