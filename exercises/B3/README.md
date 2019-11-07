@@ -229,4 +229,4 @@ First of all: Decide which technology you want to use. If your client certificat
 
 ## Conclusion
 
-tbd
+   * You made it up to here! Congratulations! We hope your new gained knowledge will be helpful for you!
