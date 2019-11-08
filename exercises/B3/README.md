@@ -20,9 +20,9 @@ Only the Certifcate Authority (CA) which issued the certificate is able to revok
 
 ## CRL versus OCSP
 
-Everyone verifying certificates needs a method to check if the certificate has been revoked. Two different methods are currently used:
+Everyone verifying certificates needs a method to check if the certificate has been revoked meanwhile. Two different methods are currently used:
 
-   * A __certificate revocation list__ (CRL) is one file containing information about every revoked certificate issued by this CA. It is digitaly signed by the CA, has a limited validity period and is distributed via a HTTP server.  
+   * A __certificate revocation list__ (CRL) is one file containing a list of all revoked certificates issued by this CA. It is digitaly signed by the CA, has a limited validity period and is distributed via a HTTP server.  
      See also: https://en.wikipedia.org/wiki/Certificate_revocation_list
 
    * With the __Online Certificate Status Protocol__ (OCSP) you can send a specific query to an OCSP reponder (provided by the CA) to check the revocation status of one single certificate. For the transfer also HTTP is used. The response is also digitaly signed by the CA and also has a limited livetime.  
@@ -38,7 +38,7 @@ The concrete steps for revoking a certificate are a little different from CA to 
 
 __IMPORTANT:__ For fully verifying a certificate presented to you by your communication partner, make sure you do not only check the validity of the certificate but also to check it for revocation. Your communication partner might be a server you are connecting to (presenting a server certificate) or - in mTLS usecase - also a client (authenticating by a client certificate).
 
-Most Browsers nowadays do check revocation of server certificates by default. Other software components and libraries often (by default) don't. Make sure to configure a proper check! (You will do this in one example in a few moments.)
+Most Browsers nowadays do check revocation of server certificates by default. Other software components and libraries often (by default) don't. Make sure to configure a proper check! (You will do this in an example in a few moments.)
 
 Each certificate contains the URL where the according CRL can be retrieved, or the URL of the according OCSP responder. Or if you are really lucky: Both (in this case you have the free choice on which to use).
 
@@ -101,7 +101,7 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
      You can see:
         - When the CRL was created
         - When it will expire
-        - A (long) list of serial numbers of revoked certificates together with it's revocation date
+        - A (long) list of serial numbers of revoked certificates together with it's revocation date and maybe a reason for revocation
 
 ### Check a Certificate against OCSP (manually)
 
@@ -208,20 +208,62 @@ First of all: Decide which technology you want to use. If your client certificat
 
    * You always get the current state of revocation. (Almost no delay between revocation of the certificate and the time the server no longer accepts it.)
    * One additional network connection (between server and OCSP handler) during each TLS handshake. (This take a little extra time.)
-   * You rely on the availability of the OCSP handler: If the OCSP handler is unavailable, clients are unable to request anything from your webserver because every TLS handshake will be unsuccessful.
+   * You rely on the availability of the OCSP handler: If the OCSP handler (operated by the CA) is unavailable, clients are unable to request anything from your webserver because every TLS handshake will be unsuccessful.
+   * Maybe privacy concerns: The CA could - by analyzing the access logs of the OCSP handler - track the usage of every certificate because they get one request within every TLS handshake. (IP address, timestamp, ...)
 
 #### PROs and CONs of CRLs
 
-   * tbd
+   * More efficient and faster: You download the CRL once and evaluate multiple certificates against it. During the TLS handshake you need to read a local file only.
+   * You need to care yourself for a job regularly downloading the current version of the CRL.
+   * Longer time between certificate revocation and the point in time you no longer accept it - depending on how often you refresh the local copy of the CRL.
 
 #### If You Decide to Use OCSP
 
-   * tbd
+   * Edit your Apache's `exercise-B2.conf` file and inside the `VirtualHost` section add:  
+     ```Bash
+     SSLOCSPEnable on
+     ```
 
-    LogLevel debug
-    SSLOCSPEnable on
-    SSLOCSPUseRequestNonce off
-    SSLOCSPResponderCertificateFile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem
+   * And until you have everything working you might want to add  
+     ```Bash
+     LogLevel debug
+     ```  
+     to make sure you can see what's going on (in Apache's error log)
+
+   * The OCSP handler used above (Let's Encypt) does not provide Nonces. In the listing above please note the line:  
+     ```Bash
+     WARNING: no nonce in response
+     ```  
+     If your CA's OCSP handler also does not provide Nonces please additionally put
+     ```Bash
+     SSLOCSPUseRequestNonce off
+     ```  
+     into your Apache's `exercise-B2.conf` file.
+
+   * And if your CA's OCSP responder does omit the chain certificate in its reponse you additionally need to configure `SSLOCSPResponderCertificateFile` to point to the intermediate certificate of your client certificate. Something like:  
+     ```Bash
+     SSLOCSPResponderCertificateFile /home/vagrant/clientcrt/chain1.pem
+     ```
+
+   * Reload your Apache now:
+      * in CentOS / RedHat Enterprise setups this is
+        ```Bash
+        ~# sudo systemctl reload httpd
+        ```
+      * and in Debian / Ubuntu / Mint you do something like
+        ```Bash
+        ~# sudo systemctl reload apache2
+        ```
+
+   * And test again:  
+     ```Bash
+     ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
+     This content is only displayed if you authenticate successfully by a client certificate!
+     (you connected to webspace of exercise B.2)
+     ```
+
+   * If the test fails you find information on what went wrong in your Apache's error log file (because you switched the loglevel to debug).
+
 
 #### If You Decide to Use CRL
 
