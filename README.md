@@ -100,3 +100,5 @@ That's why you will need to adapt the examples given.
      An Intermediate Certificate (and a HTTPS Connection with an Official Server Certificate)
    * [__Exercise B.2__](exercises/B2/):
      mTLS Connection with Intermediate Certificate (from an Official CA)
+   * [__Exercise B.3__](exercises/B3/):
+     Certificate Revocation

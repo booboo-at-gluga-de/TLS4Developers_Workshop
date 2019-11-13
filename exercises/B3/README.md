@@ -198,23 +198,54 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
 
 ### Always check for revocation (automatically)
 
-To continue with the next steps you need to have finished [__Exercise B.2__](../B2/).
+To continue with the next steps you need to have finished [__Exercise B.2__](../B2/). There you did set up a webserver where clients need to authenticate with a client certificate.
 
-In exercise B.2 you did set up a webserver where clients need to authenticate with a client certificate. Apache expects explicit configuration on how to check revocation of the certificate presented by the client - otherwise it will do no revocation check at all.
+   * Until you have everything working please switch the loglevel for the B.2 VirtualHost to `debug` to make sure you can see what's going on (in Apache's error log) - not only to see what concretly is going wrong if there should be errors, but also to read the log and learn from it about the single steps taken.  
+     Please edit your Apache's `exercise-B2.conf` file and inside the `VirtualHost` section add:  
+     ```Bash
+     LogLevel debug
+     ```  
 
-First of all: Decide which technology you want to use. If your client certificates offer one technology only the choice is easy. For all other cases let's have a look:
+   * Reload your Apache now:
+      * in CentOS / RedHat Enterprise setups this is
+        ```Bash
+        ~# sudo systemctl reload httpd
+        ```
+      * and in Debian / Ubuntu / Mint you do something like
+        ```Bash
+        ~# sudo systemctl reload apache2
+        ```
+
+   * And please repeat the test from exercise B.2:  
+     ```Bash
+     ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
+     This content is only displayed if you authenticate successfully by a client certificate!
+     (you connected to webspace of exercise B.2)
+     ```
+
+   * Check the your Apache's error log now. In might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Look for lines looking like this:  
+     ```Bash
+     [Tue Nov 12 17:07:33.408773 2019] [ssl:debug] [pid 3262:tid 140380231198464] ssl_engine_kernel.c(1751): [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
+     [Tue Nov 12 17:07:33.408897 2019] [ssl:debug] [pid 3262:tid 140380231198464] ssl_engine_kernel.c(1751): [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
+     [Tue Nov 12 17:07:33.408982 2019] [ssl:debug] [pid 3262:tid 140380231198464] ssl_engine_kernel.c(1751): [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
+     ```
+
+   * Please especially note: It says `CRL checking mode: none (0)` in every of these lines!!  
+     Apache expects explicit configuration on how to check revocation of the certificate presented by the client - otherwise it will do no revocation check at all.
+
+   * So next step: Decide which technology you want to use for the revocation check. If your client certificates offers one technology only the choice is easy. For all other cases let's have a look:
 
 #### PROs and CONs of OCSP
 
    * You always get the current state of revocation. (Almost no delay between revocation of the certificate and the time the server no longer accepts it.)
-   * One additional network connection (between server and OCSP handler) during each TLS handshake. (This take a little extra time.)
+   * One additional network connection (between server and OCSP handler) during each TLS handshake. (This takes a little extra time.)
    * You rely on the availability of the OCSP handler: If the OCSP handler (operated by the CA) is unavailable, clients are unable to request anything from your webserver because every TLS handshake will be unsuccessful.
    * Maybe privacy concerns: The CA could - by analyzing the access logs of the OCSP handler - track the usage of every certificate because they get one request within every TLS handshake. (IP address, timestamp, ...)
 
 #### PROs and CONs of CRLs
 
-   * More efficient and faster: You download the CRL once and evaluate multiple certificates against it. During the TLS handshake you need to read a local file only.
-   * You need to care yourself for a job regularly downloading the current version of the CRL.
+   * More efficient and faster: You download the CRLs once and evaluate multiple certificates against it. During the TLS handshake you need to read a local file only.
+   * You need to care yourself for a job regularly downloading the current version of the CRLs.
    * Longer time between certificate revocation and the point in time you no longer accept it - depending on how often you refresh the local copy of the CRL.
 
 #### If You Decide to Use OCSP
@@ -224,17 +255,11 @@ First of all: Decide which technology you want to use. If your client certificat
      SSLOCSPEnable on
      ```
 
-   * And until you have everything working you might want to add  
-     ```Bash
-     LogLevel debug
-     ```  
-     to make sure you can see what's going on (in Apache's error log)
-
    * The OCSP handler used above (Let's Encypt) does not provide Nonces. In the listing above please note the line:  
      ```Bash
      WARNING: no nonce in response
      ```  
-     If your CA's OCSP handler also does not provide Nonces please additionally put
+     If your CA's OCSP handler also does not provide Nonces please additionally put  
      ```Bash
      SSLOCSPUseRequestNonce off
      ```  
@@ -264,11 +289,124 @@ First of all: Decide which technology you want to use. If your client certificat
 
    * If the test fails you find information on what went wrong in your Apache's error log file (because you switched the loglevel to debug).
 
+   * As soon you got it working please have one more look into the error log file. There again you find lines like this:  
+     ```Bash
+     [Tue Nov 12 07:49:13.064173 2019] [ssl:debug] [pid 6867:tid 139920983164672] ssl_engine_kernel.c(1751): [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
+     [Tue Nov 12 07:49:13.064315 2019] [ssl:debug] [pid 6867:tid 139920983164672] ssl_engine_kernel.c(1751): [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
+     [Tue Nov 12 07:49:13.332252 2019] [ssl:debug] [pid 6867:tid 139920983164672] ssl_engine_kernel.c(1751): [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
+     ```  
+     telling there are still no CRL checks.  
+     On the other hand you will find lines like these, telling OCSP checks succeeded:  
+     ```Bash
+     [Tue Nov 12 07:49:13.331302 2019] [ssl:info] [pid 6867:tid 139920983164672] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
+     [Tue Nov 12 07:49:14.713060 2019] [ssl:info] [pid 6867:tid 139920983164672] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
+     ```
 
 #### If You Decide to Use CRL
 
-   * tbd
+This part can not be done with my Let's Encrypt certificate (used in the role of a client certificate) because it does not provide a CRL URL. So I will use a different client certificate for the next steps. I made sure `SSLCACertificateFile` in my Apache's `exercise-B2.conf` is pointing to the corresponding Root CA certificate.
+
+   * Create a directory where to store the CRLs locally. I will use `/etc/httpd/ssl.crl`  
+     ```Bash
+     mkdir /etc/httpd/ssl.crl
+     ```
+
+   * Check as well the client certificate as it's intermediate CA certificate for it's CRL URL. This can be done in the way you did above or by:  
+     ```Bash
+     ~# openssl x509 -in ~/clientcrt/client.pem -noout -text | grep -A 4 "X509v3 CRL Distribution Points"
+     ```  
+     (The client certificate itself contains the CRL URL of it's issuing CA - which in this case it the intermediate CA.)
+     and  
+     ```Bash
+     ~# openssl x509 -in ~/clientcrt/issuing_ca.cert.pem -noout -text | grep -A 4 "X509v3 CRL Distribution Points"
+     ```  
+     (The intermediate certificate contains the CRL URL of it's issuing CA - which in this case it the Root CA.)
+
+   * Download both CRLs.
+
+   * For both files check if they are in PEM format:
+     ```Bash
+     ~# grep "BEGIN X509 CRL" issuing_ca.crl >/dev/null && echo PEM || echo DER
+     PEM
+     ```  
+     (and the same for the Root CA CRL)
+
+   * If they are in PEM format everything is ok.  
+     If they are in DER format please convert them into PEM:  
+     ```Bash
+     ~# openssl crl -in issuing_ca.crl -inform DER -out issuing_ca.crl.pem -outform PEM
+     ```  
+     (and the same for the Root CA CRL)
+
+   * Copy the both files in PEM format into the directory created above:  
+     ```Bash
+     ~# sudo cp issuing_ca.crl.pem root_ca.crl.pem /etc/httpd/ssl.crl
+     ```
+
+   * For efficiency reasons Apache looks up certificates in the directory in their HASH representation. So you need to provide symlinks:  
+     ```Bash
+     ~# cd /etc/httpd/ssl.crl
+     ~# sudo ln -s issuing_ca.crl.pem $(openssl crl -hash -noout -in issuing_ca.crl.pem).r0
+     ~# sudo ln -s root_ca.crl.pem $(openssl crl -hash -noout -in root_ca.crl.pem).r0
+     ```  
+     After this it should look something like this:  
+     ```Bash
+     ~# ll
+     total 8
+     lrwxrwxrwx. 1 root root   18 Nov 12 07:30 39933da4.r0 -> issuing_ca.crl.pem
+     lrwxrwxrwx. 1 root root   15 Nov 12 07:30 723d8e7e.r0 -> root_ca.crl.pem
+     -rw-r--r--. 1 root root 1105 Nov 12 06:52 issuing_ca.crl.pem
+     -rw-r--r--. 1 root root 1129 Nov 12 06:52 root_ca.crl.pem
+     ```
+
+   * Edit your Apache's `exercise-B2.conf` file and inside the `VirtualHost` section add:  
+     ```Bash
+     SSLCARevocationCheck chain
+     SSLCARevocationPath /etc/httpd/ssl.crl/
+     ```
+
+   * Reload your Apache now:
+      * in CentOS / RedHat Enterprise setups this is
+        ```Bash
+        ~# sudo systemctl reload httpd
+        ```
+      * and in Debian / Ubuntu / Mint you do something like
+        ```Bash
+        ~# sudo systemctl reload apache2
+        ```
+
+   * And test again:  
+     ```Bash
+     ~# curl --cert ~/clientcrt/client.fullchain.pem --key ~/clientcrt/client.privkey.pem https://exercise.jumpingcrab.com:22443/index.html
+     This content is only displayed if you authenticate successfully by a client certificate!
+     (you connected to webspace of exercise B.2)
+     ```
+
+   * If the test fails you find information on what went wrong in your Apache's error log file (because you switched the loglevel to debug).
+
+   * As soon you got it working please have one more look into the error log file. There again you find lines like this:  
+     ```Bash
+[Tue Nov 12 07:35:05.353932 2019] [ssl:debug] [pid 5327:tid 140305433061120] ssl_engine_kernel.c(1751): [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 2, CRL checking mode: chain (2) [subject:...
+[Tue Nov 12 07:35:05.354129 2019] [ssl:debug] [pid 5327:tid 140305433061120] ssl_engine_kernel.c(1751): [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 1, CRL checking mode: chain (2) [subject:...
+[Tue Nov 12 07:35:05.354286 2019] [ssl:debug] [pid 5327:tid 140305433061120] ssl_engine_kernel.c(1751): [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 0, CRL checking mode: chain (2) [subject:...
+     ```  
+     Please note, now it says: `CRL checking mode: chain`
+
+   * In a real world scenario please remember to set up a cron job which on a regular basis gets new versions of the CRLs. Steps like above: Download them, maybe convert to PEM format, hash them.  
+     You need to run it always before expiration of the CRL at minimum. Recommendation is to do it way more often. (If you get them more often you reduce the time window for abuse: Time between revocation and disabling usage.)
+
+   * Optional step: If you want you can revoke the client certificate and see it is no longer accepted:
+      - Request revocation at the CA which issued it.
+      - Give it a little time to create and publish the new CRL.
+      - Download the new CRL, place it in `/etc/httpd/ssl.crl` and HASH it. (No need to reload Apache.)
+      - Test again:  
+        ```Bash
+        ~# curl --cert ~/clientcrt/client.fullchain.pem --key ~/clientcrt/client.privkey.pem https://exercise.jumpingcrab.com:22443/index.html
+        curl: (56) OpenSSL SSL_read: error:14094414:SSL routines:ssl3_read_bytes:sslv3 alert certificate revoked, errno 0
+        ```  
+        You see the request is rejected and as a reason it says `certificate revoked`
+      - At the same time in Apache's error log you will find a message like `AH02276: Certificate Verification: Error (23): certificate revoked`
 
 ## Conclusion
 
-   * You made it up to here! Congratulations! We hope your new gained knowledge will be helpful for you!
+   * You made it up to here! Congratulations! We hope your new gained knowledge will be helpful for you! Enjoy the additional security!
