@@ -315,7 +315,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
      ```Bash
      ~# openssl x509 -in ~/clientcrt/client.pem -noout -text | grep -A 4 "X509v3 CRL Distribution Points"
      ```  
-     (The client certificate itself contains the CRL URL of it's issuing CA - which in this case it the intermediate CA.)
+     (The client certificate itself contains the CRL URL of it's issuing CA - which in this case it the intermediate CA.)  
      and  
      ```Bash
      ~# openssl x509 -in ~/clientcrt/issuing_ca.cert.pem -noout -text | grep -A 4 "X509v3 CRL Distribution Points"
@@ -351,7 +351,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
      ```  
      After this it should look something like this:  
      ```Bash
-     ~# ll
+     ~# ls -l
      total 8
      lrwxrwxrwx. 1 root root   18 Nov 12 07:30 39933da4.r0 -> issuing_ca.crl.pem
      lrwxrwxrwx. 1 root root   15 Nov 12 07:30 723d8e7e.r0 -> root_ca.crl.pem
