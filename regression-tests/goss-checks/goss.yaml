@@ -1,0 +1,26 @@
+command:
+  A.1 Test 1:
+    title: "Exercise A.1: GET request without giving a truststore should complain about untrusted issuer"
+    exec: "curl https://localhost:11443/index.html"
+    exit-status: 60
+    stdout: []
+    stderr:
+    - "curl: (60) "
+    timeout: 10000 # in milliseconds
+  A.1 Test 2:
+    title: "Exercise A.1: GET request with explicit truststore should complain about non matching CN"
+    exec: "curl --cacert /home/vagrant/example.com.crt https://localhost:11443/index.html"
+    exit-status: 51
+    stdout: []
+    stderr:
+    - "curl: (51) "
+    timeout: 10000 # in milliseconds
+  A.2 Test 1:
+    title: "Exercise A.2: GET request with explicit truststore should return content of VirtualHost A.2"
+    exec: "curl --cacert /home/vagrant/localhost.crt https://localhost:12443/index.html"
+    exit-status: 0
+    stdout:
+    - "Hello World"
+    - "(you connected to webspace of exercise A.2)"
+    stderr: []
+    timeout: 10000 # in milliseconds

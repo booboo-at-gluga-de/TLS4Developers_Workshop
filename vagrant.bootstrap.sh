@@ -42,6 +42,9 @@ if [[ ! -e "/etc/httpd/ssl.crl/" ]]; then
 fi
 chmod 755 /etc/httpd/ssl.crl/
 
+# install goss (for regression tests)
+curl -fsSL https://goss.rocks/install | sh
+
 echo
 echo "### vagrant.bootstrap.sh ended"
 echo
