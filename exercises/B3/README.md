@@ -225,9 +225,9 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
    * Check the your Apache's error log now. In might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Look for lines looking like this:  
      ```Bash
-     [Tue Nov 12 17:07:33.408773 2019] [ssl:debug] [pid 3262:tid 140380231198464] ssl_engine_kernel.c(1751): [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
-     [Tue Nov 12 17:07:33.408897 2019] [ssl:debug] [pid 3262:tid 140380231198464] ssl_engine_kernel.c(1751): [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
-     [Tue Nov 12 17:07:33.408982 2019] [ssl:debug] [pid 3262:tid 140380231198464] ssl_engine_kernel.c(1751): [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
+     [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
+     [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
+     [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
      ```
 
    * Please especially note: It says `CRL checking mode: none (0)` in every of these lines!!  
@@ -244,9 +244,9 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
 #### PROs and CONs of CRLs
 
-   * More efficient and faster: You download the CRLs once and evaluate multiple certificates against it. During the TLS handshake you need to read a local file only.
+   * More efficient and faster: You download the CRLs once and evaluate multiple certificates against it. During the TLS handshake you need to read local files only.
    * You need to care yourself for a job regularly downloading the current version of the CRLs.
-   * Longer time between certificate revocation and the point in time you no longer accept it - depending on how often you refresh the local copy of the CRL.
+   * Longer time between certificate revocation and the point in time you no longer accept it - depending on how often you refresh the local copy of the CRLs.
 
 #### If You Decide to Use OCSP
 
@@ -267,7 +267,7 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
    * And if your CA's OCSP responder does omit the chain certificate in its reponse you additionally need to configure `SSLOCSPResponderCertificateFile` to point to the intermediate certificate of your client certificate. Something like:  
      ```Bash
-     SSLOCSPResponderCertificateFile /home/vagrant/clientcrt/chain1.pem
+     SSLOCSPResponderCertificateFile /path/to/clientcrt/chain1.pem
      ```
 
    * Reload your Apache now:
@@ -291,15 +291,15 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
    * As soon you got it working please have one more look into the error log file. There again you find lines like this:  
      ```Bash
-     [Tue Nov 12 07:49:13.064173 2019] [ssl:debug] [pid 6867:tid 139920983164672] ssl_engine_kernel.c(1751): [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
-     [Tue Nov 12 07:49:13.064315 2019] [ssl:debug] [pid 6867:tid 139920983164672] ssl_engine_kernel.c(1751): [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
-     [Tue Nov 12 07:49:13.332252 2019] [ssl:debug] [pid 6867:tid 139920983164672] ssl_engine_kernel.c(1751): [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
+     [...] [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
+     [...] [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
+     [...] [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
      ```  
      telling there are still no CRL checks.  
      On the other hand you will find lines like these, telling OCSP checks succeeded:  
      ```Bash
-     [Tue Nov 12 07:49:13.331302 2019] [ssl:info] [pid 6867:tid 139920983164672] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
-     [Tue Nov 12 07:49:14.713060 2019] [ssl:info] [pid 6867:tid 139920983164672] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
+     [...] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
+     [...] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
      ```
 
 #### If You Decide to Use CRL
@@ -386,9 +386,9 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
 
    * As soon you got it working please have one more look into the error log file. There again you find lines like this:  
      ```Bash
-[Tue Nov 12 07:35:05.353932 2019] [ssl:debug] [pid 5327:tid 140305433061120] ssl_engine_kernel.c(1751): [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 2, CRL checking mode: chain (2) [subject:...
-[Tue Nov 12 07:35:05.354129 2019] [ssl:debug] [pid 5327:tid 140305433061120] ssl_engine_kernel.c(1751): [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 1, CRL checking mode: chain (2) [subject:...
-[Tue Nov 12 07:35:05.354286 2019] [ssl:debug] [pid 5327:tid 140305433061120] ssl_engine_kernel.c(1751): [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 0, CRL checking mode: chain (2) [subject:...
+     [...] [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 2, CRL checking mode: chain (2) [subject: [...]
+     [...] [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 1, CRL checking mode: chain (2) [subject: [...]
+     [...] [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 0, CRL checking mode: chain (2) [subject: [...]
      ```  
      Please note, now it says: `CRL checking mode: chain`
 
