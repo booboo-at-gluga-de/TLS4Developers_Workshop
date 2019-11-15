@@ -3,24 +3,29 @@
 # 2019-09-18 booboo
 # this script will prepare the configuration of the CA used in this example
 # therefor it will create a directory "ca" in the current directory
+# or some other directory given as first commandline parameter
 # and create some configs there
 
-WORKING_DIR=$(readlink -f $(pwd))
-SCRIPT_DIR=$(readlink -f $(dirname $0))
-declare -u ANSWER
+if [[ -d "$1" ]]; then
+    WORKING_DIR=$1
+else
+    WORKING_DIR=$(readlink -f $(pwd))
+    declare -u ANSWER
 
-echo
-echo "Will create a new directory \"ca\" here (in $WORKING_DIR)."
-echo -n "Do you want to continue? "
-read ANSWER
+    echo
+    echo "Will create a new directory \"ca\" here (in $WORKING_DIR)."
+    echo -n "Do you want to continue? "
+    read ANSWER
 
-if [[ "$ANSWER" != "Y" ]] && [[ "$ANSWER" != "YES" ]]; then
-    echo
-    echo ABORTING!!
-    echo You might want to change to your preferred working directory and start the script again!
-    echo
-    exit 1
+    if [[ "$ANSWER" != "Y" ]] && [[ "$ANSWER" != "YES" ]]; then
+        echo
+        echo ABORTING!!
+        echo You might want to change to your preferred working directory and start the script again!
+        echo
+        exit 1
+    fi
 fi
+SCRIPT_DIR=$(readlink -f $(dirname $0))
 
 touch ~/.rnd
 mkdir $WORKING_DIR/ca || exit 1

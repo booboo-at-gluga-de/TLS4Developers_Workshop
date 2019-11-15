@@ -150,7 +150,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
      Let's check what happens, if we connect to the server without providing a client certificat.
      ```Bash
      ~# curl --cacert ca/cacert.pem https://localhost:14443/index.html
-     curl: (35) NSS: client certificate not found (nickname not specified)
+     curl: (56) OpenSSL SSL_read: error:1409445C:SSL routines:ssl3_read_bytes:tlsv13 alert certificate required, errno 0
      ```
 
    * Optional steps:  

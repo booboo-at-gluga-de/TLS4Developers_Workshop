@@ -24,3 +24,29 @@ command:
     - "(you connected to webspace of exercise A.2)"
     stderr: []
     timeout: 10000 # in milliseconds
+  A.3 Test 1:
+    title: "Exercise A.3: GET request with explicit CA truststore should return content of VirtualHost A.3"
+    exec: "curl --cacert /home/vagrant/ca/cacert.pem https://localhost:13443/index.html"
+    exit-status: 0
+    stdout:
+    - "Hello World"
+    - "(you connected to webspace of exercise A.3)"
+    stderr: []
+    timeout: 10000 # in milliseconds
+  A.4 Test 1:
+    title: "Exercise A.4: GET request authenticated with client certificat should return content of VirtualHost A.4"
+    exec: "curl --cacert /home/vagrant/ca/cacert.pem --cert /home/vagrant/client.crt --key /home/vagrant/client.key https://localhost:14443/index.html"
+    exit-status: 0
+    stdout:
+    - "This content is only displayed if you authenticate successfully by a client certificate!"
+    - "(you connected to webspace of exercise A.4)"
+    stderr: []
+    timeout: 10000 # in milliseconds
+  A.4 Test 2:
+    title: "Exercise A.4: GET request without client certificate should complain about no client certificate"
+    exec: "curl --cacert /home/vagrant/ca/cacert.pem https://localhost:14443/index.html"
+    exit-status: 56
+    stdout: []
+    stderr:
+    - "curl: (56) "
+    timeout: 10000 # in milliseconds
