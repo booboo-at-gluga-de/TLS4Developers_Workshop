@@ -6,12 +6,17 @@ GREEN='\033[1;32m'
 ORANGE='\033[0;33m'
 NO_COLOR='\033[0m'
 
+SUCCESS_COUNT=0
+ERROR_COUNT=0
+
 function success {
     echo -e "::: Result: ${GREEN}OK${NO_COLOR}"
+    SUCCESS_COUNT=$(( $SUCCESS_COUNT + 1 ))
 }
 
 function error {
     echo -e "::: Result: ${RED}ERROR${NO_COLOR}"
+    ERROR_COUNT=$(( $ERROR_COUNT + 1 ))
 }
 
 echo -e ":::"
@@ -124,3 +129,11 @@ sudo systemctl restart httpd && success || error
 
 echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
 openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
+
+echo -e ":::"
+echo -e "::: ###################################################################"
+echo -e "::: ${HEADLINE_COLOR}Summary:${NO_COLOR}"
+echo -e "::: Total successful:  ${GREEN}${SUCCESS_COUNT}${NO_COLOR}"
+echo -e "::: Total errors:      ${RED}${ERROR_COUNT}${NO_COLOR}"
+echo -e "::: ###################################################################"
+echo -e ":::"
