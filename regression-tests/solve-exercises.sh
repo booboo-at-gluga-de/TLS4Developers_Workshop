@@ -74,7 +74,11 @@ echo -e "::: ###################################################################
 echo -e ":::"
 
 echo -e "::: ${HEADLINE_COLOR}checking for previous created CA and removing it${NO_COLOR}"
-[[ -d /home/vagrant/ca ]] && rm -Rf /home/vagrant/ca && success || error
+if [[ -d /home/vagrant/ca ]]; then
+    rm -Rf /home/vagrant/ca && success || error
+else
+    echo not existing
+fi
 
 echo -e "::: ${HEADLINE_COLOR}preparing config for the CA${NO_COLOR}"
 /vagrant/exercises/A3/prepare_CA.sh /home/vagrant && success || error
