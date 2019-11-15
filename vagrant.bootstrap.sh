@@ -43,7 +43,13 @@ fi
 chmod 755 /etc/httpd/ssl.crl/
 
 # install goss (for regression tests)
-curl -fsSL https://goss.rocks/install | sh
+GOSS_INSTALLER=$(mktemp /usr/local/src/goss.install.XXX)
+curl -o $GOSS_INSTALLER -fsSL https://goss.rocks/install
+sed -i $GOSS_INSTALLER -e "s/curl/curl -sS/"
+sh $GOSS_INSTALLER
+# original command from the doc is:
+# curl -fsSL https://goss.rocks/install | sh
+# but this messes up vagrant output by trying to display progress
 
 echo
 echo "### vagrant.bootstrap.sh ended"
