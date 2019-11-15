@@ -1,4 +1,5 @@
 command:
+
   A.1 Test 1:
     title: "Exercise A.1: GET request without giving a truststore should complain about untrusted issuer"
     exec: "curl https://localhost:11443/index.html"
@@ -7,6 +8,7 @@ command:
     stderr:
     - "curl: (60) "
     timeout: 10000 # in milliseconds
+
   A.1 Test 2:
     title: "Exercise A.1: GET request with explicit truststore should complain about non matching CN"
     exec: "curl --cacert /home/vagrant/example.com.crt https://localhost:11443/index.html"
@@ -15,6 +17,7 @@ command:
     stderr:
     - "curl: (51) "
     timeout: 10000 # in milliseconds
+
   A.2 Test 1:
     title: "Exercise A.2: GET request with explicit truststore should return content of VirtualHost A.2"
     exec: "curl --cacert /home/vagrant/localhost.crt https://localhost:12443/index.html"
@@ -24,6 +27,27 @@ command:
     - "(you connected to webspace of exercise A.2)"
     stderr: []
     timeout: 10000 # in milliseconds
+
+  A.2 Test 2:
+    title: "Exercise A.2: localhost.keystore.p12 should contain a certificate and a key"
+    exec: "openssl pkcs12 -in /home/vagrant/localhost.keystore.p12 -nodes -passin pass:test"
+    exit-status: 0
+    stdout:
+    - "-----BEGIN CERTIFICATE-----"
+    - "-----BEGIN PRIVATE KEY-----"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.2 Test 3:
+    title: "Exercise A.2: localhost.truststore.p12 should contain a certificate and no key"
+    exec: "openssl pkcs12 -in /home/vagrant/localhost.truststore.p12 -nodes -passin pass:test"
+    exit-status: 0
+    stdout:
+    - "-----BEGIN CERTIFICATE-----"
+    - "!-----BEGIN PRIVATE KEY-----"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
   A.3 Test 1:
     title: "Exercise A.3: GET request with explicit CA truststore should return content of VirtualHost A.3"
     exec: "curl --cacert /home/vagrant/ca/cacert.pem https://localhost:13443/index.html"
@@ -33,6 +57,27 @@ command:
     - "(you connected to webspace of exercise A.3)"
     stderr: []
     timeout: 10000 # in milliseconds
+
+  A.3 Test 2:
+    title: "Exercise A.3: server.keystore.p12 should contain a certificate and a key"
+    exec: "openssl pkcs12 -in /home/vagrant/server.keystore.p12 -nodes -passin pass:test"
+    exit-status: 0
+    stdout:
+    - "-----BEGIN CERTIFICATE-----"
+    - "-----BEGIN PRIVATE KEY-----"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.3 Test 3:
+    title: "Exercise A.3: truststore.ca.p12 should contain a certificate and no key"
+    exec: "openssl pkcs12 -in /home/vagrant/ca/truststore.ca.p12 -nodes -passin pass:test"
+    exit-status: 0
+    stdout:
+    - "-----BEGIN CERTIFICATE-----"
+    - "!-----BEGIN PRIVATE KEY-----"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
   A.4 Test 1:
     title: "Exercise A.4: GET request authenticated with client certificat should return content of VirtualHost A.4"
     exec: "curl --cacert /home/vagrant/ca/cacert.pem --cert /home/vagrant/client.crt --key /home/vagrant/client.key https://localhost:14443/index.html"
@@ -42,6 +87,7 @@ command:
     - "(you connected to webspace of exercise A.4)"
     stderr: []
     timeout: 10000 # in milliseconds
+
   A.4 Test 2:
     title: "Exercise A.4: GET request without client certificate should complain about no client certificate"
     exec: "curl --cacert /home/vagrant/ca/cacert.pem https://localhost:14443/index.html"
@@ -49,4 +95,63 @@ command:
     stdout: []
     stderr:
     - "curl: (56) "
+    timeout: 10000 # in milliseconds
+
+  A.4 Test 3:
+    title: "Exercise A.4: client.keystore.p12 should contain a certificate and a key"
+    exec: "openssl pkcs12 -in /home/vagrant/client.keystore.p12 -nodes -passin pass:test"
+    exit-status: 0
+    stdout:
+    - "-----BEGIN CERTIFICATE-----"
+    - "-----BEGIN PRIVATE KEY-----"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.5 Test 1:
+    title: "Exercise A.5: server.crt should contain a server certificate (client flag not set, CA:false)"
+    exec: "openssl x509 -in /home/vagrant/server.crt -noout -text"
+    exit-status: 0
+    stdout:
+    - "Certificate:"
+    - "CA:FALSE"
+    - "TLS Web Server Authentication"
+    - "!TLS Web Client Authentication"
+    - "!E-mail Protection"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.5 Test 2:
+    title: "Exercise A.5: server.csr should contain a CSR"
+    exec: "openssl req -in /home/vagrant/server.csr -noout -text"
+    exit-status: 0
+    stdout:
+    - "Certificate Request:"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.5 Test 3:
+    title: "Exercise A.5: server.crt should be verifiable against CA certificate"
+    exec: "openssl verify -CAfile /home/vagrant/ca/cacert.pem /home/vagrant/server.crt"
+    exit-status: 0
+    stdout:
+    - "server.crt: OK"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.5 Test 3:
+    title: "Exercise A.5: TLS connect to port 13443 should complain about unverifyed first cert"
+    exec: "openssl s_client -connect localhost:13443 </dev/null"
+    exit-status: 0
+    stdout:
+    - "Verify return code: 21"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.5 Test 4:
+    title: "Exercise A.5: TLS connect to port 21443 should be fully verified"
+    exec: "openssl s_client -connect exercise.jumpingcrab.com:21443 </dev/null"
+    exit-status: 0
+    stdout:
+    - "Verify return code: 0"
+    stderr: []
     timeout: 10000 # in milliseconds
