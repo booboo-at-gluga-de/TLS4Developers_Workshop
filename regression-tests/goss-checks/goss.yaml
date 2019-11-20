@@ -149,9 +149,49 @@ command:
 
   A.5 Test 4:
     title: "Exercise A.5: TLS connect to port 21443 should be fully verified"
-    exec: "openssl s_client -connect exercise.jumpingcrab.com:21443 </dev/null"
+    exec: 'openssl s_client -connect {{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}:21443 </dev/null'
     exit-status: 0
     stdout:
     - "Verify return code: 0"
     stderr: []
     timeout: 10000 # in milliseconds
+
+  B.1 Test 1:
+    title: "Exercise B.1: GET request without explicit truststrore should return content of VirtualHost B.1"
+    exec: 'curl https://{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}:21443/index.html'
+    exit-status: 0
+    stdout:
+    - "Hello Real World"
+    - "(you connected to webspace of exercise B.1)"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+# Certificates used in Chapter B
+file:
+  /etc/letsencrypt/live/{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}/cert.pem:
+    title: "Chapter B: Symlink cert.pem"
+    exists: true
+    owner: root
+    group: root
+    filetype: symlink
+    contains:
+    - "-----BEGIN CERTIFICATE-----"
+    - "-----END CERTIFICATE-----"
+  /etc/letsencrypt/live/{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}/chain.pem:
+    title: "Chapter B: Symlink chain.pem"
+    exists: true
+    owner: root
+    group: root
+    filetype: symlink
+    contains:
+    - "-----BEGIN CERTIFICATE-----"
+    - "-----END CERTIFICATE-----"
+  /etc/letsencrypt/live/{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}/privkey.pem:
+    title: "Chapter B: Symlink privkey.pem"
+    exists: true
+    owner: root
+    group: root
+    filetype: symlink
+    contains:
+    - "-----BEGIN PRIVATE KEY-----"
+    - "-----END PRIVATE KEY-----"

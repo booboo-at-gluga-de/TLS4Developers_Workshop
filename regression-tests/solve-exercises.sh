@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# you can provide your own domain name (used in the exercises of chapter B)
+# by setting (and exporting) the environment variable DOMAIN_NAME_CHAPTER_B
+# before starting this script
+DOMAIN_NAME_CHAPTER_B=${DOMAIN_NAME_CHAPTER_B:-exercise.jumpingcrab.com}
+
 HEADLINE_COLOR='\033[1;34m'
 RED='\033[1;31m'
 GREEN='\033[1;32m'
@@ -8,6 +13,7 @@ NO_COLOR='\033[0m'
 
 SUCCESS_COUNT=0
 ERROR_COUNT=0
+SKIPPED_COUNT=0
 
 function success {
     echo -e "::: Result: ${GREEN}OK${NO_COLOR}"
@@ -17,6 +23,11 @@ function success {
 function error {
     echo -e "::: Result: ${RED}ERROR${NO_COLOR}"
     ERROR_COUNT=$(( $ERROR_COUNT + 1 ))
+}
+
+function skipped {
+    echo -e "::: Result: ${ORANGE}Skipped${NO_COLOR}"
+    SKIPPED_COUNT=$(( $SKIPPED_COUNT + 1 ))
 }
 
 echo -e ":::"
@@ -136,8 +147,36 @@ openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.
 
 echo -e ":::"
 echo -e "::: ###################################################################"
+echo -e "::: ${HEADLINE_COLOR}solving exercise B.1${NO_COLOR}"
+echo -e "::: ###################################################################"
+echo -e ":::"
+
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
+CERT_FILE_RC=$?
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
+CHAIN_FILE_RC=$?
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
+KEY_FILE_RC=$?
+
+if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B1.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/ && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
+    sudo systemctl restart httpd && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating ${DOMAIN_NAME_CHAPTER_B}.keystore.p12${NO_COLOR}"
+    sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test && success || error
+else
+    echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
+    skipped
+fi
+
+echo -e ":::"
+echo -e "::: ###################################################################"
 echo -e "::: ${HEADLINE_COLOR}Summary:${NO_COLOR}"
 echo -e "::: Total successful:  ${GREEN}${SUCCESS_COUNT}${NO_COLOR}"
+echo -e "::: Total skipped:     ${ORANGE}${SKIPPED_COUNT}${NO_COLOR}"
 echo -e "::: Total errors:      ${RED}${ERROR_COUNT}${NO_COLOR}"
 echo -e "::: ###################################################################"
 echo -e ":::"

@@ -51,6 +51,15 @@ sh $GOSS_INSTALLER
 # curl -fsSL https://goss.rocks/install | sh
 # but this messes up vagrant output by trying to display progress
 
+# do sudoers configuration
+cat >/etc/sudoers.d/TLS4Developers <<EOF
+# the goss checks (in run-all-tests.sh) read the domain name used for
+# exercises of chapter B from this variable
+# (and they need to run with root privileges to be able to read the
+# certificates)
+Defaults    env_keep += "DOMAIN_NAME_CHAPTER_B"
+EOF
+
 echo
 echo "### vagrant.bootstrap.sh ended"
 echo
