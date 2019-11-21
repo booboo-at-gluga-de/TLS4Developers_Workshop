@@ -174,6 +174,53 @@ fi
 
 echo -e ":::"
 echo -e "::: ###################################################################"
+echo -e "::: ${HEADLINE_COLOR}solving exercise B.2${NO_COLOR}"
+echo -e "::: ###################################################################"
+echo -e ":::"
+
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
+CERT_FILE_RC=$?
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
+CHAIN_FILE_RC=$?
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
+KEY_FILE_RC=$?
+
+echo -e "::: ${HEADLINE_COLOR}checking for previous created clientcrt directory and removing it${NO_COLOR}"
+if [[ -d /home/vagrant/clientcrt ]]; then
+    rm -Rf /home/vagrant/clientcrt && success || error
+else
+    echo not existing
+fi
+
+echo -e "::: ${HEADLINE_COLOR}creating clientcrt directory${NO_COLOR}"
+mkdir /home/vagrant/clientcrt && chmod 700 /home/vagrant/clientcrt/ && success || error
+
+if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
+    echo -e "::: ${HEADLINE_COLOR}populating ~/clientcrt/${NO_COLOR}"
+    for PEM_LINK in \
+        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem \
+        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem \
+        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/fullchain.pem \
+        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem
+    do
+        PEM_FILE=$(sudo readlink -f $PEM_LINK) && sudo cp $PEM_FILE ~/clientcrt/ && success || error
+    done
+
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B2.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/ && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+    sudo systemctl reload httpd && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
+    openssl pkcs12 -export -in /home/vagrant/clientcrt/cert1.pem -inkey /home/vagrant/clientcrt/privkey1.pem -certfile /home/vagrant/clientcrt/chain1.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
+else
+    echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
+    skipped
+fi
+
+echo -e ":::"
+echo -e "::: ###################################################################"
 echo -e "::: ${HEADLINE_COLOR}Summary:${NO_COLOR}"
 echo -e "::: Total successful:  ${GREEN}${SUCCESS_COUNT}${NO_COLOR}"
 echo -e "::: Total skipped:     ${ORANGE}${SKIPPED_COUNT}${NO_COLOR}"

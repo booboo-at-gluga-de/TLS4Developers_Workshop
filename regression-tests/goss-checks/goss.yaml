@@ -166,6 +166,25 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
+  B.2 Test 1:
+    title: "Exercise B.2: GET request with client certificate should return content of VirtualHost B.2"
+    exec: 'curl --cert /home/vagrant/clientcrt/fullchain1.pem --key /home/vagrant/clientcrt/privkey1.pem https://{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}:22443/index.html'
+    exit-status: 0
+    stdout:
+    - "This content is only displayed if you authenticate successfully by a client certificate!"
+    - "(you connected to webspace of exercise B.2)"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.2 Test 2:
+    title: "Exercise B.2: GET request without client certificate should complain about no client certificate"
+    exec: 'curl https://{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}:22443/index.html'
+    exit-status: 56
+    stdout: []
+    stderr:
+    - "curl: (56) "
+    timeout: 10000 # in milliseconds
+
 # Certificates used in Chapter B
 file:
   /etc/letsencrypt/live/{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}/cert.pem:
