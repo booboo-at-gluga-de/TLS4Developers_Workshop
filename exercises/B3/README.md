@@ -53,19 +53,21 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
 
    * You can use the CRL URL (just found out) to download it and have a look at it:  
      ```Bash
-     ~# wget -O /tmp/sha2-ev-server-g2.crl http://crl3.digicert.com/sha2-ev-server-g2.crl
-     --2019-10-22 17:24:56--  http://crl3.digicert.com/sha2-ev-server-g2.crl
+     ~# wget -O /tmp/crl.for.github.com.crl http://crl3.digicert.com/sha2-ev-server-g2.crl
+     --2019-11-21 06:58:53--  http://crl3.digicert.com/sha2-ev-server-g2.crl
      Resolving crl3.digicert.com (crl3.digicert.com)... 93.184.220.29
      Connecting to crl3.digicert.com (crl3.digicert.com)|93.184.220.29|:80... connected.
      HTTP request sent, awaiting response... 200 OK
-     Length: 881818 (861K) [application/x-pkcs7-crl]
-     Saving to: ‘/tmp/sha2-ev-server-g2.crl’
+     Length: 896693 (876K) [application/x-pkcs7-crl]
+     Saving to: ‘/tmp/crl.for.github.com.crl’
 
-     /tmp/sha2-ev-server-g2.crl      100%[=======================================================>] 861.15K   995KB/s    in 0.9s
+     /tmp/crl.for.github.com.crl     100%[=======================================================>] 875.68K   444KB/s    in 16s
 
-     995 KB/s - ‘/tmp/sha2-ev-server-g2.crl’ saved [881818/881818]
+     56.0 KB/s - ‘/tmp/crl.for.github.com.crl’ saved [896693/896693]
+     ```
 
-     ~# openssl crl -in /tmp/sha2-ev-server-g2.crl -inform der -noout -text
+     ```Bash
+     ~# openssl crl -in /tmp/crl.for.github.com.crl -inform der -noout -text
      Certificate Revocation List (CRL):
              Version 2 (0x1)
              Signature Algorithm: sha256WithRSAEncryption
@@ -130,9 +132,9 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
      DONE
      ```
 
-   * In `/tmp/github.com.chain.pem` now there are two certificates, the server certificate and the intermediate. We only need the intermediate certificate. So open the file in a texteditor and delete the first certificate block:  
+   * In `/tmp/github.com.chain.pem` now there are two certificates, the server certificate and the intermediate. We only need the intermediate certificate. Delete the first certificate block now. This can be done with your favourite text editor or by:  
      ```Bash
-     ~# vim /tmp/github.com.chain.pem 
+     ~# sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem
      ```
 
    * From the certifcate to check you can extract the OCSP URL by:  

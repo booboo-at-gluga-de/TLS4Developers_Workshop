@@ -185,6 +185,42 @@ command:
     - "curl: (56) "
     timeout: 10000 # in milliseconds
 
+  B.3 Test 1:
+    title: "Exercise B.3: CRL referenced by the github.com certifcate should be a valid CRL"
+    exec: 'openssl crl -in /tmp/crl.for.github.com.crl -inform der -noout -text'
+    exit-status: 0
+    stdout:
+    - "Certificate Revocation List (CRL):"
+    - "Last Update:"
+    - "Next Update:"
+    - "Revoked Certificates:"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 2:
+    title: "Exercise B.3: OCSP request should result in: Response verify OK"
+    exec: 'openssl ocsp -issuer /tmp/github.com.chain.pem -cert /tmp/github.com.pem -text -url $(openssl x509 -in /tmp/github.com.pem -noout -ocsp_uri)'
+    exit-status: 0
+    stdout:
+    - "OCSP Request Data:"
+    - "OCSP Response Data:"
+    - "/tmp/github.com.pem: good"
+    - "This Update:"
+    - "Next Update:"
+    stderr:
+    - "Response verify OK"
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 3:
+    title: "Exercise B.3: GET request should return content of VirtualHost B.3.ocsp because client certificate was successfully checked against OCSP"
+    exec: 'curl --cert /home/vagrant/clientcrt/fullchain1.pem --key /home/vagrant/clientcrt/privkey1.pem https://{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}:23443/index.html'
+    exit-status: 0
+    stdout:
+    - "This content is only displayed if you authenticate successfully by a client certificate!"
+    - "(you connected to webspace of exercise B.3 with OCSP checking)"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
 # Certificates used in Chapter B
 file:
   /etc/letsencrypt/live/{{getEnv "DOMAIN_NAME_CHAPTER_B" "exercise.jumpingcrab.com"}}/cert.pem:

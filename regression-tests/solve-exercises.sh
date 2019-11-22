@@ -221,6 +221,37 @@ fi
 
 echo -e ":::"
 echo -e "::: ###################################################################"
+echo -e "::: ${HEADLINE_COLOR}solving exercise B.3${NO_COLOR}"
+echo -e "::: ###################################################################"
+echo -e ":::"
+
+echo -e "::: ${HEADLINE_COLOR}Getting certificate for github.com${NO_COLOR}"
+openssl s_client -connect github.com:443 </dev/null >/tmp/github.com.pem && success || error
+sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.pem && success || error
+
+echo -e "::: ${HEADLINE_COLOR}Extracting CRL URL${NO_COLOR}"
+GITHUB_COM_CRL_URI=$(openssl x509 -in /tmp/github.com.pem -noout -text | grep -A 6 "X509v3 CRL Distribution Points" | grep "http://" | head -1 | sed -e "s/.*URI://")
+if [[ -z $GITHUB_COM_CRL_URI ]]; then
+    error
+else
+    success
+fi
+
+echo -e "::: ${HEADLINE_COLOR}Getting CRL for github.com${NO_COLOR}"
+wget -O /tmp/crl.for.github.com.crl $GITHUB_COM_CRL_URI && success || error
+
+echo -e "::: ${HEADLINE_COLOR}Getting chain certificate for github.com${NO_COLOR}"
+openssl s_client -showcerts -connect github.com:443 </dev/null >/tmp/github.com.chain.pem && success || error
+sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.chain.pem && sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem && success || error
+
+echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
+sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error
+
+echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+sudo systemctl reload httpd && success || error
+
+echo -e ":::"
+echo -e "::: ###################################################################"
 echo -e "::: ${HEADLINE_COLOR}Summary:${NO_COLOR}"
 echo -e "::: Total successful:  ${GREEN}${SUCCESS_COUNT}${NO_COLOR}"
 echo -e "::: Total skipped:     ${ORANGE}${SKIPPED_COUNT}${NO_COLOR}"
