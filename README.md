@@ -102,3 +102,5 @@ That's why you will need to adapt the examples given.
      mTLS Connection with Intermediate Certificate (from an Official CA)
    * [__Exercise B.3__](exercises/B3/):
      Certificate Revocation
+   * [__Exercise B.4__](exercises/B4/):
+     OCSP Staping

@@ -27,6 +27,7 @@ Everyone verifying certificates needs a method to check if the certificate has b
 
    * With the __Online Certificate Status Protocol__ (OCSP) you can send a specific query to an OCSP reponder (provided by the CA) to check the revocation status of one single certificate. For the transfer also HTTP is used. The response is also digitaly signed by the CA and also has a limited livetime.  
      See also: https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol
+     - A special flavour of OSCP - called OCSP Staping - will be covered in [__Exercise B.4__](../B4/). For now we will focus on pure OCSP.
 
 Nowadays OCSP is more widly used than CRLs.
 
@@ -411,4 +412,5 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
 
 ## Conclusion
 
-   * You made it up to here! Congratulations! We hope your new gained knowledge will be helpful for you! Enjoy the additional security!
+   * Always keep in mind: Make sure to always check for revocation - for reasons of your own secuity!
+   * Please continue to [__Exercise B.4__](../B4/) to learn about OCSP Stapling: It improves performance and reduces dependency on the availability of your CA's OCSP handler.
