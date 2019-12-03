@@ -29,8 +29,6 @@ Everyone verifying certificates needs a method to check if the certificate has b
      See also: https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol
      - A special flavour of OSCP - called OCSP Staping - will be covered in [__Exercise B.4__](../B4/). For now we will focus on pure OCSP.
 
-Nowadays OCSP is more widly used than CRLs.
-
 ## Revoke a Certificate
 
 The concrete steps for revoking a certificate are a little different from CA to CA. Please see instructions provided by the Certificate Authority (CA) which issued the certificate.
@@ -39,7 +37,7 @@ The concrete steps for revoking a certificate are a little different from CA to 
 
 __IMPORTANT:__ For fully verifying a certificate presented to you by your communication partner, make sure you do not only check the validity of the certificate but also to check it for revocation. Your communication partner might be a server you are connecting to (presenting a server certificate) or - in mTLS usecase - also a client (authenticating by a client certificate).
 
-Most Browsers nowadays do check revocation of server certificates by default. Other software components and libraries often (by default) don't. Make sure to configure a proper check! (You will do this in an example in a few moments.)
+Most Browsers nowadays do check revocation of server certificates by default, at least if the certificate contains an OCSP URL. Other software components and libraries often (by default) don't. Make sure to configure a proper check! (There will be an example in a few moments.)
 
 Each certificate contains the URL where the according CRL can be retrieved, or the URL of the according OCSP responder. Or if you are really lucky: Both (in this case you have the free choice on which to use).
 
@@ -47,7 +45,8 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
 
 ### Display Content of CRL
 
-   * Point your browser to https://github.com/ and examine the certificate. Probably it will contain both (at least for now - October 2019 - it does). One or more CRL URL(s):  
+   * Point your browser to https://github.com/ and examine the certificate. Probably it will contain both (at least for now - October 2019 - it does).  
+     One or more CRL URL(s):  
      ![CRL URL(s) within the certificate](images/crl_info.png "CRL URL(s) within the certificate")  
      And a OCSP URL:  
      ![OCSP URL within the certificate](images/ocsp_info.png "OCSP URL within the certificate")
@@ -226,7 +225,7 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
      (you connected to webspace of exercise B.2)
      ```
 
-   * Check the your Apache's error log now. In might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Look for lines looking like this:  
+   * Check your Apache's error log now. In might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Find lines looking like this:  
      ```Bash
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
@@ -245,9 +244,11 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
    * You rely on the availability of the OCSP handler: If the OCSP handler (operated by the CA) is unavailable, clients are unable to request anything from your webserver because every TLS handshake will be unsuccessful.
    * Maybe privacy concerns: The CA could - by analyzing the access logs of the OCSP handler - track the usage of every certificate because they get one request within every TLS handshake. (IP address, timestamp, ...)
 
+In [__Exercise B.4__](../B4/) you will see what you can do to mitigate the CONs.
+
 #### PROs and CONs of CRLs
 
-   * More efficient and faster: You download the CRLs once and evaluate multiple certificates against it. During the TLS handshake you need to read local files only.
+   * Faster and (depending on your usecase) more efficient: You download the CRLs once and evaluate multiple certificates against it. During the TLS handshake you need to read local files only.
    * You need to care yourself for a job regularly downloading the current version of the CRLs.
    * Longer time between certificate revocation and the point in time you no longer accept it - depending on how often you refresh the local copy of the CRLs.
 
