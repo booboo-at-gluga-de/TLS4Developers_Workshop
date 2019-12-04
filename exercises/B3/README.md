@@ -6,7 +6,7 @@ In this exercise you will learn about certificate revocation and how to check if
 
 ## Preface
 
-Security of x.509 certificates relies on the private key being kept secret. Only authorized persons / systems are allowed to access it. If this is not guaranteed any more the certificate needs to be invalidated immediatelly. This is called __certificate revocation__ in x.509 context and needs to be done at least in the following situations:
+Security of x.509 certificates relies on the private key being kept secret. Only authorized persons / systems are allowed to access it. If this is not guaranteed any more, the certificate needs to be invalidated immediatelly. This is called __certificate revocation__ in x.509 context and needs to be done at least in the following situations:
 
    * The private key is stolen or suspected to be stolen.
    * An attacker had access (or suspected to have access) to the system storing the private key.
@@ -25,7 +25,7 @@ Everyone verifying certificates needs a method to check if the certificate has b
    * A __certificate revocation list__ (CRL) is one file containing a list of all revoked certificates issued by this CA. It is digitaly signed by the CA, has a limited validity period and is distributed via a HTTP server.  
      See also: https://en.wikipedia.org/wiki/Certificate_revocation_list
 
-   * With the __Online Certificate Status Protocol__ (OCSP) you can send a specific query to an OCSP reponder (provided by the CA) to check the revocation status of one single certificate. For the transfer also HTTP is used. The response is also digitaly signed by the CA and also has a limited livetime.  
+   * With the __Online Certificate Status Protocol__ (OCSP) you can send a specific query to an OCSP reponder (provided by the CA) to check the revocation status of one single certificate. For the transfer also HTTP is used. The response is also digitaly signed by the CA and also has a limited lifetime.  
      See also: https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol
      - A special flavour of OSCP - called OCSP Staping - will be covered in [__Exercise B.4__](../B4/). For now we will focus on pure OCSP.
 
@@ -35,7 +35,7 @@ The concrete steps for revoking a certificate are a little different from CA to 
 
 ## Check for Revocation
 
-__IMPORTANT:__ For fully verifying a certificate presented to you by your communication partner, make sure you do not only check the validity of the certificate but also to check it for revocation. Your communication partner might be a server you are connecting to (presenting a server certificate) or - in mTLS usecase - also a client (authenticating by a client certificate).
+__IMPORTANT:__ For fully verifying a certificate presented to you by your communication partner, make sure you do not only check the validity of the certificate itself but also to check it for revocation. Your communication partner might be a server you are connecting to (presenting a server certificate) or - in mTLS usecase - also a client (authenticating by a client certificate).
 
 Most Browsers nowadays do check revocation of server certificates by default, at least if the certificate contains an OCSP URL. Other software components and libraries often (by default) don't. Make sure to configure a proper check! (There will be an example in a few moments.)
 
@@ -225,7 +225,7 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
      (you connected to webspace of exercise B.2)
      ```
 
-   * Check your Apache's error log now. In might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Find lines looking like this:  
+   * Check your Apache's error log now. It might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Find lines looking like this:  
      ```Bash
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
@@ -344,7 +344,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
 
    * Copy the both files in PEM format into the directory created above:  
      ```Bash
-     ~# sudo cp issuing_ca.crl.pem root_ca.crl.pem /etc/httpd/ssl.crl
+     ~# sudo cp issuing_ca.crl.pem root_ca.crl.pem /etc/httpd/ssl.crl/
      ```
 
    * For efficiency reasons Apache looks up certificates in the directory in their HASH representation. So you need to provide symlinks:  
@@ -396,7 +396,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
      ```  
      Please note, now it says: `CRL checking mode: chain`
 
-   * In a real world scenario please remember to set up a cron job which on a regular basis gets new versions of the CRLs. Steps like above: Download them, maybe convert to PEM format, hash them.  
+   * In a real world scenario please remember to set up a cron job which on a regular basis gets new versions of the CRLs. Steps like above: Download them, maybe convert to PEM format and hash them.  
      You need to run it always before expiration of the CRL at minimum. Recommendation is to do it way more often. (If you get them more often you reduce the time window for abuse: Time between revocation and disabling usage.)
 
    * Optional step: If you want you can revoke the client certificate and see it is no longer accepted:
@@ -414,4 +414,4 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
 ## Conclusion
 
    * Always keep in mind: Make sure to always check for revocation - for reasons of your own secuity!
-   * Please continue to [__Exercise B.4__](../B4/) to learn about OCSP Stapling: It improves performance and reduces dependency on the availability of your CA's OCSP handler.
+   * Please continue to [__Exercise B.4__](../B4/) now to learn about OCSP Stapling: It improves performance and reduces dependency on the availability of your CA's OCSP handler.

@@ -1,17 +1,17 @@
-# Exercise B.4: OCSP Staping
+# Exercise B.4: OCSP Stapling
 
 ## Objective
 
 You saw some disadvantages of OCSP in [__Exercise B.3__](../B3/). Now you will learn how OCSP Stapling adresses these and you will configure an Apache for OCSP Stapling.
 
-## Advantages of OCSP Staping
+## Advantages of OCSP Stapling
 
 Let's quickly repeat some disadvantage of OCSP already discussed in [__Exercise B.3__](../B3/):
    * One additional network connection (between client and OCSP handler) during each TLS handshake. (This takes a little extra time.)
    * You rely on the availability of the OCSP handler: If the OCSP handler (operated by the CA) is unavailable, clients might be unable to request anything from your webserver because they are unable to trust your certificate.
    * Maybe privacy concerns: The CA could - by analyzing the access logs of the OCSP handler - track the usage of every certificate because they get one request within every TLS handshake. (IP address, timestamp, ...)
 
-When using OCSP stapling, the server does the OCSP request for it's own server certificate and sends the response to the client as part of the TLS handshake. The client can trust it anyway because the OCSP response is digitally signed by the CA.
+When using OCSP Stapling, the server does the OCSP request for it's own server certificate and sends the response to the client as part of the TLS handshake. The client can trust it anyway because the OCSP response is digitally signed by the CA.
    * No extra connection between client and OCSP handler is needed - no extra roundtrip time, no privacy concerns.
    * And: The server can very efficiently cache the OCSP response for a while. So short outages or overload situations of the OCSP handler do not have an impact.
 
@@ -111,7 +111,7 @@ To continue with the next steps you need to have finished [__Exercise B.1__](../
      SSLUseStapling on
      SSLStaplingResponseMaxAge 3600
      ```  
-     to enable OCSP stapling.
+     to enable OCSP Stapling.
 
    * If you are interested in what's going on during the TLS handshake and want to read every detail in the log, please add __inside__ the `VirtualHost` section:  
      ```Bash
@@ -248,25 +248,25 @@ The clear answer is: Well, it depends!
 It depends on how many certificates you check per time interval and if all of them are issued from a small number of CAs, or if they are issued from many different CAs.  
 Good news is: In many usecases we can break it down to one of two suggestions:
 
-   * A client often connects to lots of servers with certificates from many different CAs. The client needs to do revocation checking for all of them. So for server certificates the recommendation is to use OCSP Stapling, because at the server side OCSP responses can be cached very efficiently: The server usually offers TLS based services with a limited number of certificates and provides services for a way bigger number of clients.
+   * A client (e. g. a browser connecting to HTTPS websites) often connects to lots of servers with certificates from many different CAs. The client needs to do revocation checking for all of them. So for server certificates the recommendation is to use OCSP Stapling, because at the server side OCSP responses can be cached very efficiently: The server usually offers TLS based services with a limited number of certificates and provides services for a way bigger number of clients.
 
-   * In an mTLS setup a server needs to do revocation checking for lots of different client certificates. But usually the server anyway only accepts Client Certificates from one single CA (or maybe a very small number). Here revocation checking against a CRL is very efficient, because the server needs to download one (or very few) CRLs only and can efficiently cache them for a while.
+   * In an mTLS setup a server needs to do revocation checking for lots of different client certificates. On the other hand usually a server accepts Client Certificates from one single CA only (or maybe a very small number). Here revocation checking against a CRL is very efficient, because the server needs to download one (or very few) CRLs only and can efficiently cache them for a while.
 
 Advantages are:
 
-   * Both of them work with cached revocation information. That's why they are robust against short outages or performace issues on components at the CA side.
+   * Both scenarios work with cached revocation information. That's why they are robust against short outages or performace issues on components at the CA side.
    * No privacy concerns (see above)
-   * The number of network connections is optimized: Saving the roundtrip times of extra connections.
+   * The number of network connections is optimized: Saving the roundtrip times of one extra connection.
    * Both of them need central configuration (at the server side) only.  
-     (In many setups configurations of a limited number of servers is considered to be easier rolled out, than configurations at many more clients.)
+     (In many setups configurations of a limited number of servers is considered to be easier to roll out, than configurations at many clients.)
 
 Caching Time Considerations (in both cases):
 
    * Updating CRLs or OSCP responses more often means more network traffic.
-   * On longer intervals there is a longer time in which a certificate, which is already revoked, will be accepted (and could be abused).  
+   * On longer intervals there is a longer time in which a certificate, which is already revoked, will still be accepted (and could be abused).  
      On the other hand: It also will take you some time to remark a certificate (or a whole machine) is compromised, and to do the revocation process.
 
-So caching time depends on the concrete needs of your setup. But in most cases a time range in minutes does not make too much sense. Maybe thinking in hours could be better.
+So caching time depends on the concrete needs of your setup, but in most cases a time range in minutes does not make too much sense. Maybe thinking in hours could be better.
 
 ## Conclusion
 
