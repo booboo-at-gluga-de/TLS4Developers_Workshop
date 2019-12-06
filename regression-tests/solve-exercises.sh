@@ -48,8 +48,8 @@ openssl x509 -req -days 365 -in /home/vagrant/example.com.csr -signkey /home/vag
 echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A1.conf${NO_COLOR}"
 sudo cp /vagrant/exercises/A1/apache_conf.d/exercise-A1.conf /etc/httpd/conf.d/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-sudo systemctl restart httpd && success || error
+echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+sudo systemctl reload httpd && success || error
 
 echo -e ":::"
 echo -e "::: ###################################################################"
@@ -69,8 +69,8 @@ openssl x509 -req -days 365 -in /home/vagrant/localhost.csr -signkey /home/vagra
 echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A2.conf${NO_COLOR}"
 sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-sudo systemctl restart httpd && success || error
+echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+sudo systemctl reload httpd && success || error
 
 echo -e "::: ${HEADLINE_COLOR}creating localhost.keystore.p12${NO_COLOR}"
 openssl pkcs12 -export -in /home/vagrant/localhost.crt -inkey /home/vagrant/localhost.key -out /home/vagrant/localhost.keystore.p12 -passout pass:test && success || error
@@ -112,8 +112,8 @@ openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions server_cert -days 
 echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A3.conf${NO_COLOR}"
 sudo cp /vagrant/exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-sudo systemctl restart httpd && success || error
+echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+sudo systemctl reload httpd && success || error
 
 echo -e "::: ${HEADLINE_COLOR}creating server.keystore.p12${NO_COLOR}"
 openssl pkcs12 -export -in /home/vagrant/server.crt -inkey /home/vagrant/server.key -out /home/vagrant/server.keystore.p12 -passout pass:test && success || error
@@ -139,8 +139,8 @@ openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions client_cert -days 
 echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A4.conf${NO_COLOR}"
 sudo cp /vagrant/exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-sudo systemctl restart httpd && success || error
+echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+sudo systemctl reload httpd && success || error
 
 echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
 openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
@@ -162,8 +162,8 @@ if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -e
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B1.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/ && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-    sudo systemctl restart httpd && success || error
+    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+    sudo systemctl reload httpd && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating ${DOMAIN_NAME_CHAPTER_B}.keystore.p12${NO_COLOR}"
     sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test && success || error
@@ -287,8 +287,8 @@ sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/con
 # echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
 # sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-sudo systemctl reload httpd && success || error
+echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
+sudo systemctl restart httpd && success || error
 
 echo -e ":::"
 echo -e "::: ###################################################################"
