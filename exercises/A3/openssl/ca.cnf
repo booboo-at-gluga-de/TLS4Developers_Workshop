@@ -80,6 +80,54 @@ preserve         = no           # keep passed DN ordering
 # and supplied fields are just that :-)
 policy           = policy_match
 
+[ CA_B3_root ]
+
+dir         = /home/vagrant/ca.B3
+certs       = $dir/certs
+crl_dir     = $dir/crl
+database    = $dir/index.root_ca.txt
+new_certs_dir   = $dir/newcerts
+
+certificate = $dir/root_ca.pem
+serial      = $dir/serial.root_ca
+crlnumber   = $dir/crlnumber.root_ca
+crl         = $dir/crl.root_ca.pem
+private_key = $dir/private/root_ca.key
+RANDFILE    = $dir/private/.rand.root_ca
+
+x509_extensions = usr_cert
+
+default_days     = 365
+default_crl_days = 30
+default_md       = default
+preserve         = no
+
+policy           = policy_match
+
+[ CA_B3_issuing ]
+
+dir         = /home/vagrant/ca.B3
+certs       = $dir/certs
+crl_dir     = $dir/crl
+database    = $dir/index.issuing_ca.txt
+new_certs_dir   = $dir/newcerts
+
+certificate = $dir/issuing_ca.pem
+serial      = $dir/serial.issuing_ca
+crlnumber   = $dir/crlnumber.issuing_ca
+crl         = $dir/crl.issuing_ca.pem
+private_key = $dir/private/issuing_ca.key
+RANDFILE    = $dir/private/.rand.issuing_ca
+
+x509_extensions = usr_cert
+
+default_days     = 365
+default_crl_days = 30
+default_md       = default
+preserve         = no
+
+policy           = policy_match
+
 # For the CA policy
 [ policy_match ]
 countryName             = match
@@ -225,41 +273,21 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 [ v3_ca ]
+# Extensions for a typical CA ('man x509v3_config').
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+subjectAltName = @alt_names_v3_ca
 
-
-# Extensions for a typical CA
-
-
-# PKIX recommendation.
-
-subjectKeyIdentifier=hash
-
-authorityKeyIdentifier=keyid:always,issuer
-
-# This is what PKIX recommends but some broken software chokes on critical
-# extensions.
-#basicConstraints = critical,CA:true
-# So we do this instead.
-basicConstraints = CA:true
-
-# Key usage: this is typical for a CA certificate. However since it will
-# prevent it being used as an test self-signed certificate it is best
-# left out by default.
-# keyUsage = cRLSign, keyCertSign
-
-# Some might want this also
-# nsCertType = sslCA, emailCA
-
-# Include email address in subject alt name: another PKIX recommendation
-# subjectAltName=email:copy
-# Copy issuer details
-# issuerAltName=issuer:copy
-
-# DER hex encoding of an extension: beware experts only!
-# obj=DER:02:03
-# Where 'obj' is a standard or added object
-# You can even override a supported extension:
-# basicConstraints= critical, DER:30:03:01:01:FF
+[ v3_issuing_ca ]
+# Extensions for a typical issuing CA ('man x509v3_config').
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+subjectAltName = @alt_names_v3_issuing_ca
+crlDistributionPoints = URI:http://localhost/root_ca.crl.pem
 
 [ crl_ext ]
 
@@ -380,3 +408,10 @@ tsa_name                = yes   # Must the TSA name be included in the reply?
                                 # (optional, default: no)
 ess_cert_id_chain       = no    # Must the ESS cert id chain be included?
                                 # (optional, default: no)
+
+[alt_names_v3_ca]
+DNS.1 = RootCA.example.com
+
+[alt_names_v3_issuing_ca]
+DNS.1 = IssuingCA.example.com
+

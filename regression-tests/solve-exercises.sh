@@ -244,48 +244,71 @@ echo -e "::: ${HEADLINE_COLOR}Getting chain certificate for github.com${NO_COLOR
 openssl s_client -showcerts -connect github.com:443 </dev/null >/tmp/github.com.chain.pem && success || error
 sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.chain.pem && sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem && success || error
 
+echo -e "::: ${HEADLINE_COLOR}checking for the B.3 CA directory and deleting (if it exists)${NO_COLOR}"
+if [[ -d /home/vagrant/ca.B3 ]]; then
+    rm -Rf /home/vagrant/ca.B3 && success || error
+else
+    echo not existing
+fi
 
-# echo -e "::: ${HEADLINE_COLOR}preparing config for the B.3 CA (issuing client certificates)${NO_COLOR}"
-# WORKING_DIR=/home/vagrant
-# mkdir $WORKING_DIR/ca.B3 && success || error
-# mkdir $WORKING_DIR/ca.B3/newcerts && success || error
-# mkdir $WORKING_DIR/ca.B3/private && success || error
-# chmod 700 $WORKING_DIR/ca.B3/private && success || error
-# echo -ne "01" >$WORKING_DIR/ca.B3/serial && success || error
-# echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber && success || error
-# touch $WORKING_DIR/ca.B3/index.txt && success || error
-# touch $WORKING_DIR/ca.B3/index.txt.attr && success || error
-# cp /vagrant/exercises/A3/openssl/ca.cnf $WORKING_DIR/ca/ && success || error
-# echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA key${NO_COLOR}"
-# openssl genrsa -out /home/vagrant/ca.B3/private/cacert.key 4096 && success || error
-#
-# echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA certificate${NO_COLOR}"
-# openssl req -config /home/vagrant/ca.B3/ca.cnf -new -x509 -days 3650 -key /home/vagrant/ca.B3/private/cacert.key -out /home/vagrant/ca.B3/cacert.pem -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Root CA/emailAddress=certificates@example.com" && success || error
-#
-# echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA key${NO_COLOR}"
-# @ToDo: add the command
-#
-# echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA certificate${NO_COLOR}"
-# @ToDo: add the command (sign with B.3 Root CA)
-#
-# echo -e "::: ${HEADLINE_COLOR}generating client key${NO_COLOR}"
-# openssl genrsa -out /home/vagrant/client.key 2048 && success || error
-#
-# echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-# openssl req -new -key /home/vagrant/client.key -out /home/vagrant/client.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=User Hans Wurst/emailAddress=hans.wurst@example.com" && success || error
-#
-# echo -e "::: ${HEADLINE_COLOR}signing with  B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
-# openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions client_cert -days 365 -in /home/vagrant/client.csr -out /home/vagrant/client.crt && success || error
+echo -e "::: ${HEADLINE_COLOR}preparing config for the B.3 CA (issuing client certificates)${NO_COLOR}"
+WORKING_DIR=/home/vagrant
+mkdir $WORKING_DIR/ca.B3 && success || error
+mkdir $WORKING_DIR/ca.B3/newcerts && success || error
+mkdir $WORKING_DIR/ca.B3/private && success || error
+chmod 700 $WORKING_DIR/ca.B3/private && success || error
+echo -ne "01" >$WORKING_DIR/ca.B3/serial.root_ca && success || error
+echo -ne "01" >$WORKING_DIR/ca.B3/serial.issuing_ca && success || error
+echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber.root_ca && success || error
+echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber.issuing_ca && success || error
+touch $WORKING_DIR/ca.B3/index.root_ca.txt && success || error
+touch $WORKING_DIR/ca.B3/index.issuing_ca.txt && success || error
+touch $WORKING_DIR/ca.B3/index.root_ca.txt.attr && success || error
+touch $WORKING_DIR/ca.B3/index.issuing_ca.txt.attr && success || error
+
+echo -e "::: ${HEADLINE_COLOR}copying ca.cnf${NO_COLOR}"
+cp /vagrant/exercises/A3/openssl/ca.cnf $WORKING_DIR/ca.B3/ && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA key${NO_COLOR}"
+openssl genrsa -out /home/vagrant/ca.B3/private/root_ca.key 4096 && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA certificate${NO_COLOR}"
+openssl req -config /home/vagrant/ca.B3/ca.cnf -new -x509 -days 3650 -key /home/vagrant/ca.B3/private/root_ca.key -out /home/vagrant/ca.B3/root_ca.pem -extensions v3_ca -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Root CA/emailAddress=certificates@example.com" && success || error
+
+echo -e "::: ${HEADLINE_COLOR}copying B.3 Root CA certificate to /etc/httpd/ssl.trust/${NO_COLOR}"
+sudo cp /home/vagrant/ca.B3/root_ca.pem /etc/httpd/ssl.trust/ && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA key${NO_COLOR}"
+openssl genrsa -out /home/vagrant/ca.B3/private/issuing_ca.key 4096 && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating CSR for B.3 Intermediate CA${NO_COLOR}"
+openssl req -config /home/vagrant/ca.B3/ca.cnf -new -key /home/vagrant/ca.B3/private/issuing_ca.key -out /home/vagrant/ca.B3/issuing_ca.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Intermediate CA/emailAddress=certificates@example.com" && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA certificate${NO_COLOR}"
+openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -extensions v3_issuing_ca -days 1500 -notext -md sha256 -batch -in /home/vagrant/ca.B3/issuing_ca.csr -out /home/vagrant/ca.B3/issuing_ca.pem && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating client key (the active one)${NO_COLOR}"
+openssl genrsa -out /home/vagrant/client.B3.active.key 2048 && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+openssl req -new -key /home/vagrant/client.B3.active.key -out /home/vagrant/client.B3.active.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Active User Hans Wurst/emailAddress=hans.wurst@example.com" && success || error
+
+echo -e "::: ${HEADLINE_COLOR}signing with B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
+openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extensions client_cert -days 365 -in /home/vagrant/client.B3.active.csr -out /home/vagrant/client.B3.active.crt && success || error
+
+echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
+cat /home/vagrant/client.B3.active.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.active.fullchain.crt
 
 # @ToDo: generate a second client certificate
 # @ToDo: revoke it
 # @ToDo: generate CRL
+# @ToDo: copy CRL into Apaches CRL directory
 
 echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
 sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error
 
-# echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
-# sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
+echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
+sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
 
 echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
 sudo systemctl restart httpd && success || error
