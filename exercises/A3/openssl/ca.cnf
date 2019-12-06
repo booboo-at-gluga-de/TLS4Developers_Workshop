@@ -360,8 +360,8 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage = clientAuth, emailProtection
+crlDistributionPoints = URI:http://localhost/issuing_ca.crl.pem
 # subjectAltName = @alt_names_customer_cert
-# crlDistributionPoints =
 
 [ server_cert ]
 # Extensions for server certificates ('man x509v3_config').
@@ -372,8 +372,8 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer:always
 keyUsage = critical, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
+crlDistributionPoints = URI:http://localhost/issuing_ca.crl.pem
 # subjectAltName = @alt_names_customer_cert
-# crlDistributionPoints =
 
 # [alt_names_customer_cert]
 # DNS.1 = www.example.com

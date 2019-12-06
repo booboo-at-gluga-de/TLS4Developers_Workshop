@@ -287,7 +287,7 @@ openssl req -config /home/vagrant/ca.B3/ca.cnf -new -key /home/vagrant/ca.B3/pri
 echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA certificate${NO_COLOR}"
 openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -extensions v3_issuing_ca -days 1500 -notext -md sha256 -batch -in /home/vagrant/ca.B3/issuing_ca.csr -out /home/vagrant/ca.B3/issuing_ca.pem && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating client key (the active one)${NO_COLOR}"
+echo -e "::: ${HEADLINE_COLOR}generating client key (the active one, user Hans Wurst)${NO_COLOR}"
 openssl genrsa -out /home/vagrant/client.B3.active.key 2048 && success || error
 
 echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
@@ -299,9 +299,31 @@ openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extens
 echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
 cat /home/vagrant/client.B3.active.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.active.fullchain.crt
 
+echo -e "::: ${HEADLINE_COLOR}generating client key (the one to revoke, user Kami Katze)${NO_COLOR}"
+openssl genrsa -out /home/vagrant/client.B3.revoked.key 2048 && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+openssl req -new -key /home/vagrant/client.B3.revoked.key -out /home/vagrant/client.B3.revoked.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Revoked User Kami Katze/emailAddress=kami.katze@example.com" && success || error
+
+echo -e "::: ${HEADLINE_COLOR}signing with B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
+openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extensions client_cert -days 365 -in /home/vagrant/client.B3.revoked.csr -out /home/vagrant/client.B3.revoked.crt && success || error
+
+echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
+cat /home/vagrant/client.B3.revoked.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.revoked.fullchain.crt && success || error
+
+echo -e "::: ${HEADLINE_COLOR}revoking client certificate of user Kami Katze${NO_COLOR}"
+openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -revoke /home/vagrant/client.B3.revoked.crt && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Root CA${NO_COLOR}"
+openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -gencrl -out /home/vagrant/ca.B3/root_ca.crl && success || error
+
+echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Intermediate CA${NO_COLOR}"
+openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -gencrl -out /home/vagrant/ca.B3/issuing_ca.crl && success || error
+
 # @ToDo: generate a second client certificate
 # @ToDo: revoke it
 # @ToDo: generate CRL
+# openssl ca -config $ROOT_CA_OPENSSL_CNF_FILE -gencrl -out $ROOT_CA_CRL_FILE $ROOT_CA_CREDENTIAL_OPTION
 # @ToDo: copy CRL into Apaches CRL directory
 
 echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
