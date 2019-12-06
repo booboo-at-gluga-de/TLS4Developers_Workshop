@@ -30,310 +30,413 @@ function skipped {
     SKIPPED_COUNT=$(( $SKIPPED_COUNT + 1 ))
 }
 
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise A.1${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
+function help {
+    cat << EOH
 
-echo -e "::: ${HEADLINE_COLOR}generating key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/example.com.key 2048 && success || error
+call using:
 
-echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-openssl req -new -key /home/vagrant/example.com.key -out /home/vagrant/example.com.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=example.com/emailAddress=certificates@example.com" && success || error
+$0 all
+    to solve all exercises
+$0 [A1] [A2] [A3] [A4] [A5] [B1] [B2] [B3] [B4]
+    to solve the given exercise(es) only
+$0 help
+    to display this help screen
 
-echo -e "::: ${HEADLINE_COLOR}generating certificate${NO_COLOR}"
-openssl x509 -req -days 365 -in /home/vagrant/example.com.csr -signkey /home/vagrant/example.com.key -out /home/vagrant/example.com.crt && success || error
+EOH
+}
 
-echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A1.conf${NO_COLOR}"
-sudo cp /vagrant/exercises/A1/apache_conf.d/exercise-A1.conf /etc/httpd/conf.d/ && success || error
-
-echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-sudo systemctl reload httpd && success || error
-
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise A.2${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
-
-echo -e "::: ${HEADLINE_COLOR}generating key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/localhost.key 2048 && success || error
-
-echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-openssl req -new -key /home/vagrant/localhost.key -out /home/vagrant/localhost.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=localhost/emailAddress=certificates@example.com" && success || error
-
-echo -e "::: ${HEADLINE_COLOR}generating certificate${NO_COLOR}"
-openssl x509 -req -days 365 -in /home/vagrant/localhost.csr -signkey /home/vagrant/localhost.key -out /home/vagrant/localhost.crt && success || error
-
-echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A2.conf${NO_COLOR}"
-sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/ && success || error
-
-echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-sudo systemctl reload httpd && success || error
-
-echo -e "::: ${HEADLINE_COLOR}creating localhost.keystore.p12${NO_COLOR}"
-openssl pkcs12 -export -in /home/vagrant/localhost.crt -inkey /home/vagrant/localhost.key -out /home/vagrant/localhost.keystore.p12 -passout pass:test && success || error
-
-echo -e "::: ${HEADLINE_COLOR}creating localhost.truststore.p12${NO_COLOR}"
-openssl pkcs12 -export -in /home/vagrant/localhost.crt -nokeys -out /home/vagrant/localhost.truststore.p12 -passout pass:test && success || error
-
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise A.3${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
-
-echo -e "::: ${HEADLINE_COLOR}checking for previous created CA and removing it${NO_COLOR}"
-if [[ -d /home/vagrant/ca ]]; then
-    rm -Rf /home/vagrant/ca && success || error
-else
-    echo not existing
+if [[ $# -eq 0 ]]; then
+    help
+    exit 1
 fi
 
-echo -e "::: ${HEADLINE_COLOR}preparing config for the CA${NO_COLOR}"
-/vagrant/exercises/A3/prepare_CA.sh /home/vagrant && success || error
+SOLVE_A1=0
+SOLVE_A2=0
+SOLVE_A3=0
+SOLVE_A4=0
+SOLVE_A5=0
+SOLVE_B1=0
+SOLVE_B2=0
+SOLVE_B3=0
+SOLVE_B4=0
 
-echo -e "::: ${HEADLINE_COLOR}generating CA key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/ca/private/cacert.key 4096 && success || error
+for PARAM in $*; do
+    case "${PARAM,,}" in
+        help|-help|--help|h|-h)
+            help
+            exit 0
+            ;;
+        a1|-a1)
+            SOLVE_A1=1
+            ;;
+        a2|-a2)
+            SOLVE_A2=1
+            ;;
+        a3|-a3)
+            SOLVE_A3=1
+            ;;
+        a4|-a4)
+            SOLVE_A4=1
+            ;;
+        a5|-a5)
+            SOLVE_A5=1
+            ;;
+        b1|-b1)
+            SOLVE_B1=1
+            ;;
+        b2|-b2)
+            SOLVE_B2=1
+            ;;
+        b3|-b3)
+            SOLVE_B3=1
+            ;;
+        b4|-b4)
+            SOLVE_B4=1
+            ;;
+        all|-all|--all)
+            SOLVE_A1=1
+            SOLVE_A2=1
+            SOLVE_A3=1
+            SOLVE_A4=1
+            SOLVE_A5=1
+            SOLVE_B1=1
+            SOLVE_B2=1
+            SOLVE_B3=1
+            SOLVE_B4=1
+            ;;
+        *)
+            help
+            exit 1
+    esac
+done
 
-echo -e "::: ${HEADLINE_COLOR}generating CA certificate${NO_COLOR}"
-openssl req -config /home/vagrant/ca/ca.cnf -new -x509 -days 3650 -key /home/vagrant/ca/private/cacert.key -out /home/vagrant/ca/cacert.pem -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn CA/emailAddress=certificates@example.com" && success || error
+if [[ $SOLVE_A1 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise A.1${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-echo -e "::: ${HEADLINE_COLOR}generating server key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/server.key 2048 && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/example.com.key 2048 && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-openssl req -new -key /home/vagrant/server.key -out /home/vagrant/server.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=localhost/emailAddress=certificates@example.com" && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+    openssl req -new -key /home/vagrant/example.com.key -out /home/vagrant/example.com.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=example.com/emailAddress=certificates@example.com" && success || error
 
-echo -e "::: ${HEADLINE_COLOR}signing with CA certificate (creating server certificate)${NO_COLOR}"
-openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions server_cert -days 365 -in /home/vagrant/server.csr -out /home/vagrant/server.crt && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating certificate${NO_COLOR}"
+    openssl x509 -req -days 365 -in /home/vagrant/example.com.csr -signkey /home/vagrant/example.com.key -out /home/vagrant/example.com.crt && success || error
 
-echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A3.conf${NO_COLOR}"
-sudo cp /vagrant/exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A1.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/A1/apache_conf.d/exercise-A1.conf /etc/httpd/conf.d/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-sudo systemctl reload httpd && success || error
+    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+    sudo systemctl reload httpd && success || error
+fi
 
-echo -e "::: ${HEADLINE_COLOR}creating server.keystore.p12${NO_COLOR}"
-openssl pkcs12 -export -in /home/vagrant/server.crt -inkey /home/vagrant/server.key -out /home/vagrant/server.keystore.p12 -passout pass:test && success || error
+if [[ $SOLVE_A2 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise A.2${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-echo -e "::: ${HEADLINE_COLOR}creating truststore.ca.p12${NO_COLOR}"
-openssl pkcs12 -export -in /home/vagrant/ca/cacert.pem -nokeys -out /home/vagrant/ca/truststore.ca.p12 -passout pass:test && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/localhost.key 2048 && success || error
 
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise A.4${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
+    echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+    openssl req -new -key /home/vagrant/localhost.key -out /home/vagrant/localhost.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=localhost/emailAddress=certificates@example.com" && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating client key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/client.key 2048 && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating certificate${NO_COLOR}"
+    openssl x509 -req -days 365 -in /home/vagrant/localhost.csr -signkey /home/vagrant/localhost.key -out /home/vagrant/localhost.crt && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-openssl req -new -key /home/vagrant/client.key -out /home/vagrant/client.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=User Hans Wurst/emailAddress=hans.wurst@example.com" && success || error
-
-echo -e "::: ${HEADLINE_COLOR}signing with CA certificate (creating client certificate)${NO_COLOR}"
-openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions client_cert -days 365 -in /home/vagrant/client.csr -out /home/vagrant/client.crt && success || error
-
-echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A4.conf${NO_COLOR}"
-sudo cp /vagrant/exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/ && success || error
-
-echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-sudo systemctl reload httpd && success || error
-
-echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
-openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
-
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise B.1${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
-
-sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
-CERT_FILE_RC=$?
-sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
-CHAIN_FILE_RC=$?
-sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
-KEY_FILE_RC=$?
-
-if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
-    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B1.conf${NO_COLOR}"
-    sudo cp /vagrant/exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A2.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/ && success || error
 
     echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
     sudo systemctl reload httpd && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}creating ${DOMAIN_NAME_CHAPTER_B}.keystore.p12${NO_COLOR}"
-    sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test && success || error
-else
-    echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
-    skipped
+    echo -e "::: ${HEADLINE_COLOR}creating localhost.keystore.p12${NO_COLOR}"
+    openssl pkcs12 -export -in /home/vagrant/localhost.crt -inkey /home/vagrant/localhost.key -out /home/vagrant/localhost.keystore.p12 -passout pass:test && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating localhost.truststore.p12${NO_COLOR}"
+    openssl pkcs12 -export -in /home/vagrant/localhost.crt -nokeys -out /home/vagrant/localhost.truststore.p12 -passout pass:test && success || error
 fi
 
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise B.2${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
+if [[ $SOLVE_A3 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise A.3${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
-CERT_FILE_RC=$?
-sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
-CHAIN_FILE_RC=$?
-sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
-KEY_FILE_RC=$?
+    echo -e "::: ${HEADLINE_COLOR}checking for previous created CA and removing it${NO_COLOR}"
+    if [[ -d /home/vagrant/ca ]]; then
+        rm -Rf /home/vagrant/ca && success || error
+    else
+        echo not existing
+    fi
 
-echo -e "::: ${HEADLINE_COLOR}checking for previous created clientcrt directory and removing it${NO_COLOR}"
-if [[ -d /home/vagrant/clientcrt ]]; then
-    rm -Rf /home/vagrant/clientcrt && success || error
-else
-    echo not existing
+    echo -e "::: ${HEADLINE_COLOR}preparing config for the CA${NO_COLOR}"
+    /vagrant/exercises/A3/prepare_CA.sh /home/vagrant && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}generating CA key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/ca/private/cacert.key 4096 && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}generating CA certificate${NO_COLOR}"
+    openssl req -config /home/vagrant/ca/ca.cnf -new -x509 -days 3650 -key /home/vagrant/ca/private/cacert.key -out /home/vagrant/ca/cacert.pem -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn CA/emailAddress=certificates@example.com" && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}generating server key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/server.key 2048 && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+    openssl req -new -key /home/vagrant/server.key -out /home/vagrant/server.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=localhost/emailAddress=certificates@example.com" && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}signing with CA certificate (creating server certificate)${NO_COLOR}"
+    openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions server_cert -days 365 -in /home/vagrant/server.csr -out /home/vagrant/server.crt && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A3.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/ && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+    sudo systemctl reload httpd && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating server.keystore.p12${NO_COLOR}"
+    openssl pkcs12 -export -in /home/vagrant/server.crt -inkey /home/vagrant/server.key -out /home/vagrant/server.keystore.p12 -passout pass:test && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating truststore.ca.p12${NO_COLOR}"
+    openssl pkcs12 -export -in /home/vagrant/ca/cacert.pem -nokeys -out /home/vagrant/ca/truststore.ca.p12 -passout pass:test && success || error
 fi
 
-echo -e "::: ${HEADLINE_COLOR}creating clientcrt directory${NO_COLOR}"
-mkdir /home/vagrant/clientcrt && chmod 700 /home/vagrant/clientcrt/ && success || error
+if [[ $SOLVE_A4 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise A.4${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
-    echo -e "::: ${HEADLINE_COLOR}populating ~/clientcrt/${NO_COLOR}"
-    for PEM_LINK in \
-        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem \
-        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem \
-        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/fullchain.pem \
-        /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem
-    do
-        PEM_FILE=$(sudo readlink -f $PEM_LINK) && sudo cp $PEM_FILE ~/clientcrt/ && success || error
-    done
+    echo -e "::: ${HEADLINE_COLOR}generating client key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/client.key 2048 && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B2.conf${NO_COLOR}"
-    sudo cp /vagrant/exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+    openssl req -new -key /home/vagrant/client.key -out /home/vagrant/client.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=User Hans Wurst/emailAddress=hans.wurst@example.com" && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}signing with CA certificate (creating client certificate)${NO_COLOR}"
+    openssl ca -batch -config /home/vagrant/ca/ca.cnf -extensions client_cert -days 365 -in /home/vagrant/client.csr -out /home/vagrant/client.crt && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A4.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/ && success || error
 
     echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
     sudo systemctl reload httpd && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
-    openssl pkcs12 -export -in /home/vagrant/clientcrt/cert1.pem -inkey /home/vagrant/clientcrt/privkey1.pem -certfile /home/vagrant/clientcrt/chain1.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
-else
-    echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
-    skipped
+    openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
 fi
 
-echo -e ":::"
-echo -e "::: ###################################################################"
-echo -e "::: ${HEADLINE_COLOR}solving exercise B.3${NO_COLOR}"
-echo -e "::: ###################################################################"
-echo -e ":::"
+if [[ $SOLVE_B1 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise B.1${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-echo -e "::: ${HEADLINE_COLOR}Getting certificate for github.com${NO_COLOR}"
-openssl s_client -connect github.com:443 </dev/null >/tmp/github.com.pem && success || error
-sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.pem && success || error
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
+    CERT_FILE_RC=$?
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
+    CHAIN_FILE_RC=$?
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
+    KEY_FILE_RC=$?
 
-echo -e "::: ${HEADLINE_COLOR}Extracting CRL URL${NO_COLOR}"
-GITHUB_COM_CRL_URI=$(openssl x509 -in /tmp/github.com.pem -noout -text | grep -A 6 "X509v3 CRL Distribution Points" | grep "http://" | head -1 | sed -e "s/.*URI://")
-if [[ -z $GITHUB_COM_CRL_URI ]]; then
-    error
-else
-    success
+    if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
+        echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B1.conf${NO_COLOR}"
+        sudo cp /vagrant/exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/ && success || error
+
+        echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+        sudo systemctl reload httpd && success || error
+
+        echo -e "::: ${HEADLINE_COLOR}creating ${DOMAIN_NAME_CHAPTER_B}.keystore.p12${NO_COLOR}"
+        sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test && success || error
+    else
+        echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
+        skipped
+    fi
 fi
 
-echo -e "::: ${HEADLINE_COLOR}Getting CRL for github.com${NO_COLOR}"
-wget -O /tmp/crl.for.github.com.crl $GITHUB_COM_CRL_URI && success || error
+if [[ $SOLVE_B2 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise B.2${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-echo -e "::: ${HEADLINE_COLOR}Getting chain certificate for github.com${NO_COLOR}"
-openssl s_client -showcerts -connect github.com:443 </dev/null >/tmp/github.com.chain.pem && success || error
-sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.chain.pem && sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem && success || error
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
+    CERT_FILE_RC=$?
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
+    CHAIN_FILE_RC=$?
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
+    KEY_FILE_RC=$?
 
-echo -e "::: ${HEADLINE_COLOR}checking for the B.3 CA directory and deleting (if it exists)${NO_COLOR}"
-if [[ -d /home/vagrant/ca.B3 ]]; then
-    rm -Rf /home/vagrant/ca.B3 && success || error
-else
-    echo not existing
+    echo -e "::: ${HEADLINE_COLOR}checking for previous created clientcrt directory and removing it${NO_COLOR}"
+    if [[ -d /home/vagrant/clientcrt ]]; then
+        rm -Rf /home/vagrant/clientcrt && success || error
+    else
+        echo not existing
+    fi
+
+    echo -e "::: ${HEADLINE_COLOR}creating clientcrt directory${NO_COLOR}"
+    mkdir /home/vagrant/clientcrt && chmod 700 /home/vagrant/clientcrt/ && success || error
+
+    if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
+        echo -e "::: ${HEADLINE_COLOR}populating ~/clientcrt/${NO_COLOR}"
+        for PEM_LINK in \
+            /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem \
+            /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem \
+            /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/fullchain.pem \
+            /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem
+        do
+            PEM_FILE=$(sudo readlink -f $PEM_LINK) && sudo cp $PEM_FILE ~/clientcrt/ && success || error
+        done
+
+        echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B2.conf${NO_COLOR}"
+        sudo cp /vagrant/exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/ && success || error
+
+        echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+        sudo systemctl reload httpd && success || error
+
+        echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
+        openssl pkcs12 -export -in /home/vagrant/clientcrt/cert1.pem -inkey /home/vagrant/clientcrt/privkey1.pem -certfile /home/vagrant/clientcrt/chain1.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
+    else
+        echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
+        skipped
+    fi
 fi
 
-echo -e "::: ${HEADLINE_COLOR}preparing config for the B.3 CA (issuing client certificates)${NO_COLOR}"
-WORKING_DIR=/home/vagrant
-mkdir $WORKING_DIR/ca.B3 && success || error
-mkdir $WORKING_DIR/ca.B3/newcerts && success || error
-mkdir $WORKING_DIR/ca.B3/private && success || error
-chmod 700 $WORKING_DIR/ca.B3/private && success || error
-echo -ne "01" >$WORKING_DIR/ca.B3/serial.root_ca && success || error
-echo -ne "01" >$WORKING_DIR/ca.B3/serial.issuing_ca && success || error
-echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber.root_ca && success || error
-echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber.issuing_ca && success || error
-touch $WORKING_DIR/ca.B3/index.root_ca.txt && success || error
-touch $WORKING_DIR/ca.B3/index.issuing_ca.txt && success || error
-touch $WORKING_DIR/ca.B3/index.root_ca.txt.attr && success || error
-touch $WORKING_DIR/ca.B3/index.issuing_ca.txt.attr && success || error
+if [[ $SOLVE_B3 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise B.3${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
 
-echo -e "::: ${HEADLINE_COLOR}copying ca.cnf${NO_COLOR}"
-cp /vagrant/exercises/A3/openssl/ca.cnf $WORKING_DIR/ca.B3/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}Getting certificate for github.com${NO_COLOR}"
+    openssl s_client -connect github.com:443 </dev/null >/tmp/github.com.pem && success || error
+    sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.pem && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/ca.B3/private/root_ca.key 4096 && success || error
+    echo -e "::: ${HEADLINE_COLOR}Extracting CRL URL${NO_COLOR}"
+    GITHUB_COM_CRL_URI=$(openssl x509 -in /tmp/github.com.pem -noout -text | grep -A 6 "X509v3 CRL Distribution Points" | grep "http://" | head -1 | sed -e "s/.*URI://")
+    if [[ -z $GITHUB_COM_CRL_URI ]]; then
+        error
+    else
+        success
+    fi
 
-echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA certificate${NO_COLOR}"
-openssl req -config /home/vagrant/ca.B3/ca.cnf -new -x509 -days 3650 -key /home/vagrant/ca.B3/private/root_ca.key -out /home/vagrant/ca.B3/root_ca.pem -extensions v3_ca -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Root CA/emailAddress=certificates@example.com" && success || error
+    echo -e "::: ${HEADLINE_COLOR}Getting CRL for github.com${NO_COLOR}"
+    wget -O /tmp/crl.for.github.com.crl $GITHUB_COM_CRL_URI && success || error
 
-echo -e "::: ${HEADLINE_COLOR}copying B.3 Root CA certificate to /etc/httpd/ssl.trust/${NO_COLOR}"
-sudo cp /home/vagrant/ca.B3/root_ca.pem /etc/httpd/ssl.trust/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}Getting chain certificate for github.com${NO_COLOR}"
+    openssl s_client -showcerts -connect github.com:443 </dev/null >/tmp/github.com.chain.pem && success || error
+    sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.chain.pem && sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA key${NO_COLOR}"
-openssl genrsa -out /home/vagrant/ca.B3/private/issuing_ca.key 4096 && success || error
+    echo -e "::: ${HEADLINE_COLOR}checking for the B.3 CA directory and deleting (if it exists)${NO_COLOR}"
+    if [[ -d /home/vagrant/ca.B3 ]]; then
+        rm -Rf /home/vagrant/ca.B3 && success || error
+    else
+        echo not existing
+    fi
 
-echo -e "::: ${HEADLINE_COLOR}generating CSR for B.3 Intermediate CA${NO_COLOR}"
-openssl req -config /home/vagrant/ca.B3/ca.cnf -new -key /home/vagrant/ca.B3/private/issuing_ca.key -out /home/vagrant/ca.B3/issuing_ca.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Intermediate CA/emailAddress=certificates@example.com" && success || error
+    echo -e "::: ${HEADLINE_COLOR}preparing config for the B.3 CA (issuing client certificates)${NO_COLOR}"
+    WORKING_DIR=/home/vagrant
+    mkdir $WORKING_DIR/ca.B3 && success || error
+    mkdir $WORKING_DIR/ca.B3/newcerts && success || error
+    mkdir $WORKING_DIR/ca.B3/private && success || error
+    chmod 700 $WORKING_DIR/ca.B3/private && success || error
+    echo -ne "01" >$WORKING_DIR/ca.B3/serial.root_ca && success || error
+    echo -ne "01" >$WORKING_DIR/ca.B3/serial.issuing_ca && success || error
+    echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber.root_ca && success || error
+    echo -ne "01" >$WORKING_DIR/ca.B3/crlnumber.issuing_ca && success || error
+    touch $WORKING_DIR/ca.B3/index.root_ca.txt && success || error
+    touch $WORKING_DIR/ca.B3/index.issuing_ca.txt && success || error
+    touch $WORKING_DIR/ca.B3/index.root_ca.txt.attr && success || error
+    touch $WORKING_DIR/ca.B3/index.issuing_ca.txt.attr && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA certificate${NO_COLOR}"
-openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -extensions v3_issuing_ca -days 1500 -notext -md sha256 -batch -in /home/vagrant/ca.B3/issuing_ca.csr -out /home/vagrant/ca.B3/issuing_ca.pem && success || error
+    echo -e "::: ${HEADLINE_COLOR}copying ca.cnf${NO_COLOR}"
+    cp /vagrant/exercises/A3/openssl/ca.cnf $WORKING_DIR/ca.B3/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating client key (the active one, user Hans Wurst)${NO_COLOR}"
-openssl genrsa -out /home/vagrant/client.B3.active.key 2048 && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/ca.B3/private/root_ca.key 4096 && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-openssl req -new -key /home/vagrant/client.B3.active.key -out /home/vagrant/client.B3.active.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Active User Hans Wurst/emailAddress=hans.wurst@example.com" && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating B.3 Root CA certificate${NO_COLOR}"
+    openssl req -config /home/vagrant/ca.B3/ca.cnf -new -x509 -days 3650 -key /home/vagrant/ca.B3/private/root_ca.key -out /home/vagrant/ca.B3/root_ca.pem -extensions v3_ca -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Root CA/emailAddress=certificates@example.com" && success || error
 
-echo -e "::: ${HEADLINE_COLOR}signing with B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
-openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extensions client_cert -days 365 -in /home/vagrant/client.B3.active.csr -out /home/vagrant/client.B3.active.crt && success || error
+    echo -e "::: ${HEADLINE_COLOR}copying B.3 Root CA certificate to /etc/httpd/ssl.trust/${NO_COLOR}"
+    sudo cp /home/vagrant/ca.B3/root_ca.pem /etc/httpd/ssl.trust/ && success || error
 
-echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
-cat /home/vagrant/client.B3.active.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.active.fullchain.crt
+    echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA key${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/ca.B3/private/issuing_ca.key 4096 && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating client key (the one to revoke, user Kami Katze)${NO_COLOR}"
-openssl genrsa -out /home/vagrant/client.B3.revoked.key 2048 && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating CSR for B.3 Intermediate CA${NO_COLOR}"
+    openssl req -config /home/vagrant/ca.B3/ca.cnf -new -key /home/vagrant/ca.B3/private/issuing_ca.key -out /home/vagrant/ca.B3/issuing_ca.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Raffzahn B.3 Intermediate CA/emailAddress=certificates@example.com" && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
-openssl req -new -key /home/vagrant/client.B3.revoked.key -out /home/vagrant/client.B3.revoked.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Revoked User Kami Katze/emailAddress=kami.katze@example.com" && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating B.3 Intermediate CA certificate${NO_COLOR}"
+    openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -extensions v3_issuing_ca -days 1500 -notext -md sha256 -batch -in /home/vagrant/ca.B3/issuing_ca.csr -out /home/vagrant/ca.B3/issuing_ca.pem && success || error
 
-echo -e "::: ${HEADLINE_COLOR}signing with B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
-openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extensions client_cert -days 365 -in /home/vagrant/client.B3.revoked.csr -out /home/vagrant/client.B3.revoked.crt && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating client key (the active one, user Hans Wurst)${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/client.B3.active.key 2048 && success || error
 
-echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
-cat /home/vagrant/client.B3.revoked.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.revoked.fullchain.crt && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+    openssl req -new -key /home/vagrant/client.B3.active.key -out /home/vagrant/client.B3.active.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Active User Hans Wurst/emailAddress=hans.wurst@example.com" && success || error
 
-echo -e "::: ${HEADLINE_COLOR}revoking client certificate of user Kami Katze${NO_COLOR}"
-openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -revoke /home/vagrant/client.B3.revoked.crt && success || error
+    echo -e "::: ${HEADLINE_COLOR}signing with B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
+    openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extensions client_cert -days 365 -in /home/vagrant/client.B3.active.csr -out /home/vagrant/client.B3.active.crt && success || error
 
-echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Root CA${NO_COLOR}"
-openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -gencrl -out /home/vagrant/ca.B3/root_ca.crl && success || error
+    echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
+    cat /home/vagrant/client.B3.active.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.active.fullchain.crt
 
-echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Intermediate CA${NO_COLOR}"
-openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -gencrl -out /home/vagrant/ca.B3/issuing_ca.crl && success || error
+    echo -e "::: ${HEADLINE_COLOR}generating client key (the one to revoke, user Kami Katze)${NO_COLOR}"
+    openssl genrsa -out /home/vagrant/client.B3.revoked.key 2048 && success || error
 
-# @ToDo: generate a second client certificate
-# @ToDo: revoke it
-# @ToDo: generate CRL
-# openssl ca -config $ROOT_CA_OPENSSL_CNF_FILE -gencrl -out $ROOT_CA_CRL_FILE $ROOT_CA_CREDENTIAL_OPTION
-# @ToDo: copy CRL into Apaches CRL directory
+    echo -e "::: ${HEADLINE_COLOR}generating CSR${NO_COLOR}"
+    openssl req -new -key /home/vagrant/client.B3.revoked.key -out /home/vagrant/client.B3.revoked.csr -subj "/C=DE/ST=Franconia/L=Nuernberg/O=Raffzahn GmbH/CN=Revoked User Kami Katze/emailAddress=kami.katze@example.com" && success || error
 
-echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
-sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}signing with B.3 Intermediate CA (creating client certificate)${NO_COLOR}"
+    openssl ca -batch -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -extensions client_cert -days 365 -in /home/vagrant/client.B3.revoked.csr -out /home/vagrant/client.B3.revoked.crt && success || error
 
-echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
-sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
+    echo -e "::: ${HEADLINE_COLOR}creating a fullchain file for the client certificate${NO_COLOR}"
+    cat /home/vagrant/client.B3.revoked.crt /home/vagrant/ca.B3/issuing_ca.pem > /home/vagrant/client.B3.revoked.fullchain.crt && success || error
 
-echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-sudo systemctl restart httpd && success || error
+    echo -e "::: ${HEADLINE_COLOR}revoking client certificate of user Kami Katze${NO_COLOR}"
+    openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -revoke /home/vagrant/client.B3.revoked.crt && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Root CA${NO_COLOR}"
+    openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -gencrl -out /home/vagrant/ca.B3/root_ca.crl && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Intermediate CA${NO_COLOR}"
+    openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -gencrl -out /home/vagrant/ca.B3/issuing_ca.crl && success || error
+
+    # @ToDo: generate a second client certificate
+    # @ToDo: revoke it
+    # @ToDo: generate CRL
+    # openssl ca -config $ROOT_CA_OPENSSL_CNF_FILE -gencrl -out $ROOT_CA_CRL_FILE $ROOT_CA_CREDENTIAL_OPTION
+    # @ToDo: copy CRL into Apaches CRL directory
+
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
+    sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
+    sudo systemctl restart httpd && success || error
+fi
+
+if [[ $SOLVE_B4 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise B.4${NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
+    echo -e "::: ${ORANGE}No solution implemented right now!${NO_COLOR}"
+fi
 
 echo -e ":::"
 echo -e "::: ###################################################################"
