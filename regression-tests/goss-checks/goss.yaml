@@ -233,6 +233,49 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
+  B.3 Test 5:
+    title: "Exercise B.3: GET request with revoked client certificate against VirtualHost B.3.crl should complain"
+    exec: 'curl --cert /home/vagrant/client.B3.revoked.fullchain.crt --key /home/vagrant/client.B3.revoked.key https://{{$domain_name_chapter_b}}:23444/index.html'
+    exit-status: 56
+    stdout: []
+    stderr:
+    - "curl: (56) "
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 6:
+    title: "Exercise B.3: GET request without client certificate against VirtualHost B.3.crl should complain"
+    exec: 'curl https://{{$domain_name_chapter_b}}:23444/index.html'
+    exit-status: 56
+    stdout: []
+    stderr:
+    - "curl: (56) "
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 6:
+    title: "Exercise B.3: root_ca.crl should be a valid CRL with no revoked certificates"
+    exec: 'openssl crl -in /etc/httpd/ssl.crl/root_ca.crl -noout -text'
+    exit-status: 0
+    stdout:
+    - 'Certificate Revocation List (CRL):'
+    - 'Last Update:'
+    - 'Next Update:'
+    - 'No Revoked Certificates.'
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 7:
+    title: "Exercise B.3: issuing_ca.crl should be a valid CRL with at least 1 revoked certificates"
+    exec: 'openssl crl -in /etc/httpd/ssl.crl/issuing_ca.crl -noout -text'
+    exit-status: 0
+    stdout:
+    - 'Certificate Revocation List (CRL):'
+    - 'Last Update:'
+    - 'Next Update:'
+    - 'Revoked Certificates:'
+    - 'Revocation Date:'
+    stderr: []
+    timeout: 10000 # in milliseconds
+
 # Certificates used in Chapter B
 file:
   /etc/letsencrypt/live/{{$domain_name_chapter_b}}/cert.pem:
@@ -262,3 +305,21 @@ file:
     contains:
     - "-----BEGIN PRIVATE KEY-----"
     - "-----END PRIVATE KEY-----"
+  /etc/httpd/ssl.crl/root_ca.crl:
+    title: "Chapter B: CRL of B.3 Root CA should be in PEM format"
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains:
+    - "-----BEGIN X509 CRL-----"
+    - "-----END X509 CRL-----"
+  /etc/httpd/ssl.crl/issuing_ca.crl:
+    title: "Chapter B: CRL of B.3 Root CA should be in PEM format"
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains:
+    - "-----BEGIN X509 CRL-----"
+    - "-----END X509 CRL-----"

@@ -407,17 +407,16 @@ if [[ $SOLVE_B3 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}revoking client certificate of user Kami Katze${NO_COLOR}"
     openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -revoke /home/vagrant/client.B3.revoked.crt && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Root CA${NO_COLOR}"
-    openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_root -gencrl -out /home/vagrant/ca.B3/root_ca.crl && success || error
+    for WHICH_CA in root issuing; do
+        echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 ${WHICH_CA} CA${NO_COLOR}"
+        openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_${WHICH_CA} -gencrl -out /home/vagrant/ca.B3/${WHICH_CA}_ca.crl.pem && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}generating CRL of the B.3 Intermediate CA${NO_COLOR}"
-    openssl ca -config /home/vagrant/ca.B3/ca.cnf -name CA_B3_issuing -gencrl -out /home/vagrant/ca.B3/issuing_ca.crl && success || error
+        echo -e "::: ${HEADLINE_COLOR}copying CRL of the B.3 ${WHICH_CA} CA to /etc/httpd/ssl.crl${NO_COLOR}"
+        sudo cp /home/vagrant/ca.B3/${WHICH_CA}_ca.crl.pem /etc/httpd/ssl.crl && success || error
 
-    # @ToDo: generate a second client certificate
-    # @ToDo: revoke it
-    # @ToDo: generate CRL
-    # openssl ca -config $ROOT_CA_OPENSSL_CNF_FILE -gencrl -out $ROOT_CA_CRL_FILE $ROOT_CA_CREDENTIAL_OPTION
-    # @ToDo: copy CRL into Apaches CRL directory
+        echo -e "::: ${HEADLINE_COLOR}hashing CRL of the B.3 ${WHICH_CA} CA${NO_COLOR}"
+        cd /etc/httpd/ssl.crl && sudo ln -s ${WHICH_CA}_ca.crl.pem $(openssl crl -hash -noout -in ${WHICH_CA}_ca.crl.pem).r0 && success || error
+    done
 
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error

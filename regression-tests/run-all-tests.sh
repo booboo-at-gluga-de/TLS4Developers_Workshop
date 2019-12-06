@@ -17,5 +17,5 @@ sudo /usr/local/bin/goss --gossfile=/vagrant/regression-tests/goss-checks/goss.y
 
 ORANGE='\033[0;33m'
 NO_COLOR='\033[0m'
-echo -e "${ORANGE}Please note: You have to do manual checks for Exercise B.3, section \"If You Decide to Use CRL\""
+echo -e "${ORANGE}Please note: You have to do manual checks for Exercise B.4"
 echo -e "and everything after this. These checks are not yet implemented here for automated testing!${NO_COLOR}"
