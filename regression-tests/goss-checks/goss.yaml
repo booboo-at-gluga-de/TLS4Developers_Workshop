@@ -276,6 +276,38 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
+  B.4 Test 1:
+    title: "Exercise B.4: TLS handshake with original B.1 VirtualHost should contain no stapled OCSP response"
+    exec: 'echo QUIT | openssl s_client -connect exercise.jumpingcrab.com:21443 -status'
+    exit-status: 0
+    stdout:
+    - 'OCSP response: no response sent'
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.4 Test 2:
+    title: "Exercise B.4: TLS handshake with B.4 VirtualHost should contain a stapled OCSP response"
+    exec: 'echo QUIT | openssl s_client -connect exercise.jumpingcrab.com:24443 -status'
+    exit-status: 0
+    stdout:
+    - "OCSP Response Data:"
+    - "OCSP Response Status: successful"
+    - "Cert Status: good"
+    - "This Update:"
+    - "Next Update:"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.4 Test 3:
+    title: "Exercise B.4: GET request should return content of VirtualHost B.4"
+    exec: 'curl https://{{$domain_name_chapter_b}}:24443/index.html'
+    exit-status: 0
+    stdout:
+    - "Hello Real World"
+    - "(you connected to webspace of exercise B.4)"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
 # Certificates used in Chapter B
 file:
   /etc/letsencrypt/live/{{$domain_name_chapter_b}}/cert.pem:

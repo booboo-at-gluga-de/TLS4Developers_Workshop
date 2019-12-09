@@ -415,7 +415,7 @@ if [[ $SOLVE_B3 -eq 1 ]]; then
         sudo cp /home/vagrant/ca.B3/${WHICH_CA}_ca.crl.pem /etc/httpd/ssl.crl && success || error
 
         echo -e "::: ${HEADLINE_COLOR}hashing CRL of the B.3 ${WHICH_CA} CA${NO_COLOR}"
-        cd /etc/httpd/ssl.crl && sudo ln -s ${WHICH_CA}_ca.crl.pem $(openssl crl -hash -noout -in ${WHICH_CA}_ca.crl.pem).r0 && success || error
+        cd /etc/httpd/ssl.crl && sudo ln -sf ${WHICH_CA}_ca.crl.pem $(openssl crl -hash -noout -in ${WHICH_CA}_ca.crl.pem).r0 && success || error
     done
 
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
@@ -424,8 +424,8 @@ if [[ $SOLVE_B3 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-    sudo systemctl restart httpd && success || error
+    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
+    sudo systemctl reload httpd && success || error
 fi
 
 if [[ $SOLVE_B4 -eq 1 ]]; then
@@ -434,7 +434,24 @@ if [[ $SOLVE_B4 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}solving exercise B.4${NO_COLOR}"
     echo -e "::: ###################################################################"
     echo -e ":::"
-    echo -e "::: ${ORANGE}No solution implemented right now!${NO_COLOR}"
+
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
+    CERT_FILE_RC=$?
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
+    CHAIN_FILE_RC=$?
+    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
+    KEY_FILE_RC=$?
+
+    if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
+        echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B4.conf${NO_COLOR}"
+        sudo cp /vagrant/exercises/B4/apache_conf.d/exercise-B4.conf /etc/httpd/conf.d/ && success || error
+
+        echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
+        sudo systemctl restart httpd && success || error
+    else
+        echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
+        skipped
+    fi
 fi
 
 echo -e ":::"
