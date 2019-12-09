@@ -5,11 +5,21 @@
 # before starting this script
 DOMAIN_NAME_CHAPTER_B=${DOMAIN_NAME_CHAPTER_B:-exercise.jumpingcrab.com}
 
+# find out if certificates for chapter B are in place
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
+CERT_FILE_RC=$?
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
+CHAIN_FILE_RC=$?
+sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
+KEY_FILE_RC=$?
+
 HEADLINE_COLOR='\033[1;34m'
 RED='\033[1;31m'
 GREEN='\033[1;32m'
 ORANGE='\033[0;33m'
 NO_COLOR='\033[0m'
+
+# .--- Functions: success / error / skipped --------------------------------
 
 SUCCESS_COUNT=0
 ERROR_COUNT=0
@@ -29,6 +39,7 @@ function skipped {
     echo -e "::: Result: ${ORANGE}Skipped${NO_COLOR}"
     SKIPPED_COUNT=$(( $SKIPPED_COUNT + 1 ))
 }
+#.
 
 function help {
     cat << EOH
@@ -44,6 +55,8 @@ $0 help
 
 EOH
 }
+
+# .--- Commandline Parameters ----------------------------------------------
 
 if [[ $# -eq 0 ]]; then
     help
@@ -109,6 +122,7 @@ for PARAM in $*; do
             exit 1
     esac
 done
+#.
 
 if [[ $SOLVE_A1 -eq 1 ]]; then
     echo -e ":::"
@@ -128,9 +142,6 @@ if [[ $SOLVE_A1 -eq 1 ]]; then
 
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A1.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/A1/apache_conf.d/exercise-A1.conf /etc/httpd/conf.d/ && success || error
-
-    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-    sudo systemctl reload httpd && success || error
 fi
 
 if [[ $SOLVE_A2 -eq 1 ]]; then
@@ -151,9 +162,6 @@ if [[ $SOLVE_A2 -eq 1 ]]; then
 
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A2.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/ && success || error
-
-    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-    sudo systemctl reload httpd && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating localhost.keystore.p12${NO_COLOR}"
     openssl pkcs12 -export -in /home/vagrant/localhost.crt -inkey /home/vagrant/localhost.key -out /home/vagrant/localhost.keystore.p12 -passout pass:test && success || error
@@ -197,9 +205,6 @@ if [[ $SOLVE_A3 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A3.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/ && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-    sudo systemctl reload httpd && success || error
-
     echo -e "::: ${HEADLINE_COLOR}creating server.keystore.p12${NO_COLOR}"
     openssl pkcs12 -export -in /home/vagrant/server.crt -inkey /home/vagrant/server.key -out /home/vagrant/server.keystore.p12 -passout pass:test && success || error
 
@@ -226,9 +231,6 @@ if [[ $SOLVE_A4 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}Apache config exercise-A4.conf${NO_COLOR}"
     sudo cp /vagrant/exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/ && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-    sudo systemctl reload httpd && success || error
-
     echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
     openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
 fi
@@ -240,19 +242,9 @@ if [[ $SOLVE_B1 -eq 1 ]]; then
     echo -e "::: ###################################################################"
     echo -e ":::"
 
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
-    CERT_FILE_RC=$?
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
-    CHAIN_FILE_RC=$?
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
-    KEY_FILE_RC=$?
-
     if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
         echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B1.conf${NO_COLOR}"
         sudo cp /vagrant/exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/ && success || error
-
-        echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-        sudo systemctl reload httpd && success || error
 
         echo -e "::: ${HEADLINE_COLOR}creating ${DOMAIN_NAME_CHAPTER_B}.keystore.p12${NO_COLOR}"
         sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test && success || error
@@ -268,13 +260,6 @@ if [[ $SOLVE_B2 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}solving exercise B.2${NO_COLOR}"
     echo -e "::: ###################################################################"
     echo -e ":::"
-
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
-    CERT_FILE_RC=$?
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
-    CHAIN_FILE_RC=$?
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
-    KEY_FILE_RC=$?
 
     echo -e "::: ${HEADLINE_COLOR}checking for previous created clientcrt directory and removing it${NO_COLOR}"
     if [[ -d /home/vagrant/clientcrt ]]; then
@@ -299,9 +284,6 @@ if [[ $SOLVE_B2 -eq 1 ]]; then
 
         echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B2.conf${NO_COLOR}"
         sudo cp /vagrant/exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/ && success || error
-
-        echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-        sudo systemctl reload httpd && success || error
 
         echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
         openssl pkcs12 -export -in /home/vagrant/clientcrt/cert1.pem -inkey /home/vagrant/clientcrt/privkey1.pem -certfile /home/vagrant/clientcrt/chain1.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
@@ -418,14 +400,16 @@ if [[ $SOLVE_B3 -eq 1 ]]; then
         cd /etc/httpd/ssl.crl && sudo ln -sf ${WHICH_CA}_ca.crl.pem $(openssl crl -hash -noout -in ${WHICH_CA}_ca.crl.pem).r0 && success || error
     done
 
-    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
-    sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error
+    if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
+        echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.ocsp.conf${NO_COLOR}"
+        sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.ocsp.conf /etc/httpd/conf.d/ && success || error
 
-    echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
-    sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
-
-    echo -e "::: ${HEADLINE_COLOR}reloading Apache${NO_COLOR}"
-    sudo systemctl reload httpd && success || error
+        echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B3.crl.conf${NO_COLOR}"
+        sudo cp /vagrant/exercises/B3/apache_conf.d/exercise-B3.crl.conf /etc/httpd/conf.d/ && success || error
+    else
+        echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
+        skipped
+    fi
 fi
 
 if [[ $SOLVE_B4 -eq 1 ]]; then
@@ -435,24 +419,18 @@ if [[ $SOLVE_B4 -eq 1 ]]; then
     echo -e "::: ###################################################################"
     echo -e ":::"
 
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem >/dev/null 2>/dev/null
-    CERT_FILE_RC=$?
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem >/dev/null 2>/dev/null
-    CHAIN_FILE_RC=$?
-    sudo stat /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem >/dev/null 2>/dev/null
-    KEY_FILE_RC=$?
-
     if [[ $CERT_FILE_RC -eq 0 ]] && [[ $CHAIN_FILE_RC -eq 0 ]] && [[ $KEY_FILE_RC -eq 0 ]]; then
         echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B4.conf${NO_COLOR}"
         sudo cp /vagrant/exercises/B4/apache_conf.d/exercise-B4.conf /etc/httpd/conf.d/ && success || error
-
-        echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
-        sudo systemctl restart httpd && success || error
     else
         echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
         skipped
     fi
 fi
+
+echo -e ":::"
+echo -e "::: ${HEADLINE_COLOR}restarting Apache${NO_COLOR}"
+sudo systemctl restart httpd && success || error
 
 echo -e ":::"
 echo -e "::: ###################################################################"

@@ -252,8 +252,8 @@ command:
     timeout: 10000 # in milliseconds
 
   B.3 Test 6:
-    title: "Exercise B.3: root_ca.crl should be a valid CRL with no revoked certificates"
-    exec: 'openssl crl -in /etc/httpd/ssl.crl/root_ca.crl -noout -text'
+    title: "Exercise B.3: root_ca.crl.pem should be a valid CRL with no revoked certificates"
+    exec: 'openssl crl -in /etc/httpd/ssl.crl/root_ca.crl.pem -noout -text'
     exit-status: 0
     stdout:
     - 'Certificate Revocation List (CRL):'
@@ -264,8 +264,8 @@ command:
     timeout: 10000 # in milliseconds
 
   B.3 Test 7:
-    title: "Exercise B.3: issuing_ca.crl should be a valid CRL with at least 1 revoked certificates"
-    exec: 'openssl crl -in /etc/httpd/ssl.crl/issuing_ca.crl -noout -text'
+    title: "Exercise B.3: issuing_ca.crl.pem should be a valid CRL with at least 1 revoked certificates"
+    exec: 'openssl crl -in /etc/httpd/ssl.crl/issuing_ca.crl.pem -noout -text'
     exit-status: 0
     stdout:
     - 'Certificate Revocation List (CRL):'
@@ -337,7 +337,7 @@ file:
     contains:
     - "-----BEGIN PRIVATE KEY-----"
     - "-----END PRIVATE KEY-----"
-  /etc/httpd/ssl.crl/root_ca.crl:
+  /etc/httpd/ssl.crl/root_ca.crl.pem:
     title: "Chapter B: CRL of B.3 Root CA should be in PEM format"
     exists: true
     owner: root
@@ -346,8 +346,8 @@ file:
     contains:
     - "-----BEGIN X509 CRL-----"
     - "-----END X509 CRL-----"
-  /etc/httpd/ssl.crl/issuing_ca.crl:
-    title: "Chapter B: CRL of B.3 Root CA should be in PEM format"
+  /etc/httpd/ssl.crl/issuing_ca.crl.pem:
+    title: "Chapter B: CRL of B.3 Issuing CA should be in PEM format"
     exists: true
     owner: root
     group: root
