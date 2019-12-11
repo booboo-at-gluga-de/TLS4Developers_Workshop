@@ -8,9 +8,3 @@
          see https://github.com/matteocorti/check_ssl_cert
        * plus regression tests
    * Exercise B3: Example on how to check a certificate against a CRL (plus regression test for this)
-       ~# openssl verify -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem
-       /tmp/github.com.pem: OK
-       ~# openssl verify -crl_check -CRLfile /tmp/crl.for.github.com.crl.pem -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem
-       /tmp/github.com.pem: OK
-       ~# openssl verify -crl_check_all -CRLfile /tmp/crl.for.github.com.crl.pem -CRLfile /tmp/crl.for.github.com.chain.crl.pem -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem
-       /tmp/github.com.pem: OK

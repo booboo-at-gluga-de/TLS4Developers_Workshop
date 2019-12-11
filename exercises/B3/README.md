@@ -105,7 +105,11 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
         - When it will expire
         - A (long) list of serial numbers of revoked certificates together with it's revocation date and maybe a reason for revocation
 
-### Check a Certificate against OCSP (manually)
+### Check Certificate Revocation manually
+
+If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free choice. In this exercise we will cover both:
+
+#### Check Certificate Revocation Against a CRL
 
    * Retrieve the server certificate from the server and save it to a file.  
      (This is the certificate we want to check in a few moments.)  
@@ -120,7 +124,7 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
      DONE
      ```
 
-   * For checking against OCSP we also need the intermediate certificate. Let's retrieve this one now too:  
+   * While revocation checking we need to verify the whole chain, so we also need the intermediate certificate. Let's retrieve this one now too:  
      ```Bash
      ~# openssl s_client -showcerts -connect github.com:443 </dev/null | sed -n '/-----BEGIN/,/-----END/p' >/tmp/github.com.chain.pem 
      depth=2 C = US, O = DigiCert Inc, OU = www.digicert.com, CN = DigiCert High Assurance EV Root CA
@@ -137,14 +141,66 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
      ~# sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem
      ```
 
-   * From the certifcate to check you can extract the OCSP URL by:  
+   * From the certifcate to check you can extract the CRL URL by:  
+     ```Bash
+     ~# openssl x509 -in /tmp/github.com.pem -noout -text | grep -A 4 "X509v3 CRL Distribution Points"
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://crl3.digicert.com/sha2-ev-server-g2.crl
+     ```
+
+   * In our little exercise you will notice, you already downloaded the CRL from the URL you just found out. So no need to do this again, you already have it in `/tmp/crl.for.github.com.crl`
+
+   * You will need the CRL in PEM format, please check if it is already delivered in that format:  
+     ```Bash
+     ~# grep "BEGIN X509 CRL" /tmp/crl.for.github.com.crl >/dev/null && echo PEM || echo DER
+     DER
+     ```  
+     and if it is not, please convert it:  
+     ```Bash
+     ~# openssl crl -in /tmp/crl.for.github.com.crl -inform DER -out /tmp/crl.for.github.com.pem -outform PEM
+     ```
+
+   * Now you can verify the certificate including a check against the CRL (parameter `-crl_check`):  
+     ```Bash
+     ~# openssl verify -crl_check -CRLfile /tmp/crl.for.github.com.pem -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem
+     /tmp/github.com.pem: OK
+     ```  
+     Hint: The intermediate certificate is only needed for the chain of trust being complete - especially there is no need to trust this certificate. That's why it can be passed with parameter `-untrusted`.
+
+   * To fully verify the complete chain, please keep in mind: The intermediate certificate could also have been revoked. In this case the certificate we are checking (here: github.com) would also not be trustworthy any more. So let's check the complete chain, including CRL checks.
+
+   * That means: We will need the CRL of the intermediate certificate too. Please find out it's URL:
+     ```Bash
+     ~# openssl x509 -in /tmp/github.com.chain.pem -noout -text | grep -A 4 "X509v3 CRL Distribution Points"
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://crl4.digicert.com/DigiCertHighAssuranceEVRootCA.crl
+     ```  
+   * Download it, convert it to PEM format (if needed) and save it to `/tmp/crl.for.github.com.chain.pem`
+
+   * Now you can verify the full chain. Parameter `-crl_check_all` is to be used for this:
+     ```Bash
+     ~# openssl verify -crl_check_all -CRLfile /tmp/crl.for.github.com.pem -CRLfile /tmp/crl.for.github.com.chain.pem -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem
+     /tmp/github.com.pem: OK
+     ```
+
+#### Check Certificate Revocation Against OCSP
+
+   * For checking against OCSP you will also need some bits and pieces you already retrieved while checking against CRL, so no neeed to fetch them once more:
+       - The server certificate (stored in `/tmp/github.com.pem`)
+       - The according intermediate certificate in PEM format (stored in `/tmp/github.com.chain.pem`)
+
+   * Now we need the URL of the OCSP responder at your CA. It can be extracted from the certifcate to check:  
      ```Bash
      ~# openssl x509 -in /tmp/github.com.pem -noout -ocsp_uri
      http://ocsp.digicert.com
      ```  
      Use the URL found here in the next step for the `-url` parameter.
 
-   * Now you have everything ready to really check against the CA's OCSP handler:  
+   * Next step is to really check against the CA's OCSP handler:  
      ```Bash
      ~# openssl ocsp -issuer /tmp/github.com.chain.pem -cert /tmp/github.com.pem -text -url http://ocsp.digicert.com
 
