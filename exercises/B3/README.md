@@ -105,11 +105,11 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
         - When it will expire
         - A (long) list of serial numbers of revoked certificates together with it's revocation date and maybe a reason for revocation
 
-### Check Certificate Revocation manually
+### Check Certificate Revocation Manually
 
 If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free choice. In this exercise we will cover both:
 
-#### Check Certificate Revocation Against a CRL
+#### Check Certificate Revocation Against a CRL (Manually)
 
    * Retrieve the server certificate from the server and save it to a file.  
      (This is the certificate we want to check in a few moments.)  
@@ -157,7 +157,7 @@ If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free
      ~# grep "BEGIN X509 CRL" /tmp/crl.for.github.com.crl >/dev/null && echo PEM || echo DER
      DER
      ```  
-     and if it is not, please convert it:  
+     and if it is not, you need to convert it:  
      ```Bash
      ~# openssl crl -in /tmp/crl.for.github.com.crl -inform DER -out /tmp/crl.for.github.com.pem -outform PEM
      ```
@@ -169,7 +169,7 @@ If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free
      ```  
      Hint: The intermediate certificate is only needed for the chain of trust being complete - especially there is no need to trust this certificate. That's why it can be passed with parameter `-untrusted`.
 
-   * To fully verify the complete chain, please keep in mind: The intermediate certificate could also have been revoked. In this case the certificate we are checking (here: github.com) would also not be trustworthy any more. So let's check the complete chain, including CRL checks.
+   * To fully verify the complete chain, please keep in mind: The intermediate certificate could also have been revoked. In this case the certificate we are checking (here: github.com) would also not be trustworthy any more. So let's check the complete chain and include CRL checks on all (in our case: both) levels.
 
    * That means: We will need the CRL of the intermediate certificate too. Please find out it's URL:
      ```Bash
@@ -187,9 +187,9 @@ If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free
      /tmp/github.com.pem: OK
      ```
 
-#### Check Certificate Revocation Against OCSP
+#### Check Certificate Revocation Against OCSP (Manually)
 
-   * For checking against OCSP you will also need some bits and pieces you already retrieved while checking against CRL, so no neeed to fetch them once more:
+   * For checking against OCSP you will also need some bits and pieces you already retrieved while checking against CRL, so no neeed to fetch them once more. You already have:
        - The server certificate (stored in `/tmp/github.com.pem`)
        - The according intermediate certificate in PEM format (stored in `/tmp/github.com.chain.pem`)
 

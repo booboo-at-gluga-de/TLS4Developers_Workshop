@@ -8,3 +8,4 @@
          see https://github.com/matteocorti/check_ssl_cert
        * plus regression tests
    * Exercise B3: Example on how to check a certificate against a CRL (plus regression test for this)
+   * add hints on how to use vagrant
