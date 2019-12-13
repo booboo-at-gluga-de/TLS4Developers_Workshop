@@ -7,5 +7,6 @@
        * Client certificates: check_ssl_cert -H localhost -f /path/to/cert.pem --warning 30
          see https://github.com/matteocorti/check_ssl_cert
        * plus regression tests
-   * Exercise B3: Example on how to check a certificate against a CRL (plus regression test for this)
    * add hints on how to use vagrant
+       * https://www.vagrantup.com/downloads.html
+       * https://www.vagrantup.com/

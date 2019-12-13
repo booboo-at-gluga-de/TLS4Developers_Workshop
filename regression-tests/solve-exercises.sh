@@ -315,9 +315,26 @@ if [[ $SOLVE_B3 -eq 1 ]]; then
     echo -e "::: ${HEADLINE_COLOR}Getting CRL for github.com${NO_COLOR}"
     wget -O /tmp/crl.for.github.com.crl $GITHUB_COM_CRL_URI && success || error
 
+    echo -e "::: ${HEADLINE_COLOR}Converting CRL into PEM format${NO_COLOR}"
+    openssl crl -in /tmp/crl.for.github.com.crl -inform DER -out /tmp/crl.for.github.com.pem -outform PEM && success || error
+
     echo -e "::: ${HEADLINE_COLOR}Getting chain certificate for github.com${NO_COLOR}"
     openssl s_client -showcerts -connect github.com:443 </dev/null >/tmp/github.com.chain.pem && success || error
     sed -i -n '/-----BEGIN/,/-----END/p' /tmp/github.com.chain.pem && sed -i '0,/^-----END CERTIFICATE-----$/d' /tmp/github.com.chain.pem && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}Extracting CRL URL from chain certificate${NO_COLOR}"
+    GITHUB_COM_CHAIN_CRL_URI=$(openssl x509 -in /tmp/github.com.chain.pem -noout -text | grep -A 6 "X509v3 CRL Distribution Points" | grep "http://" | head -1 | sed -e "s/.*URI://")
+    if [[ -z $GITHUB_COM_CHAIN_CRL_URI ]]; then
+        error
+    else
+        success
+    fi
+
+    echo -e "::: ${HEADLINE_COLOR}Getting CRL for chain certificate${NO_COLOR}"
+    wget -O /tmp/crl.for.github.com.chain.crl $GITHUB_COM_CHAIN_CRL_URI && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}Getting converting chain CRL into PEM format${NO_COLOR}"
+    openssl crl -in /tmp/crl.for.github.com.chain.crl -inform DER -out /tmp/crl.for.github.com.chain.pem -outform PEM && success || error
 
     echo -e "::: ${HEADLINE_COLOR}checking for the B.3 CA directory and deleting (if it exists)${NO_COLOR}"
     if [[ -d /home/vagrant/ca.B3 ]]; then

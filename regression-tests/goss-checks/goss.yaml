@@ -200,6 +200,24 @@ command:
     timeout: 10000 # in milliseconds
 
   B.3 Test 2:
+    title: "Exercise B.3: Checking github.com certificate against CRL should report OK status"
+    exec: 'openssl verify -crl_check -CRLfile /tmp/crl.for.github.com.pem -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem'
+    exit-status: 0
+    stdout:
+    - "/tmp/github.com.pem: OK"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 3:
+    title: "Exercise B.3: Checking github.com certificate against full chain and both CRLs should report OK status"
+    exec: 'openssl verify -crl_check_all -CRLfile /tmp/crl.for.github.com.pem -CRLfile /tmp/crl.for.github.com.chain.pem -untrusted /tmp/github.com.chain.pem /tmp/github.com.pem'
+    exit-status: 0
+    stdout:
+    - "/tmp/github.com.pem: OK"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.3 Test 4:
     title: "Exercise B.3: OCSP request should result in: Response verify OK"
     exec: 'openssl ocsp -issuer /tmp/github.com.chain.pem -cert /tmp/github.com.pem -text -url $(openssl x509 -in /tmp/github.com.pem -noout -ocsp_uri)'
     exit-status: 0
@@ -213,7 +231,7 @@ command:
     - "Response verify OK"
     timeout: 10000 # in milliseconds
 
-  B.3 Test 3:
+  B.3 Test 5:
     title: "Exercise B.3: GET request should return content of VirtualHost B.3.ocsp because client certificate was successfully checked against OCSP"
     exec: 'curl --cert /home/vagrant/clientcrt/fullchain1.pem --key /home/vagrant/clientcrt/privkey1.pem https://{{$domain_name_chapter_b}}:23443/index.html'
     exit-status: 0
@@ -223,7 +241,7 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
-  B.3 Test 4:
+  B.3 Test 6:
     title: "Exercise B.3: GET request should return content of VirtualHost B.3.crl because client certificate was successfully checked against CRL"
     exec: 'curl --cert /home/vagrant/client.B3.active.fullchain.crt --key /home/vagrant/client.B3.active.key https://{{$domain_name_chapter_b}}:23444/index.html'
     exit-status: 0
@@ -233,7 +251,7 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
-  B.3 Test 5:
+  B.3 Test 7:
     title: "Exercise B.3: GET request with revoked client certificate against VirtualHost B.3.crl should complain"
     exec: 'curl --cert /home/vagrant/client.B3.revoked.fullchain.crt --key /home/vagrant/client.B3.revoked.key https://{{$domain_name_chapter_b}}:23444/index.html'
     exit-status: 56
@@ -242,7 +260,7 @@ command:
     - "curl: (56) "
     timeout: 10000 # in milliseconds
 
-  B.3 Test 6:
+  B.3 Test 8:
     title: "Exercise B.3: GET request without client certificate against VirtualHost B.3.crl should complain"
     exec: 'curl https://{{$domain_name_chapter_b}}:23444/index.html'
     exit-status: 56
@@ -251,7 +269,7 @@ command:
     - "curl: (56) "
     timeout: 10000 # in milliseconds
 
-  B.3 Test 6:
+  B.3 Test 9:
     title: "Exercise B.3: root_ca.crl.pem should be a valid CRL with no revoked certificates"
     exec: 'openssl crl -in /etc/httpd/ssl.crl/root_ca.crl.pem -noout -text'
     exit-status: 0
@@ -263,7 +281,7 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
-  B.3 Test 7:
+  B.3 Test 10:
     title: "Exercise B.3: issuing_ca.crl.pem should be a valid CRL with at least 1 revoked certificates"
     exec: 'openssl crl -in /etc/httpd/ssl.crl/issuing_ca.crl.pem -noout -text'
     exit-status: 0
