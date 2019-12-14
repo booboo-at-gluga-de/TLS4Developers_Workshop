@@ -11,7 +11,7 @@ echo "### Adding some packages and configurations needed for the exercises"
 echo
 
 # needed packages
-yum -y install httpd mod_ssl vim-enhanced net-tools
+yum -y install httpd mod_ssl vim-enhanced net-tools maven
 # switch SELinux to permissive mode (as this is a playground system)
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/sysconfig/selinux
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/selinux/config
