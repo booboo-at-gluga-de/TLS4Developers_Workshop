@@ -20,6 +20,8 @@ You need a machine running Linux (or maybe MacOS) as your playground
    * `vagrant up`
    * `vagrant ssh`
 
+If you are not familiar with Vagrant, you might want to have a look at our short [VAGRANT_HOWTO](VAGRANT_HOWTO.md).
+
 ### Prerequisites without using Vagrant
 
 You need to care for these additional prerequisites yourself:
