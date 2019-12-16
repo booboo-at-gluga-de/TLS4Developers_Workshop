@@ -15,7 +15,8 @@ The most important thing to understand is: As you could have multiple Vagrant Bo
 
 ### Useful Vagrant Commands
 
-   * Use `vagrant up` to start the VM. (We did pre-configure the instance for you, so you will find everything ready for our exercises inside the VM.)
+   * Use `vagrant up` to start the VM.  
+     (We did pre-configure the instance for you, so you will find everything ready for our exercises inside the VM.)
 
    * By `vagrant ssh` you start a SSH session to the VM. (To leave it, type `exit`)
 
