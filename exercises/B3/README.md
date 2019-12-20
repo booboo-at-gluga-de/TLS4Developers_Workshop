@@ -276,7 +276,7 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
    * And please repeat the test from exercise B.2:  
      ```Bash
-     ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
+     ~# curl --cert ~/clientcrt/fullchain.pem --key ~/clientcrt/privkey.pem https://exercise.jumpingcrab.com:22443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
      (you connected to webspace of exercise B.2)
      ```
@@ -327,7 +327,7 @@ In [__Exercise B.4__](../B4/) you will see what you can do to mitigate the CONs.
 
    * And if your CA's OCSP responder does omit the chain certificate in its reponse you additionally need to configure `SSLOCSPResponderCertificateFile` to point to the intermediate certificate of your client certificate. Something like:  
      ```Bash
-     SSLOCSPResponderCertificateFile /path/to/clientcrt/chain1.pem
+     SSLOCSPResponderCertificateFile /path/to/clientcrt/chain.pem
      ```
 
    * Reload your Apache now:
@@ -342,7 +342,7 @@ In [__Exercise B.4__](../B4/) you will see what you can do to mitigate the CONs.
 
    * And test again:  
      ```Bash
-     ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
+     ~# curl --cert ~/clientcrt/fullchain.pem --key ~/clientcrt/privkey.pem https://exercise.jumpingcrab.com:22443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
      (you connected to webspace of exercise B.2)
      ```

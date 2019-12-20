@@ -279,14 +279,14 @@ if [[ $SOLVE_B2 -eq 1 ]]; then
             /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/fullchain.pem \
             /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem
         do
-            PEM_FILE=$(sudo readlink -f $PEM_LINK) && sudo cp $PEM_FILE ~/clientcrt/ && success || error
+            PEM_FILE=$(sudo readlink -f $PEM_LINK) && sudo cp $PEM_FILE ~/clientcrt/$(basename ${PEM_LINK}) && success || error
         done
 
         echo -e "::: ${HEADLINE_COLOR}Apache config exercise-B2.conf${NO_COLOR}"
         sudo cp /vagrant/exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/ && success || error
 
         echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
-        openssl pkcs12 -export -in /home/vagrant/clientcrt/cert1.pem -inkey /home/vagrant/clientcrt/privkey1.pem -certfile /home/vagrant/clientcrt/chain1.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
+        openssl pkcs12 -export -in /home/vagrant/clientcrt/cert.pem -inkey /home/vagrant/clientcrt/privkey.pem -certfile /home/vagrant/clientcrt/chain.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
     else
         echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
         skipped

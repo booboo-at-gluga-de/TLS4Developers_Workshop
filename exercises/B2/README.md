@@ -33,7 +33,10 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
      /etc/letsencrypt/archive/exercise.jumpingcrab.com/chain1.pem
      /etc/letsencrypt/archive/exercise.jumpingcrab.com/fullchain1.pem
      /etc/letsencrypt/archive/exercise.jumpingcrab.com/privkey1.pem
-     ~# sudo cp /etc/letsencrypt/archive/exercise.jumpingcrab.com/cert1.pem  /etc/letsencrypt/archive/exercise.jumpingcrab.com/chain1.pem /etc/letsencrypt/archive/exercise.jumpingcrab.com/fullchain1.pem /etc/letsencrypt/archive/exercise.jumpingcrab.com/privkey1.pem ~/clientcrt/
+     ~# sudo cp /etc/letsencrypt/archive/exercise.jumpingcrab.com/cert1.pem ~/clientcrt/cert.pem
+     ~# sudo cp /etc/letsencrypt/archive/exercise.jumpingcrab.com/chain1.pem ~/clientcrt/chain.pem
+     ~# sudo cp /etc/letsencrypt/archive/exercise.jumpingcrab.com/fullchain1.pem ~/clientcrt/fullchain.pem
+     ~# sudo cp /etc/letsencrypt/archive/exercise.jumpingcrab.com/privkey1.pem ~/clientcrt/privkey.pem
      ```
      This way you at least have different files for the client certificate (in `~/clientcrt/`) and for the server certificate (in `/etc/letsencrypt/live/`). From this point on: Do not care about the fact these are just copies. Imagine they are differnt!
    * Setup a secure (HTTPS) virtual server, having mTLS enabled:  
@@ -72,12 +75,12 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
        - In case you are using Let's Encrypts CertBot, it already provides such a concatenated file as `fullchain*.pem`
        - In all other cases it can easily be created by something like:
          ```Bash
-         ~# cat ~/clientcrt/cert1.pem ~/clientcrt/chain1.pem > ~/clientcrt/fullchain1.pem
+         ~# cat ~/clientcrt/cert.pem ~/clientcrt/chain.pem > ~/clientcrt/fullchain.pem
          ```
 
    * Let's test!  
      ```Bash
-     ~# curl --cert ~/clientcrt/fullchain1.pem --key ~/clientcrt/privkey1.pem https://exercise.jumpingcrab.com:22443/index.html
+     ~# curl --cert ~/clientcrt/fullchain.pem --key ~/clientcrt/privkey.pem https://exercise.jumpingcrab.com:22443/index.html
      This content is only displayed if you authenticate successfully by a client certificate!
      (you connected to webspace of exercise B.2)
      ```
@@ -95,7 +98,7 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
 
    * A client which should be able to access the website needs the client certificate and its private key plus the chain certificate to do a successful TLS handshake. Let's put all these into one keystore (in PKCS12 format):  
      ```Bash
-     openssl pkcs12 -export -in ~/clientcrt/cert1.pem -inkey ~/clientcrt/privkey1.pem -certfile ~/clientcrt/chain1.pem -out ~/clientcrt/client.keystore.p12
+     openssl pkcs12 -export -in ~/clientcrt/cert.pem -inkey ~/clientcrt/privkey.pem -certfile ~/clientcrt/chain.pem -out ~/clientcrt/client.keystore.p12
      ```
      (Make sure you remember the password you are setting here for the keystore.)
 
