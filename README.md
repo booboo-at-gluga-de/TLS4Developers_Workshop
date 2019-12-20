@@ -106,3 +106,5 @@ That's why you will need to adapt the examples given.
      Certificate Revocation
    * [__Exercise B.4__](exercises/B4/):
      OCSP Stapling
+   * [__Exercise B.5__](exercises/B5/):
+     Expiring Certificates / Monitoring
