@@ -2,15 +2,15 @@
 
 ## Objective
 
-In this exercise you will learn why monitoring the expiration of certificates is important and how to setup a solid certificate monitoring.
+In this exercise you will learn why a monitoring for the expiration of certificates is important and how to setup a solid certificate expiration monitoring.
 
 
-## Why to Set Up Certificate Monitoring
+## Why to Set Up Certificate Expiration Monitoring
 
-All x.509 certificates have a limited validity period. After expiration they are not accepted by anyone.  
+All x.509 certificates have a limited validity period. After expiration they are not accepted by your peers any longer.  
 If the client is a browser or an other client application on the user's workstation, a certificate warning is displayed. Uncertainty at the user is the consequence - ugly enough.
 
-If the certificate is used in a server-to-server communication (e. g. web application is calling a HTTPS webservice) usually the communication stops working, an error is thrown instead.
+If the certificate is used in a server-to-server communication (e. g. web application is calling a HTTPS webservice) usually the communication immediatelly stops working and an error is thrown instead.
 
 The nasty thing about this is: It happens within a second. While in the one moment everything is still working completly without problems, in the next moment you might face a complete outage! So better be prepared!
 
@@ -19,9 +19,9 @@ The golden rule here is: __When ever you use a certificate somewhere, add an acc
 
 ## Steps
 
-In this exercise we assume you have some monitoring system in place which is capable of using Nagios compatible check plugins. (If not: find out how to set up the configuration in your monitoring system.)
+In this exercise we assume you have some monitoring system in place which is capable of using Nagios compatible check plugins. (If not: find out how to set up something similar in your monitoring system.)
 
-Checking server certificates for expiration is best done by connecting to the server and checking the certificate it presents. This has one big advantage: If renewal of the certificate was successful, but there was no restart of the service, it probably still will use the old certificate. You want an alert in this situation too. (The information certificate renewal (only) was successful is not sufficient.)
+Checking server certificates for expiration is best done by connecting to the server and checking the certificate it presents. This has one big advantage: If renewal of the certificate was successful, but there was no restart of the service, it probably still will use the old certificate. You want an alert in this situation too. (The information about certificate renewal (only) being successful is not sufficient.)
 
 All the checks shown here can be done with the default Nagios plugins found as package in your distribution or at https://www.nagios.org/downloads/nagios-plugins/
 
@@ -40,11 +40,11 @@ All the checks shown here can be done with the default Nagios plugins found as p
      ```Bash
      check_imap -H $HOSTADDRESS$ -p 993 -S --certificate=21
      ```
-   * If you have a service like SMTP which use `starttls` this is also possible. Use something like: 
+   * If you have a service like SMTP which uses `starttls` for checking you need something like: 
      ```Bash
      check_smtp -H $HOSTADDRESS$ --starttls --certificate=21
      ```  
-     starttls means: The client connects to the server in clear text. Within the connection the client sends a `starttls` command and they can agree on continuing the conversation encrypted.
+     If you are not familiar with `starttls`, short explanation: The client connects to the server in clear text. Within the connection the client sends a `starttls` command and they can agree on continuing the conversation encrypted.
 
 For client certificates there is no easy way for monitoring them "in use". So the only reasonable way for doing expiration checks is issuing the checks against the certificate file in the filesystem at the machine using the certificate.
 
