@@ -170,7 +170,7 @@ command:
 
   B.2 Test 1:
     title: "Exercise B.2: GET request with client certificate should return content of VirtualHost B.2"
-    exec: 'curl --cert /home/vagrant/clientcrt/fullchain1.pem --key /home/vagrant/clientcrt/privkey1.pem https://{{$domain_name_chapter_b}}:22443/index.html'
+    exec: 'curl --cert /home/vagrant/clientcrt/fullchain.pem --key /home/vagrant/clientcrt/privkey.pem https://{{$domain_name_chapter_b}}:22443/index.html'
     exit-status: 0
     stdout:
     - "This content is only displayed if you authenticate successfully by a client certificate!"
@@ -233,7 +233,7 @@ command:
 
   B.3 Test 5:
     title: "Exercise B.3: GET request should return content of VirtualHost B.3.ocsp because client certificate was successfully checked against OCSP"
-    exec: 'curl --cert /home/vagrant/clientcrt/fullchain1.pem --key /home/vagrant/clientcrt/privkey1.pem https://{{$domain_name_chapter_b}}:23443/index.html'
+    exec: 'curl --cert /home/vagrant/clientcrt/fullchain.pem --key /home/vagrant/clientcrt/privkey.pem https://{{$domain_name_chapter_b}}:23443/index.html'
     exit-status: 0
     stdout:
     - "This content is only displayed if you authenticate successfully by a client certificate!"
