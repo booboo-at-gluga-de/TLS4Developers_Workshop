@@ -270,4 +270,4 @@ So caching time depends on the concrete needs of your setup, but in most cases a
 
 ## Conclusion
 
-You made it up to here! Congratulations! We hope your new gained knowledge will be helpful for you! Enjoy the additional security!
+Almost done! You already learned a lot. You might want to have a look on [__Exercise B.5__](../B5/) anyway, to make sure expiring certificates will not hurt you all over sudden.

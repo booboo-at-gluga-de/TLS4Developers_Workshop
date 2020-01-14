@@ -11,7 +11,7 @@ echo "### Adding some packages and configurations needed for the exercises"
 echo
 
 # needed packages
-yum -y install httpd mod_ssl vim-enhanced net-tools maven
+yum -y install httpd mod_ssl vim-enhanced net-tools nagios-plugins-http maven
 # switch SELinux to permissive mode (as this is a playground system)
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/sysconfig/selinux
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/selinux/config
@@ -50,6 +50,11 @@ sh $GOSS_INSTALLER
 # original command from the doc is:
 # curl -fsSL https://goss.rocks/install | sh
 # but this messes up vagrant output by trying to display progress
+
+# install Nagios plugin check_ssl_cert for Exercise B.5
+echo Downloading check_ssl_cert
+curl -o /usr/local/bin/check_ssl_cert -fsSL https://raw.githubusercontent.com/matteocorti/check_ssl_cert/master/check_ssl_cert
+chmod 755 /usr/local/bin/check_ssl_cert
 
 # do sudoers configuration
 cat >/etc/sudoers.d/TLS4Developers <<EOF

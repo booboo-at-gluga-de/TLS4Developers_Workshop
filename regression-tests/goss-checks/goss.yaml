@@ -326,6 +326,24 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
+  B.5 Test 1:
+    title: "Exercise B.5: Expiration check on certificate at Port 21443 should return OK status"
+    exec: '/usr/lib64/nagios/plugins/check_http -H {{$domain_name_chapter_b}} -p 21443 --ssl --sni --certificate=21'
+    exit-status: 0
+    stdout:
+    - "SSL OK - "
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  B.5 Test 2:
+    title: "Exercise B.5: Expiration check on ~/client.crt should return OK status"
+    exec: '/usr/local/bin/check_ssl_cert -H localhost -f /home/vagrant/client.crt --warning 21'
+    exit-status: 0
+    stdout:
+    - "SSL_CERT OK - "
+    stderr: []
+    timeout: 10000 # in milliseconds
+
 # Certificates used in Chapter B
 file:
   /etc/letsencrypt/live/{{$domain_name_chapter_b}}/cert.pem:
