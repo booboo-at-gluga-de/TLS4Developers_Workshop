@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.tls4developers.examples</groupId>
-    <artifactId>exercise-a2</artifactId>
+    <artifactId>exercise-a4</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>exercise-a2</name>
-    <description>Small sample project to demonstrate the concepts being taught in exercise A2 of the "TLS4Developers"
+    <name>exercise-a4</name>
+    <description>Small sample project to demonstrate the concepts being taught in exercise A4 of the "TLS4Developers"
         workshop.
     </description>
 
@@ -62,7 +62,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <folders>
-                        <folder>/home/vagrant/material_java_a2</folder>
+                        <folder>/home/vagrant/material_java_a4</folder>
                     </folders>
                 </configuration>
             </plugin>

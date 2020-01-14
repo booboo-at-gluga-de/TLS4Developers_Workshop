@@ -111,9 +111,6 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
         `openssl pkcs12 -in localhost.keystore.p12 -nodes`
       - If the HTTPS client is e. g. written in Java, you will need to provide it a truststore. A truststore contains every certificate you trust, usually CA certificates only (and no private keys). In our example with the selfsigned certificate you need the localhost certificate itself in the truststore in PKCS12 format. Create it by:  
         `openssl pkcs12 -export -in localhost.crt -nokeys -out localhost.truststore.p12`
-      - For the Java example we'll walk through in just a bit, we're going to need a JKS-type truststore (JKS: _Java Key Store_). To import our newly created self-signed certificate into such a truststore, the following command can be used:  
-      `keytool -import -file localhost.crt -trustcacerts -keystore localhost.truststore.jks`  
-      This command will ask you for a password to be set on the new truststore. Make sure to remember this password as you'll need it again in the upcoming Java example.
       
 ## Java Example
 
@@ -124,7 +121,15 @@ The goal of this short Java example is to demonstrate how you can establish secu
 
 ### Prerequisites
 
-All you need to run the Java example is the HTTPS-enabled Apache web server set up in scope of the preceding steps as well as the aforementioned truststore in _JKS_ format. The given Java example loads the _/home/vagrant_ directory into its classpath and attempts to retrieve a truststore called _localhost.truststore.jks_ from there -- as you'll notice, that's the name provided for the truststore export command in the last of the optional steps listed above. So, if you ran the command as-is, the application will work out of the box. If the truststore name you have provided deviates from the default given above, please make sure to adapt the name in the _src/main/resources/application.properties_ file accordingly. Please also verify the truststore password provided in the _application.properties_ file matches the password you've set on the _JKS_ truststore.
+For the this Java example, we're going to need a JKS-type truststore (JKS: _Java Key Store_). To import the self-signed certificate created in scope of the previous steps into such a truststore within its own directory, the following two chained commands can be used (from `/home/vagrant`):
+```bash
+$ mkdir material_java_a2 && keytool -import -file localhost.crt -trustcacerts -keystore material_java_a2/localhost.truststore.jks
+``` 
+The `keytool -import` command will ask you for a password to be set on the new truststore. Make sure to remember this password as you'll need it again in the upcoming Java example.
+
+The other component you're going to need to run this Java example is, of course, an HTTPS-enabled backend the sample code can talk to, which in this case will simply be the Apache web server set up in scope of the preceding steps. 
+
+The given Java example loads the previously created `/home/vagrant/material_java_a2` directory into its classpath and attempts to retrieve a truststore called _localhost.truststore.jks_ from there -- as you'll notice, that's the name provided for the certificate import command you've just run. So, if you ran the command as-is, the application will work out of the box. If the truststore name you have provided deviates from the default given above, please make sure to adapt the name in the _src/main/resources/application.properties_ file accordingly. Please also verify the truststore password provided in the _application.properties_ file matches the password you've set on the _JKS_ truststore.
 
 ### Establishing secure backend connections using a `RestTemplate`
 If you've been using Spring Boot within a micro-service architecture -- not too wild a use case, as Spring Boot seems to be rather popular these days with micro-service aficionados, and rightfully so --, you may not have come across the necessity yet to make a `RestTemplate` -- or any other client-side object able to perform simple, HTTP-based operations against a remote backend, for that matter -- establish secure connections with such a backend. This is because in a micro-service architecture, you would normally have some HTTPS-terminating entity in front of your micro-services, so all communication between the latter is exchanged in plain HTTP. There is not much to be done for such use cases -- you may just auto-wire a `RestTemplate` bean into your application context and get on with it. Things get a bit more interesting, however, if you actually *do* have 
@@ -150,12 +155,12 @@ $ mvn -f /vagrant/exercises/A2/java_sample/pom.xml spring-boot:run
 Once the application has started, on a new Terminal session within your Vagrant box, run the following command:
 
 ```bash
-$ curl http://localhost:8080
+$ curl http://localhost:12080
 ``` 
 This will trigger a small piece of  functionality in the application to attempt a call to _https://localhost:12443/index.html_, which will only be successful if the truststore has been set up correctly in scope of exercise A2 and has been provided to the application's `RestTemplate`  (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so:
 
 ```bash
-[vagrant@centos8 ~]$ curl http://localhost:8080
+[vagrant@centos8 ~]$ curl http://localhost:12080
 <!doctype html>
 <html lang="en">
 <head>
