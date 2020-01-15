@@ -124,10 +124,10 @@ The goal of this short Java example is to demonstrate how you can establish secu
 For the this Java example, we're going to need a JKS-type truststore (JKS: _Java Key Store_). To import the self-signed certificate created in scope of the previous steps into such a truststore within its own directory, the following two chained commands can be used (from `/home/vagrant`):
 ```bash
 $ mkdir material_java_a2 && keytool -import -file localhost.crt -trustcacerts -keystore material_java_a2/localhost.truststore.jks
-``` 
+```
 The `keytool -import` command will ask you for a password to be set on the new truststore. Make sure to remember this password as you'll need it again in the upcoming Java example.
 
-The other component you're going to need to run this Java example is, of course, an HTTPS-enabled backend the sample code can talk to, which in this case will simply be the Apache web server set up in scope of the preceding steps. 
+The other component you're going to need to run this Java example is, of course, an HTTPS-enabled backend the sample code can talk to, which in this case will simply be the Apache web server set up in scope of the preceding steps.
 
 The given Java example loads the previously created `/home/vagrant/material_java_a2` directory into its classpath and attempts to retrieve a truststore called _localhost.truststore.jks_ from there -- as you'll notice, that's the name provided for the certificate import command you've just run. So, if you ran the command as-is, the application will work out of the box. If the truststore name you have provided deviates from the default given above, please make sure to adapt the name in the _src/main/resources/application.properties_ file accordingly. Please also verify the truststore password provided in the _application.properties_ file matches the password you've set on the _JKS_ truststore.
 
@@ -157,6 +157,8 @@ Once the application has started, on a new Terminal session within your Vagrant 
 ```bash
 ~# curl http://localhost:12080
 ```
+or point the browser (at your workstation) to http://localhost:12080 (we provided a port forwarding into the Vagrant Box for you.)
+
 This will trigger a small piece of  functionality in the application to attempt a call to _https://localhost:12443/index.html_, which will only be successful if the truststore has been set up correctly in scope of exercise A2 and has been provided to the application's `RestTemplate`  (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so:
 
 ```bash

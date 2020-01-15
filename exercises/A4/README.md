@@ -159,7 +159,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
 
 ## Java Example
 
-Just like in exercise A2, the code for this Java example can be found within in the _java_sample_ directory.
+Just like in exercise A2, the code for this Java example can be found within in the [java_sample](java_sample/) directory.
 
 ### What you'll learn in this Java example
 This Java example will demonstrate how connections to an mTLS-enabled backend can be made (i. e. a backend requesting client-side authentication on the transport level). In doing so, it will also outline how the difference between a truststore and a keystore impacts the client-side code.
@@ -205,6 +205,7 @@ As soon as the application has started, you'll find it listening for requests on
 ```bash
 ~# curl http://localhost:14080
 ```
+or point the browser (at your workstation) to http://localhost:14080 (we provided a port forwarding into the Vagrant Box for you.)
 
 This will make the application execute a call against our mTLS-enabled Apache web server (`https://localhost:14443/index.html`), which, as you'll recall from the exercise steps before this Java example, will only be successful if the application -- the client -- can authenticate itself to the Apache web server. If this is the case, you'll see the following:
 
