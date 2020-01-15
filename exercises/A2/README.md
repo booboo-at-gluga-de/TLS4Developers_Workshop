@@ -123,7 +123,7 @@ The goal of this short Java example is to demonstrate how you can establish secu
 
 For the this Java example, we're going to need a JKS-type truststore (JKS: _Java Key Store_). To import the self-signed certificate created in scope of the previous steps into such a truststore within its own directory, the following two chained commands can be used (from `/home/vagrant`):
 ```bash
-$ mkdir material_java_a2 && keytool -import -file localhost.crt -trustcacerts -keystore material_java_a2/localhost.truststore.jks
+~# mkdir material_java_a2 && keytool -import -file localhost.crt -trustcacerts -keystore material_java_a2/localhost.truststore.jks
 ```
 The `keytool -import` command will ask you for a password to be set on the new truststore. Make sure to remember this password as you'll need it again in the upcoming Java example.
 
