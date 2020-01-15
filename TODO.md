@@ -1,5 +1,6 @@
 # ToDo's within this Project
 
+   * Regression tests for the REST web services
    * mark some of the exercises as optional
    * Java Examples:
        * Add regression tests
