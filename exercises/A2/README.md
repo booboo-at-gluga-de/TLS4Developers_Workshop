@@ -111,11 +111,11 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
         `openssl pkcs12 -in localhost.keystore.p12 -nodes`
       - If the HTTPS client is e. g. written in Java, you will need to provide it a truststore. A truststore contains every certificate you trust, usually CA certificates only (and no private keys). In our example with the selfsigned certificate you need the localhost certificate itself in the truststore in PKCS12 format. Create it by:  
         `openssl pkcs12 -export -in localhost.crt -nokeys -out localhost.truststore.p12`
-      
+
 ## Java Example
 
-The code for the Java example is located in the _java_sample_ directory.
- 
+The code for the Java example is located in the [java_sample](java_sample/) directory.
+
 ### What you'll learn in scope of this Java example
 The goal of this short Java example is to demonstrate how you can establish secure connections to the HTTPS-enabled Apache web server you've just set up. It's important to remember this Apache uses a self-signed certificate for now, and although this does not impair encryption in any way, a self-signed certificate comes with a significant disadvantage: All clients -- such as a Java client -- have to explicitly trust it by referencing a truststore containing the certificate. This is precisely what we'll do in scope of this example.
 
@@ -147,7 +147,7 @@ In this case, we want our program to explicitly trust the HTTPS-enabled Apache w
 You can run the Java sample application using the following command (from anywhere, basically, as we reference the correct POM file using the `-f` flag):
 
 ```bash
-$ mvn -f /vagrant/exercises/A2/java_sample/pom.xml spring-boot:run
+~# mvn -f /vagrant/exercises/A2/java_sample/pom.xml spring-boot:run
 ```
 
 (If you can now observe Maven downloading what feels like approximately half the Internet, don't worry -- that's perfectly normal.)
@@ -155,12 +155,12 @@ $ mvn -f /vagrant/exercises/A2/java_sample/pom.xml spring-boot:run
 Once the application has started, on a new Terminal session within your Vagrant box, run the following command:
 
 ```bash
-$ curl http://localhost:12080
-``` 
+~# curl http://localhost:12080
+```
 This will trigger a small piece of  functionality in the application to attempt a call to _https://localhost:12443/index.html_, which will only be successful if the truststore has been set up correctly in scope of exercise A2 and has been provided to the application's `RestTemplate`  (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so:
 
 ```bash
-[vagrant@centos8 ~]$ curl http://localhost:12080
+~# curl http://localhost:12080
 <!doctype html>
 <html lang="en">
 <head>

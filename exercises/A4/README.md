@@ -156,7 +156,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
    * Optional steps:  
       - If you need your client certificate and private key in a PKCS12 keystore (in PKCS12 format):  
         `openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12`
-        
+
 ## Java Example
 
 Just like in exercise A2, the code for this Java example can be found within in the _java_sample_ directory.
@@ -164,7 +164,7 @@ Just like in exercise A2, the code for this Java example can be found within in 
 ### What you'll learn in this Java example
 This Java example will demonstrate how connections to an mTLS-enabled backend can be made (i. e. a backend requesting client-side authentication on the transport level). In doing so, it will also outline how the difference between a truststore and a keystore impacts the client-side code.
 
-For a detailed explanation of the difference between truststores and keystores, please refer to [this section](https://github.com/AntsInMyEy3sJohnson/TLS4Developers_Workshop/tree/master/exercises/A2#establishing-secure-backend-connections-using-a-resttemplate) of the Java example for exercise A2.
+For a detailed explanation of the difference between truststores and keystores, please refer to [this section](../A2#establishing-secure-backend-connections-using-a-resttemplate) of the Java example for exercise A2.
 
 ### Prerequisites
 There are three prerequisites to running this Java example, namely, an mTLS-enabled backend and two files -- a truststore and a keystore (theoretically, the contents of both could be put into the same file, but that would defeat an important point of this example, so we'll put the trust material and key material into two different files). At this point, the first prerequisite should already be fulfilled if you have followed the steps above, so we're going to create a truststore and a keystore next.
@@ -185,8 +185,8 @@ This Java example wouldn't be complete without having a short look at the differ
 
 If you take a look inside class `de.tls4developers.examples.exercisea4.MtlsEnabledRestTemplateConfiguration`, you'll notice we now invoke two methods on the `SSLContext` object (that will eventually be incorporated into the `RestTemplate`). You'll recognize the `loadTrustMaterial` method from exercise A2 -- we still use it to load truststore information. To load keystore information, on the other hand, we have to make use of the `loadKeyMaterial` method, which also gets the parameters it is called with from the `application.properties` file. You'll notice two things about this method:
 
-+ Its parameters point to the keystore rather than the truststore, which is perfectly reasonable as the client's identity -- which we have to include because the backend we would like to talk to has mTLS enabled -- is contained in the keystore, not the truststore. 
-+ There is a third parameter, namely, a password for the client's private key within the keystore. That also makes sense, since our command to create the JKS keystore involved setting a password for the client's key. 
++ Its parameters point to the keystore rather than the truststore, which is perfectly reasonable as the client's identity -- which we have to include because the backend we would like to talk to has mTLS enabled -- is contained in the keystore, not the truststore.
++ There is a third parameter, namely, a password for the client's private key within the keystore. That also makes sense, since our command to create the JKS keystore involved setting a password for the client's key.
 
 With both the `loadTrustMaterial` and `loadKeyMaterial` methods in place, we can now run the application and see what happens once it attempts to issue a call against the mTLS-enabled backend.
 
@@ -195,7 +195,7 @@ With both the `loadTrustMaterial` and `loadKeyMaterial` methods in place, we can
 You can invoke the following command to run our Java sample application:
 
 ```bash
-$ mvn -f /vagrant/exercises/A4/java_sample/pom.xml spring-boot:run
+~# mvn -f /vagrant/exercises/A4/java_sample/pom.xml spring-boot:run
 ```
 
 (Once again, if you run this command without ever having run a similar Maven command within the same Vagrant box, Maven will now proceed to download a whole bunch of stuff.)
@@ -203,13 +203,13 @@ $ mvn -f /vagrant/exercises/A4/java_sample/pom.xml spring-boot:run
 As soon as the application has started, you'll find it listening for requests on port `14080`. To verify everything works as expected, issue the following command on the terminal (within the Vagrant box):
 
 ```bash
-$ curl http://localhost:14080
+~# curl http://localhost:14080
 ```
 
 This will make the application execute a call against our mTLS-enabled Apache web server (`https://localhost:14443/index.html`), which, as you'll recall from the exercise steps before this Java example, will only be successful if the application -- the client -- can authenticate itself to the Apache web server. If this is the case, you'll see the following:
 
 ```bash
-[vagrant@centos8 ~]$ curl http://localhost:14080
+~# curl http://localhost:14080
 <!doctype html>
 <html lang="en">
 <head>
