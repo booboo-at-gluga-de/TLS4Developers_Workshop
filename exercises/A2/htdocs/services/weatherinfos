@@ -59,7 +59,7 @@ Content-Type: application/json
 
 {
     "meta": {
-        "origin": "weather service of exercise A2"
+        "origin": "weatherinfo service of exercise A2"
     },
     "data": {
         "day": "$WEEKDAY",

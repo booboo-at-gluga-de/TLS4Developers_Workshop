@@ -50,6 +50,15 @@ command:
     stderr: []
     timeout: 10000 # in milliseconds
 
+  A.2 Test 4:
+    title: "Exercise A.2: Weatherinfo service should return valid JSON and refer to A2 in meta->origin"
+    exec: "curl --cacert /home/vagrant/localhost.crt https://localhost:12443/services/weatherinfos | jq '.meta.origin'"
+    exit-status: 0
+    stdout:
+    - "weatherinfo service of exercise A2"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
   A.3 Test 1:
     title: "Exercise A.3: GET request with explicit CA truststore should return content of VirtualHost A.3"
     exec: "curl --cacert /home/vagrant/ca/cacert.pem https://localhost:13443/index.html"
@@ -106,6 +115,15 @@ command:
     stdout:
     - "-----BEGIN CERTIFICATE-----"
     - "-----BEGIN PRIVATE KEY-----"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.4 Test 4:
+    title: "Exercise A.4: Weatherinfo service should return valid JSON and refer to A4 in meta->origin"
+    exec: "curl --cacert /home/vagrant/ca/cacert.pem --cert /home/vagrant/client.crt --key /home/vagrant/client.key https://localhost:14443/services/weatherinfos | jq '.meta.origin'"
+    exit-status: 0
+    stdout:
+    - "weatherinfo service of exercise A4"
     stderr: []
     timeout: 10000 # in milliseconds
 
