@@ -84,7 +84,7 @@ Additionally you will learn about intermediate certificates, also called chain c
       - If you are using a test machine in a corporate network it maybe will already have a valid certificate issued by your corporate CA. (In this case: Make sure the CA certificate is distributed in the truststore of all used clients.)
       - Alternatively get a cerfificate form your preferred CA. At https://letsencrypt.org/ you can get one for free.
 
-If you are unsure how to get a certificate for the exercises, you might want to have a look at our [LETSENCRYPT_MINI_HOWTO](LETSENCRYPT_MINI_HOWTO).
+If you are unsure how to get a certificate for the exercises, you might want to have a look at our [LETSENCRYPT_MINI_HOWTO](LETSENCRYPT_MINI_HOWTO.md).
 
 ### Hints
 

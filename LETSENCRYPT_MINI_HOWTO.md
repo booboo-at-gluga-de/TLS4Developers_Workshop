@@ -11,7 +11,7 @@ For our use case here getting a certificate once is absolutely sufficient, so we
       - A subdomain of a DNS domain you own
       - Alternatively some providers offer DNS records for free, e. g. https://freedns.afraid.org/
 
-   * And Let's Encrypt needs to make sure you are 'in control' of the domain before issuing a certificate. To proof this you can:
+   * And Let's Encrypt needs to make sure you are 'in control' of the domain before issuing a certificate. To proof this you need to fulfill one of the following challenges:
       - Add a given TXT record in DNS for this domain.  
         (This usually easily can be done for a domain you own.)
       - Deliver some given content by HTTP (port 80) under this domain.  
@@ -23,9 +23,9 @@ For our use case here getting a certificate once is absolutely sufficient, so we
 
 ## Hints
 
-   * In this example we will assume you own a domain `jumpingcrab.com` and want to use the subdomain `exercise.jumpingcrab.com` for your playground machine. Of course your domain has a different name: Please replace it in the steps below accordingly.
+   * In this example we will assume a domain `jumpingcrab.com` already exists (and might be used for other purposes) and you want to use the subdomain `exercise.jumpingcrab.com` for your playground machine. Of course the domain you are using has a different name: Please replace it in the steps below accordingly.
 
-   * The default client provided by Let's Encrypt offers a binary called `certbot-auto` or `certbot`, depending on the Linux distribution you are using. Both are accepting the same parameters. In the example we will use `certbot-auto` because this one is included in our Vagrant box. If you installed `certbot` instead, you just need to replace the command.
+   * The default client provided by Let's Encrypt offers a binary called `certbot-auto` or `certbot`, depending on the Linux distribution you are using. Both are accepting the same parameters. In the example we will use `certbot-auto` because this one is included in our Vagrant box. If you installed `certbot` instead, you just need to replace the name of the command.
 
    * The only difference between both is:
        - `certbot` installs dependent packages at install time of certbot.
@@ -60,6 +60,7 @@ In this case you will use the dns challenge of `certbot` to proof to Let's Encry
      encrypting the web, EFF news, campaigns, and ways to support digital freedom.
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      (Y)es/(N)o: n
+
      Obtaining a new certificate
      Performing the following challenges:
      dns-01 challenge for exercise.jumpingcrab.com
@@ -107,11 +108,11 @@ In this case you will use the dns challenge of `certbot` to proof to Let's Encry
 
 In this case you will use the http challenge of `certbot` to proof to Let's Encrypt you are 'in control' of the domain `exercise.jumpingcrab.com`.
 
-   * You need some machine which is reachable from the internet and which is running a webserver on port 80. This does not need to be your playground machine (but of course it can be the same). It also could be some machine at your provider, in some cloud or in your home network (it will not need to serve lots of HTTP traffic).
+   * You need some machine running a webserver on port 80 and this port is reachable from the internet. This does not need to be your playground machine (but of course it can). It also could be some machine at your provider, in some cloud or in your home network (it will not need to serve lots of HTTP traffic).
 
    * Register the subdomain `exercise.jumpingcrab.com` in DNS and make it point to this webserver (add an AAAA, A or CNAME record). Free DNS providers usually provide a web interface for doing this.
 
-   * Make sure the webserver answers HTTP requests at port 80. If you are able to access http://exercise.jumpingcrab.com/ from any client on the internet. E. g. test the request from your smartphone (with WiFi switched off).
+   * Make sure the webserver answers HTTP requests at port 80. If you are able to access http://exercise.jumpingcrab.com/ from any client on the internet, you are fine. E. g. test the request from your smartphone (with WiFi switched off).
 
    * If the request is not successful:
         - Make sure no firewall between client and server is blocking the connection.
@@ -140,6 +141,7 @@ In this case you will use the http challenge of `certbot` to proof to Let's Encr
      encrypting the web, EFF news, campaigns, and ways to support digital freedom.
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      (Y)es/(N)o: n
+
      Obtaining a new certificate
      Performing the following challenges:
      http-01 challenge for exercise.jumpingcrab.com
@@ -196,6 +198,6 @@ In this case you will use the http challenge of `certbot` to proof to Let's Encr
            - Alternatively get a cerfificate form your preferred CA. At https://letsencrypt.org/ you can get one for free.
      ```
 
-   * Within the retrieval process there is a point where it asks you to add a random string under a certain URL. Please add it there before you continue. This content can be removed immediatelly after you successfully retrieved the certificate.
+   * Within the retrieval process there is a point where it asks you to add a random string under a certain URL. Please add it there (on the webserver machine) before you continue. This content can be removed immediatelly after you successfully retrieved the certificate.
 
-   * Now you can make the DNS for `exercise.jumpingcrab.com` point to the IP of your playground machine (as you need it for the exercises).
+   * Now you can make the DNS for `exercise.jumpingcrab.com` point to the IP address of your playground machine (as you need it for the exercises).
