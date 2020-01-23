@@ -51,9 +51,9 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
      ```Bash
      ~# ls -l
      total 12
-     -rw-r--r-- 1 booboo booboo 1302 Sep 13 17:26 localhost.crt
-     -rw-r--r-- 1 booboo booboo 1054 Sep 13 17:25 localhost.csr
-     -rw------- 1 booboo booboo 1675 Sep 13 17:22 localhost.key
+     -rw-r--r-- 1 vagrant vagrant 1302 Sep 13 17:26 localhost.crt
+     -rw-r--r-- 1 vagrant vagrant 1054 Sep 13 17:25 localhost.csr
+     -rw------- 1 vagrant vagrant 1675 Sep 13 17:22 localhost.key
      ```
 
    * Now let's setup a secure (HTTPS) virtual server within Apache:  

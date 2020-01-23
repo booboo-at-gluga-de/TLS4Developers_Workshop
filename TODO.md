@@ -8,4 +8,3 @@
        * PKCS12 keystores/truststores instead of JKS
        * What could go wrong? Where to look for debugging information?
    * optional exercise A.6: Start a SpringBoot server, https enabled
-   * maybe a short howto on getting a Let's Encrypt Certificate for testing

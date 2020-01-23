@@ -101,20 +101,20 @@ To continue with the next steps you need to have finished [__Exercise B.1__](../
      ```
 
    * Now edit your Apache's `exercise-B1.conf` file and __outside__ the `VirtualHost` section please add something like:  
-     ```Bash
+     ```Apache
      SSLStaplingCache shmcb:/run/httpd/ocsp(512000)
      ```  
      Maybe you need a different path on your system. Suggestion: Use the same directory as in your `SSLSessionCache` directive.
 
    * And __inside__ the `VirtualHost` section please add:  
-     ```Bash
+     ```Apache
      SSLUseStapling on
      SSLStaplingResponseMaxAge 3600
      ```  
      to enable OCSP Stapling.
 
    * If you are interested in what's going on during the TLS handshake and want to read every detail in the log, please add __inside__ the `VirtualHost` section:  
-     ```Bash
+     ```Apache
      LogLevel debug
      ```
 

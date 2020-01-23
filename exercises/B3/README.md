@@ -260,9 +260,9 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
 
    * Until you have everything working please switch the loglevel for the B.2 VirtualHost to `debug` to make sure you can see what's going on (in Apache's error log) - not only to see what concretly is going wrong if there should be errors, but also to read the log and learn from it about the single steps taken.  
      Please edit your Apache's `exercise-B2.conf` file and inside the `VirtualHost` section add:  
-     ```Bash
+     ```Apache
      LogLevel debug
-     ```  
+     ```
 
    * Reload your Apache now:
       * in CentOS / RedHat Enterprise setups this is
@@ -282,7 +282,7 @@ To continue with the next steps you need to have finished [__Exercise B.2__](../
      ```
 
    * Check your Apache's error log now. It might be located somewhere under `/var/log/httpd/` or `/var/log/apache2/` or where ever you configured it to be. Find lines looking like this:  
-     ```Bash
+     ```plaintext
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
      [...] [client 127.0.0.1:51388] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
@@ -311,22 +311,22 @@ In [__Exercise B.4__](../B4/) you will see what you can do to mitigate the CONs.
 #### If You Decide to Use OCSP
 
    * Edit your Apache's `exercise-B2.conf` file and inside the `VirtualHost` section add:  
-     ```Bash
+     ```Apache
      SSLOCSPEnable on
      ```
 
    * The OCSP handler used above (Let's Encypt) does not provide Nonces. In the listing above please note the line:  
-     ```Bash
+     ```plaintext
      WARNING: no nonce in response
      ```  
      If your CA's OCSP handler also does not provide Nonces please additionally put  
-     ```Bash
+     ```Apache
      SSLOCSPUseRequestNonce off
      ```  
      into your Apache's `exercise-B2.conf` file.
 
    * And if your CA's OCSP responder does omit the chain certificate in its reponse you additionally need to configure `SSLOCSPResponderCertificateFile` to point to the intermediate certificate of your client certificate. Something like:  
-     ```Bash
+     ```Apache
      SSLOCSPResponderCertificateFile /path/to/clientcrt/chain.pem
      ```
 
@@ -350,14 +350,14 @@ In [__Exercise B.4__](../B4/) you will see what you can do to mitigate the CONs.
    * If the test fails you find information on what went wrong in your Apache's error log file (because you switched the loglevel to debug).
 
    * As soon you got it working please have one more look into the error log file. There again you find lines like this:  
-     ```Bash
+     ```plaintext
      [...] [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 2, CRL checking mode: none (0) [subject: CN=DST Root CA X3,O=Digital Signature Trust Co. / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 44AFB080D6A327BA893039862EF8406B / notbefore: Sep 30 21:12:19 2000 GMT / notafter: Sep 30 14:01:15 2021 GMT]
      [...] [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 1, CRL checking mode: none (0) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
      [...] [client 127.0.0.1:41942] AH02275: Certificate Verification, depth 0, CRL checking mode: none (0) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
      ```  
      telling there are still no CRL checks.  
      On the other hand you will find lines like these, telling OCSP checks succeeded:  
-     ```Bash
+     ```plaintext
      [...] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / issuer: CN=DST Root CA X3,O=Digital Signature Trust Co. / serial: 0A0141420000015385736A0B85ECA708 / notbefore: Mar 17 16:40:46 2016 GMT / notafter: Mar 17 16:40:46 2021 GMT]
      [...] [client 127.0.0.1:41942] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=exercise.jumpingcrab.com / issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US / serial: 032D8C98A96BF145F9411673A397A4A0E80E / notbefore: Sep 24 19:29:20 2019 GMT / notafter: Dec 23 19:29:20 2019 GMT]
      ```
@@ -368,7 +368,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
 
    * Create a directory where to store the CRLs locally. I will use `/etc/httpd/ssl.crl`  
      ```Bash
-     mkdir /etc/httpd/ssl.crl
+     ~# mkdir /etc/httpd/ssl.crl
      ```
 
    * Check as well the client certificate as it's intermediate CA certificate for it's CRL URL. This can be done in the way you did above or by:  
@@ -420,7 +420,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
      ```
 
    * Edit your Apache's `exercise-B2.conf` file and inside the `VirtualHost` section add:  
-     ```Bash
+     ```Apache
      SSLCARevocationCheck chain
      SSLCARevocationPath /etc/httpd/ssl.crl/
      ```
@@ -445,7 +445,7 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
    * If the test fails you find information on what went wrong in your Apache's error log file (because you switched the loglevel to debug).
 
    * As soon you got it working please have one more look into the error log file. There again you find lines like this:  
-     ```Bash
+     ```plaintext
      [...] [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 2, CRL checking mode: chain (2) [subject: [...]
      [...] [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 1, CRL checking mode: chain (2) [subject: [...]
      [...] [client 127.0.0.1:41930] AH02275: Certificate Verification, depth 0, CRL checking mode: chain (2) [subject: [...]

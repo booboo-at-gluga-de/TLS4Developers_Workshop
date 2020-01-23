@@ -27,7 +27,7 @@ All the checks shown here can be done with the default Nagios plugins found as p
 
    * Checkking a HTTPS server can be done by:  
      ```Bash
-     check_http -H $HOSTADDRESS$ -p 443 --ssl --sni --certificate=21
+     ~# check_http -H $HOSTADDRESS$ -p 443 --ssl --sni --certificate=21
      ```  
      This way you would get an alert 21 days before expiration of the server certificate.  
      `$HOSTADDRESS$` in Nagios & Co. refers to the IP address of the host the check is assosiated to.  
@@ -38,11 +38,11 @@ All the checks shown here can be done with the default Nagios plugins found as p
      ```
    * Something very similar can be done for IMAPS servers:  
      ```Bash
-     check_imap -H $HOSTADDRESS$ -p 993 -S --certificate=21
+     ~# check_imap -H $HOSTADDRESS$ -p 993 -S --certificate=21
      ```
    * If you have a service like SMTP which uses `starttls` for checking you need something like: 
      ```Bash
-     check_smtp -H $HOSTADDRESS$ --starttls --certificate=21
+     ~# check_smtp -H $HOSTADDRESS$ --starttls --certificate=21
      ```  
      If you are not familiar with `starttls`, short explanation: The client connects to the server in clear text. Within the connection the client sends a `starttls` command and they can agree on continuing the conversation encrypted.
 
