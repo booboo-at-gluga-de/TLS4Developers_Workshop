@@ -9,7 +9,7 @@ In this exercise you will use some commands which are very useful when dealing w
    * You need to complete [Exercise A.3](../A3/) before starting this one.  
      Background is: You will need a certificate and a HTTPS host to be used with the commands below.
 
-## Useful Commands
+## A.5.1 Useful Commands
 
 Within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`.
 

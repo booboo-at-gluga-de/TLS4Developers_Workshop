@@ -14,7 +14,7 @@ One advantage compared to selfsigned certificates stays: You need to distribute 
 
 In this exercise some commands reference files by complete path. If you use our Vagrant setup, you do not have to change anything. If you don't: Please change the path accordingly. Wherever you see `/vagrant/...` below you use the path where the file is located at your system. All files referenced are included within this git.
 
-## Steps
+## A.3.1 Steps
    * Prepare some configs for your own Certificate Authority (CA):  
      (within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`)
      ```Bash
@@ -216,17 +216,17 @@ In this exercise some commands reference files by complete path. If you use our 
      (you connected to webspace of exercise A.3)
      ```
 
-   * Optional steps:  
-      - In some usecases you need your certificate in a keystore (in PKCS12 format). To place the server certificate plus it's private key in a (newly created) PKCS12 keystore:  
+   * _Optional steps:_  
+      - _In some usecases you need your certificate in a keystore (in PKCS12 format). To place the server certificate plus it's private key in a (newly created) PKCS12 keystore:_  
         `openssl pkcs12 -export -in server.crt -inkey server.key -out server.keystore.p12`  
-        (make sure you remember the keystore password you are setting here)
-      - To display the content of the keystore:  
+        _(make sure you remember the keystore password you are setting here)_
+      - _To display the content of the keystore:_  
         `openssl pkcs12 -in server.keystore.p12 -nodes`
-      - A truststore in PKCS12 format (containing the CA certificate only, no private key) can be created pretty much the same way:  
+      - _A truststore in PKCS12 format (containing the CA certificate only, no private key) can be created pretty much the same way:_  
         `openssl pkcs12 -export -in ca/cacert.pem -nokeys -out ca/truststore.ca.p12`
 
 
-## Conclusion
+## A.3.1 Conclusion
 
    * You are working with two different Certificates now: The server certificate and the CA certificate.
    * The server certificate is needed on the server only - no need to put it onto the truststore of the client.
