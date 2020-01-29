@@ -1,6 +1,5 @@
 # ToDo's within this Project
 
-   * mark some of the exercises as optional
    * more compact conclusion for A.2
    * Java Examples:
        * Add regression tests
