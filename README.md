@@ -52,7 +52,7 @@ You need to care for these additional prerequisites yourself:
 
 ### Exercises
 
-Now it's time to jump to the exercise you are interested in:
+Now it's time to really start exercising:
 
    * [__Exercise A.1__](exercises/A1/):
      Establish a connection between a client and the HTTPS server, secured by a selfsigned certificate
