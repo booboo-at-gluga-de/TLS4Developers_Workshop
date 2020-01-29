@@ -34,6 +34,8 @@ You need to care for these additional prerequisites yourself:
 
 ## Hints: Working with the exercises
 
+   * Some of the exercises are marked optional - the headline includes the word **optional** and they are set in an _italic font_: Decide if you think they provide additional value for you or if you want to jump to the next exercise. (E. g. if you are not developing anything in Java, you might want to skip the Java examples.)
+   * All other exercises we would recommend to do!
    * Every exercise uses a different port (to avoid port conflicts: You might want to have more than one exercise online at once.)  
      So be careful when using commands from your history if they are form an other exercise. Think of changing the port.
    * Port numbers of chapter A start with 1, chapter B with 2.  

@@ -22,7 +22,7 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
         ```
    * Usually the client and the server run on different machines. For this example it's absolutely ok to have both of them on one machine (your playground machine). Or you can use the browser on your workstation as client.
 
-## Steps
+## B.2.1 Steps
 
    * If you are using one single Let's Encrypt Certificate in both roles (server certificate and client certificate) please copy it - for the use as client certificate - over to your home directory.
      ```Bash
@@ -113,7 +113,7 @@ In this exercise you will create a very similar setup as in [Exercise A.4](../A4
       - And finally you see it: The content of your secure website!  
         ![Content of the secure website](images/website.png "The content of the secure website is displayed.")
 
-## Conclusion
+## B.2.2 Conclusion
 
 You came very far already. However your setup is not yet completly perfect. What would happen if of one of your clients the certificate would be stolen? Even if it were revoked you would still accept this certificate. This way the attacker would get access to your well protected website. That's not what you want!
 

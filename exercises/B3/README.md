@@ -41,7 +41,7 @@ Most Browsers nowadays do check revocation of server certificates by default, at
 
 Each certificate contains the URL where the according CRL can be retrieved, or the URL of the according OCSP responder. Or if you are really lucky: Both (in this case you have the free choice on which to use).
 
-## Steps
+## B.3.1 Steps
 
 ### Display Content of CRL
 
@@ -105,7 +105,7 @@ Each certificate contains the URL where the according CRL can be retrieved, or t
         - When it will expire
         - A (long) list of serial numbers of revoked certificates together with it's revocation date and maybe a reason for revocation
 
-### Check Certificate Revocation Manually
+### B.3.1.1 Check Certificate Revocation Manually
 
 If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free choice. In this exercise we will cover both:
 
@@ -254,7 +254,7 @@ If your certificate offers both, a CRL URL __and__ a OCSP URL, you have the free
         Next Update: Oct 29 19:24:41 2019 GMT
      ```
 
-### Always check for revocation (automatically)
+### B.3.1.2 Always check for revocation (automatically)
 
 To continue with the next steps you need to have finished [__Exercise B.2__](../B2/). There you did set up a webserver where clients need to authenticate with a client certificate.
 
@@ -455,19 +455,19 @@ This part can not be done with my Let's Encrypt certificate (used in the role of
    * In a real world scenario please remember to set up a cron job which on a regular basis gets new versions of the CRLs. Steps like above: Download them, maybe convert to PEM format and hash them.  
      You need to run it always before expiration of the CRL at minimum. Recommendation is to do it way more often. (If you get them more often you reduce the time window for abuse: Time between revocation and disabling usage.)
 
-   * Optional step: If you want you can revoke the client certificate and see it is no longer accepted:
-      - Request revocation at the CA which issued it.
-      - Give it a little time to create and publish the new CRL.
-      - Download the new CRL, place it in `/etc/httpd/ssl.crl` and HASH it. (No need to reload Apache.)
-      - Test again:  
+   * _Optional step: If you want you can revoke the client certificate and see it is no longer accepted:_
+      - _Request revocation at the CA which issued it._
+      - _Give it a little time to create and publish the new CRL._
+      - _Download the new CRL, place it in `/etc/httpd/ssl.crl` and HASH it. (No need to reload Apache.)_
+      - _Test again:_  
         ```Bash
         ~# curl --cert ~/clientcrt/client.fullchain.pem --key ~/clientcrt/client.privkey.pem https://exercise.jumpingcrab.com:22443/index.html
         curl: (56) OpenSSL SSL_read: error:14094414:SSL routines:ssl3_read_bytes:sslv3 alert certificate revoked, errno 0
         ```  
-        You see the request is rejected and as a reason it says `certificate revoked`
-      - At the same time in Apache's error log you will find a message like `AH02276: Certificate Verification: Error (23): certificate revoked`
+        _You see the request is rejected and as a reason it says_ `certificate revoked`
+      - _At the same time in Apache's error log you will find a message like_ `AH02276: Certificate Verification: Error (23): certificate revoked`
 
-## Conclusion
+## B.3.2 Conclusion
 
    * Always keep in mind: Make sure to always check for revocation - for reasons of your own secuity!
    * Please continue to [__Exercise B.4__](../B4/) now to learn about OCSP Stapling: It improves performance and reduces dependency on the availability of your CA's OCSP handler.

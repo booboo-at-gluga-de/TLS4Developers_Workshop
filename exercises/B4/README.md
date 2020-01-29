@@ -17,7 +17,7 @@ When using OCSP Stapling, the server does the OCSP request for it's own server c
 
 See https://en.wikipedia.org/wiki/OCSP_stapling for more information on OCSP Stapling.
 
-## Steps
+## B.4.1 Steps
 
 To continue with the next steps you need to have finished [__Exercise B.1__](../B1/). There you did set up a HTTPS webserver with a certificate of an official CA.
 
@@ -240,7 +240,7 @@ To continue with the next steps you need to have finished [__Exercise B.1__](../
 
    * If you use a HTTP client - `curl https://exercise.jumpingcrab.com:21443/index.html` or the browser on your workstation - you may not remark any changes in the behavior.
 
-## Summary: Which Way Should I use for Revocation Checks?
+## B.4.2 Summary: Which Way Should I use for Revocation Checks?
 
 You learned about CRLs, OCSP and OCSP Stapling. But which of them is the best in real life?  
 The clear answer is: Well, it depends!
@@ -268,6 +268,6 @@ Caching Time Considerations (in both cases):
 
 So caching time depends on the concrete needs of your setup, but in most cases a time range in minutes does not make too much sense. Maybe thinking in hours could be better.
 
-## Conclusion
+## B.4.3 Conclusion
 
 Almost done! You already learned a lot. You might want to have a look on [__Exercise B.5__](../B5/) anyway, to make sure expiring certificates will not hurt you all over sudden.
