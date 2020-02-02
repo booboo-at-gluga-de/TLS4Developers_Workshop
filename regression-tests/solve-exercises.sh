@@ -168,6 +168,19 @@ if [[ $SOLVE_A2 -eq 1 ]]; then
 
     echo -e "::: ${HEADLINE_COLOR}creating localhost.truststore.p12${NO_COLOR}"
     openssl pkcs12 -export -in /home/vagrant/localhost.crt -nokeys -out /home/vagrant/localhost.truststore.p12 -passout pass:test && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}checking for previous created directory material_java_a2 and removing it${NO_COLOR}"
+    if [[ -d /home/vagrant/material_java_a2 ]]; then
+        rm -Rf /home/vagrant/material_java_a2 && success || error
+    else
+        echo not existing
+    fi
+
+    echo -e "::: ${HEADLINE_COLOR}creating directory material_java_a2${NO_COLOR}"
+    mkdir /home/vagrant/material_java_a2 && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating localhost.truststore.jks${NO_COLOR}"
+    keytool -import -file /home/vagrant/localhost.crt -trustcacerts -deststorepass test123 -noprompt -keystore /home/vagrant/material_java_a2/localhost.truststore.jks && success || error
 fi
 
 if [[ $SOLVE_A3 -eq 1 ]]; then
@@ -233,6 +246,22 @@ if [[ $SOLVE_A4 -eq 1 ]]; then
 
     echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
     openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}checking for previous created directory material_java_a4 and removing it${NO_COLOR}"
+    if [[ -d /home/vagrant/material_java_a4 ]]; then
+        rm -Rf /home/vagrant/material_java_a4 && success || error
+    else
+        echo not existing
+    fi
+
+    echo -e "::: ${HEADLINE_COLOR}creating directory material_java_a4${NO_COLOR}"
+    mkdir /home/vagrant/material_java_a4 && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating cacert.truststore.jks${NO_COLOR}"
+    keytool -import -file /home/vagrant/ca/cacert.pem -deststorepass test123 -noprompt -keystore /home/vagrant/material_java_a4/cacert.truststore.jks && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}creating client.keystore.jks${NO_COLOR}"
+    keytool -importkeystore -deststorepass test123 -destkeypass test123 -destkeystore /home/vagrant/material_java_a4/client.keystore.jks -srckeystore /home/vagrant/client.keystore.p12 -srcstorepass test && success || error
 fi
 
 if [[ $SOLVE_B1 -eq 1 ]]; then

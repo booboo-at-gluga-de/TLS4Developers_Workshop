@@ -51,6 +51,18 @@ command:
     timeout: 10000 # in milliseconds
 
   A.2 Test 4:
+    title: "Exercise A.2: localhost.truststore.jks should contain a certificate and no key"
+    exec: "keytool -list -storepass test123 -keystore /home/vagrant/material_java_a2/localhost.truststore.jks"
+    exit-status: 0
+    stdout:
+    - "Keystore type: jks"
+    - "Keystore provider: SUN"
+    - "Your keystore contains 1 entry"
+    - "trustedCertEntry,"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.2 Test 5:
     title: "Exercise A.2: Weatherinfo service should return valid JSON and refer to A2 in meta->origin"
     exec: "curl --cacert /home/vagrant/localhost.crt https://localhost:12443/services/weatherinfos | jq '.meta.origin'"
     exit-status: 0
@@ -119,6 +131,30 @@ command:
     timeout: 10000 # in milliseconds
 
   A.4 Test 4:
+    title: "Exercise A.4: cacert.truststore.jks should contain a certificate and no key"
+    exec: "keytool -list -storepass test123 -keystore /home/vagrant/material_java_a4/cacert.truststore.jks"
+    exit-status: 0
+    stdout:
+    - "Keystore type: jks"
+    - "Keystore provider: SUN"
+    - "Your keystore contains 1 entry"
+    - "trustedCertEntry,"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.4 Test 5:
+    title: "Exercise A.4: client.keystore.jks should contain exactly one privateKeyEntry"
+    exec: "keytool -list -storepass test123 -keystore /home/vagrant/material_java_a4/client.keystore.jks"
+    exit-status: 0
+    stdout:
+    - "Keystore type: jks"
+    - "Keystore provider: SUN"
+    - "Your keystore contains 1 entry"
+    - "PrivateKeyEntry,"
+    stderr: []
+    timeout: 10000 # in milliseconds
+
+  A.4 Test 6:
     title: "Exercise A.4: Weatherinfo service should return valid JSON and refer to A4 in meta->origin"
     exec: "curl --cacert /home/vagrant/ca/cacert.pem --cert /home/vagrant/client.crt --key /home/vagrant/client.key https://localhost:14443/services/weatherinfos | jq '.meta.origin'"
     exit-status: 0

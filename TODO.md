@@ -1,7 +1,6 @@
 # ToDo's within this Project
 
    * Java Examples:
-       * Add regression tests
        * Rest Service is called: Weather for current day of the week
            * https://localhost:12443/services/weatherinfos
            * https://localhost:14443/services/weatherinfos
