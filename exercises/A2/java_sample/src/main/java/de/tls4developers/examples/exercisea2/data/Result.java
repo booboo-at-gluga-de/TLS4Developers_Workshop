@@ -7,8 +7,6 @@ import lombok.Getter;
 @Getter
 public class Result {
 
-    private final String header;
-    private final String subHeader;
     private final String details;
 
 }
