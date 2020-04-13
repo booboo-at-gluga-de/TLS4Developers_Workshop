@@ -1,8 +1,8 @@
 # TLS4Developers Workshop: Hands-on-Labs
 
-We noticed: Many software developers and some admins do not really have a solid knowledge on TLS (SSL) connections and x.509 certificates and how to handle them. On the other hand there is a growing need for them to know about due to increasing security needs nowadays. TLS is used in HTTPS / SMTPS / IMAPS / ... connections, for encrypting or digitally signing files, etc. And these technologies help to reduce attack surface.
+Due to increasing security needs nowadays software developers and admins need to have a solid knowledge on TLS (SSL) connections and x.509 certificates and how to handle them. TLS is used in HTTPS / SMTPS / IMAPS / ... connections, for encrypting or digitally signing files, etc. And these technologies help to reduce attack surface.
 
-So there is a real need to gain in-depth knowledge: That's why we started these Hands-on training lab. You will learn step by step from very basic topics to more advanced ones. You might want to use these Hands-on-Labs as your only source of new knowledge or in addition to the TLS4Developers Workshop. They are designed in a way you can also do them at home if you feel you would like to have more time for real Hands-on experience or need more practicing.
+For novices joining development or operations teams as well as for people working in the teams for a long time, but feel their knowledge should be improved, we started these Hands-on training lab. You will learn step by step from very basic topics to more advanced ones. You might want to use these Hands-on-Labs as your only source of new knowledge or in addition to the TLS4Developers Workshop. They are designed in a way you can also do them at home if you feel you would like to have more time for real Hands-on experience or need more practicing.
 
 ## Prerequisites
 
@@ -34,6 +34,8 @@ You need to care for these additional prerequisites yourself:
 
 ## Hints: Working with the exercises
 
+   * Some of the exercises are marked optional - the headline includes the word **optional** and they are set in an _italic font_: Decide if you think they provide additional value for you or if you want to jump to the next exercise. (E. g. if you are not developing anything in Java, you might want to skip the Java examples.)
+   * All other exercises we would recommend to do!
    * Every exercise uses a different port (to avoid port conflicts: You might want to have more than one exercise online at once.)  
      So be careful when using commands from your history if they are form an other exercise. Think of changing the port.
    * Port numbers of chapter A start with 1, chapter B with 2.  
@@ -50,7 +52,7 @@ You need to care for these additional prerequisites yourself:
 
 ### Exercises
 
-Now it's time to jump to the exercise you are interested in:
+Now it's time to really start exercising:
 
    * [__Exercise A.1__](exercises/A1/):
      Establish a connection between a client and the HTTPS server, secured by a selfsigned certificate
@@ -83,6 +85,8 @@ Additionally you will learn about intermediate certificates, also called chain c
      (The DNS name above needs to be the CN of the certificate or in one of the SAN fields.)
       - If you are using a test machine in a corporate network it maybe will already have a valid certificate issued by your corporate CA. (In this case: Make sure the CA certificate is distributed in the truststore of all used clients.)
       - Alternatively get a cerfificate form your preferred CA. At https://letsencrypt.org/ you can get one for free.
+
+If you are unsure how to get a certificate for the exercises, you might want to have a look at our [LETSENCRYPT_MINI_HOWTO](LETSENCRYPT_MINI_HOWTO.md).
 
 ### Hints
 

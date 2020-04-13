@@ -17,5 +17,14 @@ sudo /usr/local/bin/goss --gossfile=/vagrant/regression-tests/goss-checks/goss.y
 
 ORANGE='\033[0;33m'
 NO_COLOR='\033[0m'
-echo -e "${ORANGE}Please note: Automated regression tests are finished until exercise B.4 (including)."
-echo -e "For all exercises after this: Please do tests manually!${NO_COLOR}"
+echo -e "${ORANGE}Please note: Some tests are not yet automated and need to be done manually:"
+echo -e " * Testing the Java Exercises${NO_COLOR}"
+echo -e "      - A2:"
+echo -e "            mvn -f /vagrant/exercises/A2/java_sample/pom.xml spring-boot:run"
+echo -e "            curl http://localhost:12080"
+echo -e "      - A4:"
+echo -e "            mvn -f /vagrant/exercises/A4/java_sample/pom.xml spring-boot:run"
+echo -e "            curl http://localhost:14080"
+echo -e "${ORANGE} * Exercises after A.5 (if there are some)"
+echo -e " * Exercises after B.5 (if there are some)"
+echo -e "${NO_COLOR}"

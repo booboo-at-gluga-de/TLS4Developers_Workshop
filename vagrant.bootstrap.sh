@@ -11,7 +11,7 @@ echo "### Adding some packages and configurations needed for the exercises"
 echo
 
 # needed packages
-yum -y install httpd mod_ssl vim-enhanced net-tools nagios-plugins-http maven
+yum -y install httpd mod_ssl vim-enhanced net-tools nagios-plugins-http maven jq
 # switch SELinux to permissive mode (as this is a playground system)
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/sysconfig/selinux
 sed -i "s/^\s*SELINUX\s*=.*/SELINUX=permissive/" /etc/selinux/config
@@ -51,6 +51,11 @@ sh $GOSS_INSTALLER
 # curl -fsSL https://goss.rocks/install | sh
 # but this messes up vagrant output by trying to display progress
 
+# install Let's Encrypt certbot
+echo Downloading certbot
+curl -o /usr/local/bin/certbot-auto -fsSL https://dl.eff.org/certbot-auto
+chmod 755 /usr/local/bin/certbot-auto
+
 # install Nagios plugin check_ssl_cert for Exercise B.5
 echo Downloading check_ssl_cert
 curl -o /usr/local/bin/check_ssl_cert -fsSL https://raw.githubusercontent.com/matteocorti/check_ssl_cert/master/check_ssl_cert
@@ -63,6 +68,9 @@ cat >/etc/sudoers.d/TLS4Developers <<EOF
 # (and they need to run with root privileges to be able to read the
 # certificates)
 Defaults    env_keep += "DOMAIN_NAME_CHAPTER_B"
+
+# certbot-auto is in /usr/local/bin and should be able to run with sudo
+Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 EOF
 
 echo

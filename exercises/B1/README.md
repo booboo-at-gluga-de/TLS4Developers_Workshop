@@ -19,7 +19,7 @@ When including the certificate of the signing CA in the TLS handshake, we call i
 __ATTENTION:__ Make sure you __NEVER NEVER NEVER__ put some intermediate certificate into some truststore! This would only help if you messed up your TLS configuration. Of course it would work in the first place. But you will be in trouble later if the intermediate will be revoked or needs to be renewed (because it expires). All these well proven concepts will not work any longer.  
 So please: __NEVER NEVER NEVER__ put some intermediate certificate into some truststore! Go ahead: Fix your messed up config instead!!
 
-## Steps
+## B.1.1 Steps
 
    * Make sure you have all the additional prerequisites for chapter B in place. You find them in section "Additional Prerequisites" of the [global README](../../../../).
 
@@ -70,13 +70,13 @@ So please: __NEVER NEVER NEVER__ put some intermediate certificate into some tru
 
    * If port 443 on your playground machine is not in use by some other service you could also change the port in `/etc/httpd/conf.d/exercise-B1.conf` or `/etc/apache2/sites-available/exercise-B1.conf` to `443`. In this case you do not need to give a port in the URL.
 
-   * Optional steps:  
-      - If you need a keystore (in PKCS12 format) please make sure you also add the intermediate cerificate. To place the certificate, it's private key and the intermediate certificate in a (newly created) PKCS12 keystore:  
+   * _Optional steps:_  
+      - _If you need a keystore (in PKCS12 format) please make sure you also add the intermediate cerificate. To place the certificate, it's private key and the intermediate certificate in a (newly created) PKCS12 keystore:_  
         ```Bash
-        sudo openssl pkcs12 -export -in /etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem -inkey /etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem -certfile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem -out exercise.jumpingcrab.com.keystore.p12
+        ~# sudo openssl pkcs12 -export -in /etc/letsencrypt/live/exercise.jumpingcrab.com/cert.pem -inkey /etc/letsencrypt/live/exercise.jumpingcrab.com/privkey.pem -certfile /etc/letsencrypt/live/exercise.jumpingcrab.com/chain.pem -out exercise.jumpingcrab.com.keystore.p12
         ```
-        (make sure you remember the keystore password you are setting here)
+        _(make sure you remember the keystore password you are setting here)_
 
-## Conclusion
+## B.1.2 Conclusion
 
    * You created a setup that can be used in the real world (at least in a similar way). Congratulations!

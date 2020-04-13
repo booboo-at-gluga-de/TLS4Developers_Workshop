@@ -17,7 +17,7 @@ Technically both are absolutely the same (except you will fill the CN field in a
      Background is: You need two keypairs and two certificates for this exercise - one for the server, one for the client. Plus additionally the CA certificate for signing both of them. The server certificate and the CA certificate you will reuse from exercise A.3.
    * Usually the client and the server run on different machines. For this example it's absolutely ok to have both of them on one machine (your playground machine)
 
-## Steps
+## A.4.1 Steps
 
    * Generate an additional new private key file for the client:  
      (within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`)
@@ -153,83 +153,82 @@ Technically both are absolutely the same (except you will fill the CN field in a
      curl: (56) OpenSSL SSL_read: error:1409445C:SSL routines:ssl3_read_bytes:tlsv13 alert certificate required, errno 0
      ```
 
-   * Optional steps:  
-      - If you need your client certificate and private key in a PKCS12 keystore (in PKCS12 format):  
-        `openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12`
-        
-## Java Example
+## A.4.2 (optional) Java Example
 
-Just like in exercise A2, the code for this Java example can be found within in the _java_sample_ directory.
+_Just like in exercise A2, the code for this Java example can be found within in the [java_sample](java_sample/) directory._
 
-### What you'll learn in this Java example
-This Java example will demonstrate how connections to an mTLS-enabled backend can be made (i. e. a backend requesting client-side authentication on the transport level). In doing so, it will also outline how the difference between a truststore and a keystore impacts the client-side code.
+### What You'll Learn in this Java Example
+_This Java example will demonstrate how connections to an mTLS-enabled backend can be made (i. e. a backend requesting client-side authentication on the transport level). In doing so, it will also outline how the difference between a truststore and a keystore impacts the client-side code._
 
-For a detailed explanation of the difference between truststores and keystores, please refer to [this section](https://github.com/AntsInMyEy3sJohnson/TLS4Developers_Workshop/tree/master/exercises/A2#establishing-secure-backend-connections-using-a-resttemplate) of the Java example for exercise A2.
+_For a detailed explanation of the difference between truststores and keystores, please refer to [this section](../A2#establishing-secure-backend-connections-using-a-resttemplate) of the Java example for exercise A2._
 
 ### Prerequisites
-There are three prerequisites to running this Java example, namely, an mTLS-enabled backend and two files -- a truststore and a keystore (theoretically, the contents of both could be put into the same file, but that would defeat an important point of this example, so we'll put the trust material and key material into two different files). At this point, the first prerequisite should already be fulfilled if you have followed the steps above, so we're going to create a truststore and a keystore next.
+_There are three prerequisites to running this Java example, namely, an mTLS-enabled backend and two files - a truststore and a keystore (theoretically, the contents of both could be put into the same file, but that would defeat an important point of this example, so we'll put the trust material and key material into two different files). At this point, the first prerequisite should already be fulfilled if you have followed the steps above, so we're going to create a truststore and a keystore next._
 
-+ __Creation of the truststore__: Our truststore in JKS format will contain the CA certificate you have created in scope of exercise A3 rather than a self-signed certificate -- as you'll recall from exercise A2, self-signed certificates entail a significant disadvantage concerning their distribution and management. To create a truststore containing the CA certificate, the following command can be used (from within the `/home/vagrant` directory):  
-`$ mkdir material_java_a4 && keytool -import -file ca/cacert.pem -keystore material_java_a4/cacert.truststore.jks`  
-This command will ask you for a password. Make sure to remember it, as we'll need it a bit further down the line.
-+ __Creation of the keystore__: As you'll recall from the Java sample of exercise A2, a key entry in a keystore typically contains and entity's identity and its private key. Here, the client's identity is the `client.crt` file, and its private key is the `client.key` file. Hence, we have to make sure to include both in our keystore. To create a keystore containing both files, you can run the following command (in `/home/vagrant`):   
-`$ openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12`    
-The resulting keystore in PKCS12 format then has to be transformed to a _Java Key Store_, i. e. a file in _JKS_ format. To do so, you can make use of the following command (in `/home/vagrant`):   
-`$ keytool -importkeystore -deststorepass [destination_keystore_password] -destkeypass [destination_key_password] -destkeystore material_java_a4/client.keystore.jks -srckeystore client.keystore.p12 -srcstorepass [source_keystore_password]`   
-Please make sure to remember the passwords you have provided for `-deststorepass` and `-destkeypass` as we'll need to provide both in our Java application's configuration.
+   * _**Creation of the truststore**: Our truststore in JKS format will contain the CA certificate you have created in scope of exercise A3 rather than a self-signed certificate. To create a truststore containing the CA certificate, the following command can be used (from within the `/home/vagrant` directory):_  
+     ```Bash
+     ~# mkdir ~/material_java_a4
+     ~# keytool -import -file ca/cacert.pem -keystore ~/material_java_a4/cacert.truststore.jks
+     ```  
+     _This command will ask you for a password. Make sure to remember it, as we'll need it a bit further down the line._
 
-So, you should now have two JKS files in your `/home/vagrant/material_java_a4` directory, namely, `cacert.truststore.jks` and `client.keystore.jks`. With those two files in place, you'll only have to adapt the passwords in the Java application's properties file, which you can find in `/vagrant/exercises/A4/java_sample/src/main/resources/application.properties`. Here, make sure to set the `http.client.ssl.trust-store-password`, `-key-store-password`, and `-key-password` properties in accordance to the passwords you have provided above.
+   * _**Creation of the keystore**: As you'll recall from the Java sample of exercise A2, a key entry in a keystore typically contains an entity's identity and its private key. Here, the client's identity is the `client.crt` file, and its private key is the `client.key` file. Hence, we have to make sure to include both in our keystore. Create a keystore containing both files by using the following command:_  
+     ```Bash
+     ~# openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12
+     ```  
+     _The resulting keystore in PKCS12 format then has to be transformed to a _Java Key Store_, i. e. a file in _JKS_ format:_  
+     ```Bash
+     ~# keytool -importkeystore -deststorepass [destination_keystore_password] -destkeypass [destination_key_password] -destkeystore material_java_a4/client.keystore.jks -srckeystore client.keystore.p12 -srcstorepass [source_keystore_password]
+     ```  
+     _Please make sure to remember the passwords you have provided for `-deststorepass` and `-destkeypass` as we'll need to provide both in our Java application's configuration._
 
-### Setup of a `RestTemplate` to use both a truststore and a keystore
-This Java example wouldn't be complete without having a short look at the difference in the configuration of our `RestTemplate` object compared to exercise A2, specifically with regards to loading a truststore versus loading a keystore.
+_So, you should now have two JKS files in your `/home/vagrant/material_java_a4` directory: `cacert.truststore.jks` and `client.keystore.jks`. With those two files in place, you'll only have to adapt the passwords in the Java [application's properties](java_sample/src/main/resources/application.properties) file, which is found in our Vagrant Box in the `/vagrant/exercises/A4/java_sample/src/main/resources/application.properties` file. Here, make sure to set the `http.client.ssl.trust-store-password`, `-key-store-password`, and `-key-password` properties in accordance to the passwords you have provided above._
 
-If you take a look inside class `de.tls4developers.examples.exercisea4.MtlsEnabledRestTemplateConfiguration`, you'll notice we now invoke two methods on the `SSLContext` object (that will eventually be incorporated into the `RestTemplate`). You'll recognize the `loadTrustMaterial` method from exercise A2 -- we still use it to load truststore information. To load keystore information, on the other hand, we have to make use of the `loadKeyMaterial` method, which also gets the parameters it is called with from the `application.properties` file. You'll notice two things about this method:
+### Setup of a `RestTemplate` to Use Both a Truststore and a Keystore
 
-+ Its parameters point to the keystore rather than the truststore, which is perfectly reasonable as the client's identity -- which we have to include because the backend we would like to talk to has mTLS enabled -- is contained in the keystore, not the truststore. 
-+ There is a third parameter, namely, a password for the client's private key within the keystore. That also makes sense, since our command to create the JKS keystore involved setting a password for the client's key. 
+_This Java example wouldn't be complete without having a short look at the difference in the configuration of our `RestTemplate` object compared to exercise A2, specifically with regards to loading a truststore versus loading a keystore._
 
-With both the `loadTrustMaterial` and `loadKeyMaterial` methods in place, we can now run the application and see what happens once it attempts to issue a call against the mTLS-enabled backend.
+_If you take a look inside class [`de.tls4developers.examples.exercisea4.MtlsEnabledRestTemplateConfiguration`](java_sample/src/main/java/de/tls4developers/examples/exercisea4/MtlsEnabledRestTemplateConfiguration.java), you'll notice we now invoke two methods on the `SSLContext` object (that will eventually be incorporated into the `RestTemplate`). You'll recognize the `loadTrustMaterial` method from exercise A2 - we still use it to load truststore information. To load keystore information, on the other hand, we have to make use of the `loadKeyMaterial` method, which also gets the parameters it is called with from the [`application.properties`](java_sample/src/main/resources/application.properties) file. You'll notice two things about this method:_
 
-### Running the application and verifying expected behavior
+   * _Its parameters point to the keystore rather than the truststore, which is perfectly reasonable as the client's identity - which we have to include because the backend we would like to talk to has mTLS enabled - is contained in the keystore, not the truststore._
+   * _There is a third parameter: a password for the client's private key within the keystore. That also makes sense, since our command to create the JKS keystore involved setting a password for the client's key._
 
-You can invoke the following command to run our Java sample application:
+_With both the `loadTrustMaterial` and `loadKeyMaterial` methods in place, we can now run the application and see what happens once it attempts to issue a call against the mTLS-enabled backend._
 
-```bash
-$ mvn -f /vagrant/exercises/A4/java_sample/pom.xml spring-boot:run
-```
+### Running the Application and Verifying Expected Behavior
 
-(Once again, if you run this command without ever having run a similar Maven command within the same Vagrant box, Maven will now proceed to download a whole bunch of stuff.)
-
-As soon as the application has started, you'll find it listening for requests on port `14080`. To verify everything works as expected, issue the following command on the terminal (within the Vagrant box):
-
-```bash
-$ curl http://localhost:14080
-```
-
-This will make the application execute a call against our mTLS-enabled Apache web server (`https://localhost:14443/index.html`), which, as you'll recall from the exercise steps before this Java example, will only be successful if the application -- the client -- can authenticate itself to the Apache web server. If this is the case, you'll see the following:
+_You can invoke the following command to run our Java sample application:_
 
 ```bash
-[vagrant@centos8 ~]$ curl http://localhost:14080
-<!doctype html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>TLS4Developers Workshop -- Exercise A2</title>
-</head>
-<body>
-<div class="page-content">
-    <h2>Eureka!</h2>
-    <h3>Query successful:</h3>
-    <p>This content is only displayed if you authenticate successfully by a client certificate!
-(you connected to webspace of exercise A.4)
-</p>
-</div>
-</body>
-</html>
+~# mvn -f /vagrant/exercises/A4/java_sample/pom.xml spring-boot:run
+```
+
+_(Once again, if you run this command without ever having run a similar Maven command within the same Vagrant box, Maven will now proceed to download a whole bunch of stuff.)_
+
+_As soon as the application has started, you'll find it listening for requests on port `14080`. To verify everything works as expected, issue the following command on the terminal (within the Vagrant box):_
+
+```bash
+~# curl http://localhost:14080
+```
+_or point the browser (at your workstation) to http://localhost:14080 (we provided a port forwarding into the Vagrant Box for you.)_
+
+_Similarly to exercise A2, this will make the application execute a call against a small REST service running on our mTLS-enabled Apache web server (`https://localhost:14443/index.html`), which, as you'll recall from the exercise steps before this Java example, will only be successful if the application - the client - can authenticate itself to the Apache web server by providing an accepted client certificate. If this is the case, you'll something along the line of the following (again, your output may vary depending on your current weekday):_
+
+```bash
+{
+    "meta": {
+        "origin": "weatherinfo service of exercise A4"
+    },
+    "data": {
+        "day": "Monday",
+        "current_weather": "On Mondays the weather around here is always fine",
+        "forecast": "Tomorrow it might be even better"
+    }
+}
 ```
 
 
-## Conclusion
+## A.4.3 Conclusion
 
    * In this Exercise the client certificate and the server certificate are signed by the same CA. In real world scenarios it can be done this way, but it does not need to.
    * Client certificate can be signed by a different CA than the server certificate. In this case the client needs to trust the CA which signed the server certificate. And the server needs to trust the CA which signed the client certificate.

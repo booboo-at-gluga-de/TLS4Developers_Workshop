@@ -3,7 +3,7 @@
 ## Objective
 In this exercise you will setup a secure (HTTPS) virtual server within an Apache Webserver and connect to it. The connection will be secured by a selfsigned certificate you will create and sign yourself.
 
-## Steps
+## A.1.1 Steps
 
    * Generate a new private key file (in PEM format):  
      (within the Vagrant setup you might want to do the following steps directly in `/home/vagrant`)
