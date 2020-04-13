@@ -162,7 +162,7 @@ _Once the application has started, on a new terminal session (within your Vagran
 ```
 _or point the browser (at your workstation) to http://localhost:12080 (we provided a port forwarding into the Vagrant Box for you.)_
 
-_This will trigger a small piece of functionality in the application to attempt a call to_ https://localhost:12443/services/weatherinfos, _invoking a small REST service provided to simulate the invocation of a real-world backend service. This call will only be successful if the truststore has been set up correctly and has been provided to the application's `RestTemplate` (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so:_
+_This will trigger a small piece of functionality in the application to attempt a call to_ https://localhost:12443/services/weatherinfos, _invoking a small REST service provided to simulate the invocation of a real-world backend service. This call will only be successful if the truststore has been set up correctly and has been provided to the application's `RestTemplate` (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so (your output may be slightly different depending on your current weekday, but the point is you some output in the first place):_
 
 ```bash
 ~# curl http://localhost:12080

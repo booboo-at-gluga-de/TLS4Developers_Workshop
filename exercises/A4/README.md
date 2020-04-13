@@ -172,7 +172,7 @@ _There are three prerequisites to running this Java example, namely, an mTLS-ena
      ```  
      _This command will ask you for a password. Make sure to remember it, as we'll need it a bit further down the line._
 
-   * _**Creation of the keystore**: As you'll recall from the Java sample of exercise A2, a key entry in a keystore typically contains and entity's identity and its private key. Here, the client's identity is the `client.crt` file, and its private key is the `client.key` file. Hence, we have to make sure to include both in our keystore. Create a keystore containing both files by:_  
+   * _**Creation of the keystore**: As you'll recall from the Java sample of exercise A2, a key entry in a keystore typically contains an entity's identity and its private key. Here, the client's identity is the `client.crt` file, and its private key is the `client.key` file. Hence, we have to make sure to include both in our keystore. Create a keystore containing both files by using the following command:_  
      ```Bash
      ~# openssl pkcs12 -export -in client.crt -inkey client.key -out client.keystore.p12
      ```  
@@ -182,7 +182,7 @@ _There are three prerequisites to running this Java example, namely, an mTLS-ena
      ```  
      _Please make sure to remember the passwords you have provided for `-deststorepass` and `-destkeypass` as we'll need to provide both in our Java application's configuration._
 
-_So, you should now have two JKS files in your `/home/vagrant/material_java_a4` directory: `cacert.truststore.jks` and `client.keystore.jks`. With those two files in place, you'll only have to adapt the passwords in the Java [application's properties](java_sample/src/main/resources/application.properties) file, which is found in our Vagrant Box as `/vagrant/exercises/A4/java_sample/src/main/resources/application.properties`. Here, make sure to set the `http.client.ssl.trust-store-password`, `-key-store-password`, and `-key-password` properties in accordance to the passwords you have provided above._
+_So, you should now have two JKS files in your `/home/vagrant/material_java_a4` directory: `cacert.truststore.jks` and `client.keystore.jks`. With those two files in place, you'll only have to adapt the passwords in the Java [application's properties](java_sample/src/main/resources/application.properties) file, which is found in our Vagrant Box in the `/vagrant/exercises/A4/java_sample/src/main/resources/application.properties` file. Here, make sure to set the `http.client.ssl.trust-store-password`, `-key-store-password`, and `-key-password` properties in accordance to the passwords you have provided above._
 
 ### Setup of a `RestTemplate` to Use Both a Truststore and a Keystore
 
@@ -212,26 +212,19 @@ _As soon as the application has started, you'll find it listening for requests o
 ```
 _or point the browser (at your workstation) to http://localhost:14080 (we provided a port forwarding into the Vagrant Box for you.)_
 
-_This will make the application execute a call against our mTLS-enabled Apache web server (`https://localhost:14443/index.html`), which, as you'll recall from the exercise steps before this Java example, will only be successful if the application - the client - can authenticate itself to the Apache web server by providing an accepted client certificate. If this is the case, you'll see the following:_
+_Similarly to exercise A2, this will make the application execute a call against a small REST service running on our mTLS-enabled Apache web server (`https://localhost:14443/index.html`), which, as you'll recall from the exercise steps before this Java example, will only be successful if the application - the client - can authenticate itself to the Apache web server by providing an accepted client certificate. If this is the case, you'll something along the line of the following (again, your output may vary depending on your current weekday):_
 
 ```bash
-~# curl http://localhost:14080
-<!doctype html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>TLS4Developers Workshop -- Exercise A2</title>
-</head>
-<body>
-<div class="page-content">
-    <h2>Eureka!</h2>
-    <h3>Query successful:</h3>
-    <p>This content is only displayed if you authenticate successfully by a client certificate!
-(you connected to webspace of exercise A.4)
-</p>
-</div>
-</body>
-</html>
+{
+    "meta": {
+        "origin": "weatherinfo service of exercise A4"
+    },
+    "data": {
+        "day": "Monday",
+        "current_weather": "On Mondays the weather around here is always fine",
+        "forecast": "Tomorrow it might be even better"
+    }
+}
 ```
 
 
