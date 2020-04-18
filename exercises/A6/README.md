@@ -61,7 +61,7 @@ connector.setPort(16080);
 connector.setSecure(false);
 connector.setRedirectPort(securePort);
 ```
-Here, we tell Tomcat port `16080` is insecure and it should be redirected to whatever value is contained in the `securePort` variable, which in this case is taken from our `application.properties` file, where it was set to `16443`.
+Here, we tell Tomcat port `16080` is insecure and should be redirected to whatever value is contained in the `securePort` variable, which in this case is taken from our `application.properties` file, where it was set to `16443`.
 
 ## Verifying Expected Application Behavior
 With our application in place, we can now proceed to verify it behaves as expected:
@@ -119,6 +119,6 @@ Once the application has started, it will expose the HTTPS-enabled port `16443` 
     ```
     
 ## Conclusion
-Establishing an application that exposes its endpoints over HTTPS is remarkably easy in Spring Boot; all we have to do is point the relevant property to the keystore it is supposed to load key material from and tell it the passwords for the keystore itself and for the certificate's private key. Configuring HTTPS redirects is also rather easy, and we can use built-in libraries to assert fine-grained control over what should be redirected to an HTTPS-enabled port and what communication, on the other hand, is alright to go over plain HTTP.
+Establishing an application that exposes its endpoints over HTTPS is remarkably easy in Spring Boot; all we have to do is point the relevant property to the keystore it is supposed to load key material from and tell it the passwords for the keystore itself and for the certificate's private key. Configuring HTTPS redirects is also rather easy, and we can use built-in libraries to assert fine-grained control over what should be redirected to an HTTPS-enabled port and what communication is alright to go over plain HTTP.
 
 
