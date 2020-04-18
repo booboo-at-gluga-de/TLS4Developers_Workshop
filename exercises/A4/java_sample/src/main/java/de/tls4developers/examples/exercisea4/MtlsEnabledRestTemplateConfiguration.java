@@ -7,6 +7,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -37,6 +38,7 @@ public class MtlsEnabledRestTemplateConfiguration {
     @Value("${http.client.ssl.key-password}")
     private String keyPassword;
 
+    @Profile("prd")
     @Bean
     public RestTemplate restTemplate() throws IOException, CertificateException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, UnrecoverableKeyException {
@@ -55,6 +57,12 @@ public class MtlsEnabledRestTemplateConfiguration {
                 new HttpComponentsClientHttpRequestFactory(httpClient);
         return new RestTemplate(httpComponentsClientHttpRequestFactory);
 
+    }
+
+    @Profile("tst")
+    @Bean
+    public RestTemplate dummyRestTemplate() {
+        return new RestTemplate();
     }
 
 }
