@@ -32,7 +32,7 @@ command:
 
   A.2 Test 2:
     title: "Exercise A.2: localhost.keystore.p12 should contain a certificate and a key"
-    exec: "openssl pkcs12 -in /home/vagrant/localhost.keystore.p12 -nodes -passin pass:test"
+    exec: "openssl pkcs12 -in /home/vagrant/localhost.keystore.p12 -nodes -passin pass:test123"
     exit-status: 0
     stdout:
     - "-----BEGIN CERTIFICATE-----"
@@ -42,7 +42,7 @@ command:
 
   A.2 Test 3:
     title: "Exercise A.2: localhost.truststore.p12 should contain a certificate and no key"
-    exec: "openssl pkcs12 -in /home/vagrant/localhost.truststore.p12 -nodes -passin pass:test"
+    exec: "openssl pkcs12 -in /home/vagrant/localhost.truststore.p12 -nodes -passin pass:test123"
     exit-status: 0
     stdout:
     - "-----BEGIN CERTIFICATE-----"
@@ -83,7 +83,7 @@ command:
 
   A.3 Test 2:
     title: "Exercise A.3: server.keystore.p12 should contain a certificate and a key"
-    exec: "openssl pkcs12 -in /home/vagrant/server.keystore.p12 -nodes -passin pass:test"
+    exec: "openssl pkcs12 -in /home/vagrant/server.keystore.p12 -nodes -passin pass:test123"
     exit-status: 0
     stdout:
     - "-----BEGIN CERTIFICATE-----"
@@ -93,7 +93,7 @@ command:
 
   A.3 Test 3:
     title: "Exercise A.3: truststore.ca.p12 should contain a certificate and no key"
-    exec: "openssl pkcs12 -in /home/vagrant/ca/truststore.ca.p12 -nodes -passin pass:test"
+    exec: "openssl pkcs12 -in /home/vagrant/ca/truststore.ca.p12 -nodes -passin pass:test123"
     exit-status: 0
     stdout:
     - "-----BEGIN CERTIFICATE-----"
@@ -122,7 +122,7 @@ command:
 
   A.4 Test 3:
     title: "Exercise A.4: client.keystore.p12 should contain a certificate and a key"
-    exec: "openssl pkcs12 -in /home/vagrant/client.keystore.p12 -nodes -passin pass:test"
+    exec: "openssl pkcs12 -in /home/vagrant/client.keystore.p12 -nodes -passin pass:test123"
     exit-status: 0
     stdout:
     - "-----BEGIN CERTIFICATE-----"

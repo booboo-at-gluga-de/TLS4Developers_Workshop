@@ -48,7 +48,7 @@ call using:
 
 $0 all
     to solve all exercises
-$0 [A1] [A2] [A3] [A4] [A5] [B1] [B2] [B3] [B4]
+$0 [A1] [A2] [A3] [A4] [A5] [A6] [B1] [B2] [B3] [B4]
     to solve the given exercise(es) only
 $0 help
     to display this help screen
@@ -68,6 +68,7 @@ SOLVE_A2=0
 SOLVE_A3=0
 SOLVE_A4=0
 SOLVE_A5=0
+SOLVE_A6=0
 SOLVE_B1=0
 SOLVE_B2=0
 SOLVE_B3=0
@@ -94,6 +95,9 @@ for PARAM in $*; do
         a5|-a5)
             SOLVE_A5=1
             ;;
+        a6|-a6)
+            SOLVE_A6=1
+            ;;
         b1|-b1)
             SOLVE_B1=1
             ;;
@@ -112,6 +116,7 @@ for PARAM in $*; do
             SOLVE_A3=1
             SOLVE_A4=1
             SOLVE_A5=1
+            SOLVE_A6=1
             SOLVE_B1=1
             SOLVE_B2=1
             SOLVE_B3=1
@@ -164,10 +169,10 @@ if [[ $SOLVE_A2 -eq 1 ]]; then
     sudo cp /vagrant/exercises/A2/apache_conf.d/exercise-A2.conf /etc/httpd/conf.d/ && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating localhost.keystore.p12${NO_COLOR}"
-    openssl pkcs12 -export -in /home/vagrant/localhost.crt -inkey /home/vagrant/localhost.key -out /home/vagrant/localhost.keystore.p12 -passout pass:test && success || error
+    openssl pkcs12 -export -in /home/vagrant/localhost.crt -inkey /home/vagrant/localhost.key -out /home/vagrant/localhost.keystore.p12 -passout pass:test123 && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating localhost.truststore.p12${NO_COLOR}"
-    openssl pkcs12 -export -in /home/vagrant/localhost.crt -nokeys -out /home/vagrant/localhost.truststore.p12 -passout pass:test && success || error
+    openssl pkcs12 -export -in /home/vagrant/localhost.crt -nokeys -out /home/vagrant/localhost.truststore.p12 -passout pass:test123 && success || error
 
     echo -e "::: ${HEADLINE_COLOR}checking for previous created directory material_java_a2 and removing it${NO_COLOR}"
     if [[ -d /home/vagrant/material_java_a2 ]]; then
@@ -219,10 +224,10 @@ if [[ $SOLVE_A3 -eq 1 ]]; then
     sudo cp /vagrant/exercises/A3/apache_conf.d/exercise-A3.conf /etc/httpd/conf.d/ && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating server.keystore.p12${NO_COLOR}"
-    openssl pkcs12 -export -in /home/vagrant/server.crt -inkey /home/vagrant/server.key -out /home/vagrant/server.keystore.p12 -passout pass:test && success || error
+    openssl pkcs12 -export -in /home/vagrant/server.crt -inkey /home/vagrant/server.key -out /home/vagrant/server.keystore.p12 -passout pass:test123 && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating truststore.ca.p12${NO_COLOR}"
-    openssl pkcs12 -export -in /home/vagrant/ca/cacert.pem -nokeys -out /home/vagrant/ca/truststore.ca.p12 -passout pass:test && success || error
+    openssl pkcs12 -export -in /home/vagrant/ca/cacert.pem -nokeys -out /home/vagrant/ca/truststore.ca.p12 -passout pass:test123 && success || error
 fi
 
 if [[ $SOLVE_A4 -eq 1 ]]; then
@@ -245,7 +250,7 @@ if [[ $SOLVE_A4 -eq 1 ]]; then
     sudo cp /vagrant/exercises/A4/apache_conf.d/exercise-A4.conf /etc/httpd/conf.d/ && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
-    openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test && success || error
+    openssl pkcs12 -export -in /home/vagrant/client.crt -inkey /home/vagrant/client.key -out /home/vagrant/client.keystore.p12 -passout pass:test123 && success || error
 
     echo -e "::: ${HEADLINE_COLOR}checking for previous created directory material_java_a4 and removing it${NO_COLOR}"
     if [[ -d /home/vagrant/material_java_a4 ]]; then
@@ -261,7 +266,21 @@ if [[ $SOLVE_A4 -eq 1 ]]; then
     keytool -import -file /home/vagrant/ca/cacert.pem -deststorepass test123 -noprompt -keystore /home/vagrant/material_java_a4/cacert.truststore.jks && success || error
 
     echo -e "::: ${HEADLINE_COLOR}creating client.keystore.jks${NO_COLOR}"
-    keytool -importkeystore -deststorepass test123 -destkeypass test123 -destkeystore /home/vagrant/material_java_a4/client.keystore.jks -srckeystore /home/vagrant/client.keystore.p12 -srcstorepass test && success || error
+    keytool -importkeystore -deststorepass test123 -destkeypass test123 -destkeystore /home/vagrant/material_java_a4/client.keystore.jks -srckeystore /home/vagrant/client.keystore.p12 -srcstorepass test123 && success || error
+fi
+
+if [[ $SOLVE_A6 -eq 1 ]]; then
+    echo -e ":::"
+    echo -e "::: ###################################################################"
+    echo -e "::: ${HEADLINE_COLOR}solving exercise A.6{NO_COLOR}"
+    echo -e "::: ###################################################################"
+    echo -e ":::"
+
+    echo -e "::: ${HEADLINE_COLOR}creating directory material_java_a6${NO_COLOR}"
+    mkdir /home/vagrant/material_java_a6 && success || error
+
+    echo -e "::: ${HEADLINE_COLOR}copying localhost.keystore.p12 to material_java_a6${NO_COLOR}"
+    cp /home/vagrant/localhost.keystore.p12 /home/vagrant/material_java_a6/ && success || error
 fi
 
 if [[ $SOLVE_B1 -eq 1 ]]; then
@@ -276,7 +295,7 @@ if [[ $SOLVE_B1 -eq 1 ]]; then
         sudo cp /vagrant/exercises/B1/apache_conf.d/exercise-B1.conf /etc/httpd/conf.d/ && success || error
 
         echo -e "::: ${HEADLINE_COLOR}creating ${DOMAIN_NAME_CHAPTER_B}.keystore.p12${NO_COLOR}"
-        sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test && success || error
+        sudo openssl pkcs12 -export -in /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/cert.pem -inkey /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/privkey.pem -certfile /etc/letsencrypt/live/${DOMAIN_NAME_CHAPTER_B}/chain.pem -out /home/vagrant/${DOMAIN_NAME_CHAPTER_B}.keystore.p12 -passout pass:test123 && success || error
     else
         echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
         skipped
@@ -315,7 +334,7 @@ if [[ $SOLVE_B2 -eq 1 ]]; then
         sudo cp /vagrant/exercises/B2/apache_conf.d/exercise-B2.conf /etc/httpd/conf.d/ && success || error
 
         echo -e "::: ${HEADLINE_COLOR}creating client.keystore.p12${NO_COLOR}"
-        openssl pkcs12 -export -in /home/vagrant/clientcrt/cert.pem -inkey /home/vagrant/clientcrt/privkey.pem -certfile /home/vagrant/clientcrt/chain.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test && success || error
+        openssl pkcs12 -export -in /home/vagrant/clientcrt/cert.pem -inkey /home/vagrant/clientcrt/privkey.pem -certfile /home/vagrant/clientcrt/chain.pem -out /home/vagrant/clientcrt/client.keystore.p12 -passout pass:test123 && success || error
     else
         echo -e "::: WARNING: Certificate files for ${DOMAIN_NAME_CHAPTER_B} are missing, see Prerequisites"
         skipped
