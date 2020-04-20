@@ -10,20 +10,20 @@ The preceding exercises A2 and A4 involved a Spring Boot application establishin
 In the real world, such a setup is commonly encountered in the context of Spring-Boot based API gateways that act as SSL termination entities (rather than a dedicated web server) that might then pass on requests to some application landscape (think, for example, of a set of micro services) or even orchestrate processing flow.
 
 ## Prerequisites
-As we'll reuse the self-signed certificate from exercise A2, it's advisable you do that exercise first (hint: the creation of the private key will ask you for a password -- please write it down somewhere because you'll need it again a bit further down the line). As soon as you've created the self-signed certificate and its private key in scope of exercise A2, you'll want to put both of them into a new keystore (in fact, that's an optional step in said exercise, so if you have already done that step, feel free to skip ahead):
+As we'll reuse the self-signed certificate from exercise A2, it's advisable you do that exercise first (hint: the creation of the private key will ask you for a password -- please make sure to remember because you'll need it again a bit further down the line). As soon as you've created the self-signed certificate and its private key in scope of exercise A2, you'll want to put both of them into a new keystore (in fact, that's an optional step in said exercise, so if you have already done that step, feel free to skip ahead):
 ```Bash
 ~# openssl pkcs12 -export -in localhost.crt -inkey localhost.key -out localhost.keystore.p12
 ```
 (This command assumes you're operating from the `/home/vagrant` directory.)
 
-The above command will ask you for a password to be set for the new keystore. Please make sure to write down or otherwise remember that password, as our application will need it to retrieve the keystore contents a bit later on.
+The above command will ask you for a password to be set for the new keystore. Please make sure to remember, as our application will need it to retrieve the keystore contents a bit later on.
 
 Putting both, the certificate as well as its private key, into a keystore makes sense since we want to establish a secure application that clients can trust, and hence, the application requires key material to present to a client rather than merely trust material (for an explanation of the characteristics of and differences between trust and key material, please refer to [this section](../A2#establishing-secure-backend-connections-using-a-resttemplate) of the Java example for exercise A2).
 
 Finally, create a new folder for our application to retrieve the keystore from and place the keystore there:
 ```Bash
 ~# mkdir ~/material_java_a6
-~# mv localhost.keystore.p12 ~/material_java_a6
+~# cp localhost.keystore.p12 ~/material_java_a6/
 ```
 Similarly to the Java examples for exercises A2 and A4, the application will add the contents of this directory to its classpath and attempt to load a file called `localhost.keystore.p12` from it. So, if you've run the above commands as provided there, the application will work as-is, but if your keystore is called differently, please make sure to update the relevant line within the `src/main/resources/application.properties` file. Please also verify this file contains the correct passwords for your keystore and the private key it contains (properties `server.ssl.key-store-password` and `server.ssl.key-password`, respectively).
 
@@ -65,7 +65,7 @@ Here, we tell Tomcat port `16080` is insecure and should be redirected to whatev
 
 ## Verifying Expected Application Behavior
 With our application in place, we can now proceed to verify it behaves as expected:
-1. Querying `https://localhost:16443/greetings` should yield a certificate error when queried without the client explicitly trusting the self-signed certificate contained in the application's keystore.
+1. Querying `https://localhost:16443/greetings` should yield a certificate error when queried without the client explicitly trusting the self-signed certificate.
 1. Repeating the first step with a client configured to explicitly trust the self-signed certificate should result in query success, with a short JSON-formatted greeting from the application's dummy REST endpoint being displayed as response payload.
 1. Attempting to invoke the endpoint via plain HTTP (`http://localhost:16080/greetings`) should result in an HTTP redirect response, redirecting clients to port `16443`.
 
