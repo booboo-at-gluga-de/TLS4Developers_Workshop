@@ -117,7 +117,7 @@ You will do pretty much the same as in Exercise A.1, but will make sure the CN i
 _The code for the Java example is located in the [java_sample](java_sample/) directory._
 
 ### What You'll Learn in Scope of this Java Example
-_The goal of this short Java example is to demonstrate how you can establish secure connections to the HTTPS-enabled Apache web server you've just set up. It's important to remember this Apache uses a self-signed certificate for now, and although this does not impair encryption in any way, a self-signed certificate comes with a significant disadvantage: All clients - such as a Java client - have to explicitly trust it by referencing a truststore containing the certificate. This is precisely what we'll do in scope of this example._
+_The goal of this short Java example is to demonstrate how you can establish secure connections to a small REST service running on the HTTPS-enabled Apache web server you've just set up. It's important to remember this Apache uses a self-signed certificate for now, and although this does not impair encryption in any way, a self-signed certificate comes with a significant disadvantage: All clients - such as a Java client - have to explicitly trust it by referencing a truststore containing the certificate. This is precisely what we'll do in scope of this example._
 
 ### Prerequisites
 
@@ -162,26 +162,20 @@ _Once the application has started, on a new terminal session (within your Vagran
 ```
 _or point the browser (at your workstation) to http://localhost:12080 (we provided a port forwarding into the Vagrant Box for you.)_
 
-_This will trigger a small piece of functionality in the application to attempt a call to_ https://localhost:12443/index.html, _which will only be successful if the truststore has been set up correctly and has been provided to the application's `RestTemplate` (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so:_
+_This will trigger a small piece of functionality in the application to attempt a call to_ https://localhost:12443/services/weatherinfos, _invoking a small REST service provided to simulate the invocation of a real-world backend service. This call will only be successful if the truststore has been set up correctly and has been provided to the application's `RestTemplate` (and, of course, if the local HTTPS-enabled Apache is actually listening on that port). The expected behavior is that success of establishing a secure connection to said Apache is indicated like so (your output may be slightly different depending on your current weekday, but the point is you see some output like the following in the first place):_
 
 ```bash
 ~# curl http://localhost:12080
-<!doctype html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>TLS4Developers Workshop -- Exercise A2</title>
-</head>
-<body>
-<div class="page-content">
-    <h2>Eureka!</h2>
-    <h3>Query successful:</h3>
-    <p>Hello World
-(you connected to webspace of exercise A.2)
-</p>
-</div>
-</body>
-</html>
+{
+    "meta": {
+        "origin": "weatherinfo service of exercise A2"
+    },
+    "data": {
+        "day": "Monday",
+        "current_weather": "On Mondays the weather around here is always fine",
+        "forecast": "Tomorrow it might be even better"
+    }
+}
 ```
 
 ## A.2.3 Conclusion
@@ -189,4 +183,4 @@ _This will trigger a small piece of functionality in the application to attempt 
    * It works now completely without any certificate warning. Exactly the same way it would work if we used a FQDN in the URL as well as in the CN of the certificate.
    * __Learning:__ Selfsigned certificates are not less secure than certificates signed by an official CA. Encryption is fully in place.
    * __Drawback:__ It's not practical anyway! If you wanted to deal with selfsigned certificates in the real world, you would need to make sure the certificate of your server is included in the truststore of every client connecting to it.  
-   For example, consider our simple Java client: Providing it with access to the truststore and managing that truststore (for example, replacing it once the contained certificate expires) does not seem like too much of a burden if you only have one client and if that client shares its machine with the server it wants to make connections to. But what if you had, say, 1.000 clients? Or 10.000? As you can imagine, the effort to handle selfsigned certificates in such scenarios is beyond any reasonable measure, so working only with selfsigned certificates is very impractical indeed.
+   For example, consider our simple Java client: Providing it with access to the truststore and managing that truststore (for example, replacing it once the contained certificate expires) does not seem like too much of a burden if you only have one client and if that client shares its machine with the server it wants to make connections to. But what if you had, say, 1.000 clients? Or 10.000? Now further imagine each client ran on its very own machine and you had to log in to each of them to manually replace your self-signed certificate - good bye, sanity! Automating such tasks could obviously mitigate that effort, but the real solution lies elsewhere and you'll get introduced to it in scope of the upcoming exercises.

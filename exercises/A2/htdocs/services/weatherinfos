@@ -37,7 +37,7 @@ else
             ;;
         'Saturday')
             CURRENT="Not worth going outside"
-            FORECAST="Tomorrow it will bad weather will stay"
+            FORECAST="Tomorrow, the weather will still be bad"
             ;;
         'Sunday')
             CURRENT="Rain"

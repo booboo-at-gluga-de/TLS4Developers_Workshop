@@ -7,6 +7,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,7 @@ public class HttpsEnabledRestTemplateConfiguration {
     @Value("${http.client.ssl.trust-store-password}")
     private String trustStorePassword;
 
+    @Profile("prd")
     @Bean
     public RestTemplate restTemplate() throws IOException, CertificateException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, UnrecoverableKeyException {
@@ -44,6 +46,12 @@ public class HttpsEnabledRestTemplateConfiguration {
                 new HttpComponentsClientHttpRequestFactory(httpClient);
         return new RestTemplate(httpComponentsClientHttpRequestFactory);
 
+    }
+
+    @Profile("tst")
+    @Bean
+    public RestTemplate dummyRestTemplate() {
+        return new RestTemplate();
     }
 
 }
