@@ -64,6 +64,8 @@ Now it's time to really start exercising:
      The Client needs to authenticate by a Client Certificate: mTLS
    * [__Exercise A.5__](exercises/A5/):
      Useful Commands for Dealing with Certificates and Keystores
+   * [__Exercise A.6__](exercises/A6/):
+     Setting up an HTTPS-Enabled Spring Boot Application
 
 
 ## Chapter B: Using Certificates of an Official CA
